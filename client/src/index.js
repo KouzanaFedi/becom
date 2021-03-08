@@ -8,14 +8,19 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import "dotenv/config";
+
+const API = "localhost:4000";
 
 const wsLink = new WebSocketLink({
-  uri: "ws://localhost:4000/subscription",
+  uri: `ws://${API}/subscription`,
   options: { reconnect: true },
 });
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:4000",
+  uri: `http://${API}`,
 });
 
 const splitLink = split(
@@ -37,11 +42,13 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ApolloProvider>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ApolloProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

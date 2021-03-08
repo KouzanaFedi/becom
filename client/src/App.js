@@ -3,7 +3,7 @@ import "./App.css";
 import Greetings from "./components/Greetings";
 import Header from "./components/Header";
 import Home from "./components/Home";
-import LogInForm from "./components/LogInForm";
+import LogInForm from "./components/logInForm/LogInForm";
 import { AUTH_TOKEN } from "./utils/constants";
 
 function App() {
