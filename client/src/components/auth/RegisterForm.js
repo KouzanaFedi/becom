@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, CircularProgress, Container, Divider, Grid, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, CircularProgress, Container, Divider, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link, useHistory } from "react-router-dom";
 import Copyright from "../Copyright";

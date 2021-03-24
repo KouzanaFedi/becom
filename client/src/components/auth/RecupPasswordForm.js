@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, CircularProgress, Container, Grid, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, CircularProgress, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useDispatch, useSelector } from "react-redux";
 import { recupEmail, recupCode, canRecupCode, SET_EMAIL_RECUP, SET_CODE_READY_RECUP, SET_CODE_RECUP, SET_STEP_TWO, SET_CODE_ERROR, recupStep, passwordCode, SET_NEW_PASSWORD_RECUP, SET_STEP_THREE, SET_NEW_PASSWORD_ERROR, RESET_RECUP } from "../../redux/auth/passwordRecupReducer";
