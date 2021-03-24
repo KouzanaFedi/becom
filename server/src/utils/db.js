@@ -5,7 +5,7 @@ export const connectDB = (url) => {
     console.log('Connecting to DB...');
     Mongoose.connect(
       url,
-      { useNewUrlParser: true, useUnifiedTopology: true },
+      { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
       (err) => {
         if (err) console.error('Connection failed; ' + err);
       }

@@ -1,6 +1,13 @@
 import { Schema, model } from 'mongoose';
 
 const UserSchema = new Schema({
+  email: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    unique: true,
+    required: true,
+  },
   name: {
     type: String,
     trim: true,
@@ -10,13 +17,11 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  //   email: {
-  //     type: String,
-  //     lowercase: true,
-  //     trim: true,
-  //     unique: true,
-  //     required: true,
-  //   },
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  }
 });
 
 export const User = model('users', UserSchema);

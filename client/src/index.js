@@ -13,6 +13,7 @@ import store from "./redux/store";
 import "dotenv/config";
 
 const API = "localhost:4000";
+//const API = "172.27.47.211:4000";
 
 const wsLink = new WebSocketLink({
   uri: `ws://${API}/subscription`,
@@ -24,7 +25,8 @@ const httpLink = new HttpLink({
 });
 
 const splitLink = split(
-  ({ query }) => {
+  ({ query }) =>
+  {
     const definition = getMainDefinition(query);
     return (
       definition.kind === "OperationDefinition" &&
@@ -38,6 +40,7 @@ const splitLink = split(
 const client = new ApolloClient({
   link: splitLink,
   cache: new InMemoryCache(),
+  connectToDevTools: true
 });
 
 ReactDOM.render(
