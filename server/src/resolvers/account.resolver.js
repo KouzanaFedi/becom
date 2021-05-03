@@ -1,16 +1,12 @@
-import
-{ comparePassword, emailValidate, encryptPassword, recupCode, getToken } from '../utils/util';
-import { AuthenticationError, PubSub, ValidationError, toApolloError } from 'apollo-server';
-import { User } from '../models/schema/user';
-import { INVALIDE_EMAIL_ERROR, USER_EXISTS_ERROR, PASSWORD_INVALIDE_ERROR, USER_NOT_EXISTS_ERROR, RECUP_CODE_INVALIDE_ERROR, RECUP_CODE_EXPIRED_ERROR } from '../utils/errors/UserError';
-import { RecupCode } from '../models/schema/recupCode';
-const pubSub = new PubSub();
-export const userResolvers = {
+import { comparePassword, emailValidate, encryptPassword, recupCode, getToken } from '../utils/util';
+import { AuthenticationError, PubSub } from 'apollo-server';
+import { RecupCode } from '../schema/user/recupCode';
+import { User } from '../schema/user/user';
+import { INVALIDE_EMAIL_ERROR, USER_EXISTS_ERROR, PASSWORD_INVALIDE_ERROR, USER_NOT_EXISTS_ERROR, RECUP_CODE_INVALIDE_ERROR, RECUP_CODE_EXPIRED_ERROR, UNAUTHENTICATED_ERROR } from '../utils/errors/UserError';
+
+export const accountResolver = {
   Query: {
-    hi: (_, args, context) =>
-    {
-      return { msg: 'Hello world' };
-    }, verifyRecupCode: async (_, args) =>
+    verifyRecupCode: async (_, args) =>
     {
       const email = args.email;
       const code = args.code;
@@ -74,14 +70,6 @@ export const userResolvers = {
         const regUser = new User(newUser);
         const token = getToken(regUser.toJSON());
         regUser.save();
-        pubSub.publish('USER_CREATED', {
-          usersCreated: {
-            id: regUser.id,
-            name: regUser.name,
-            password: regUser.password,
-            token,
-          },
-        });
         return {
           id: regUser.id,
           name: regUser.name,
@@ -133,11 +121,5 @@ export const userResolvers = {
         succes: true
       }
     }
-  },
-
-  Subscription: {
-    usersCreated: {
-      subscribe: () => pubSub.asyncIterator(['USER_CREATED']),
-    },
   },
 };

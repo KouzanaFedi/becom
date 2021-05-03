@@ -1,4 +1,4 @@
-import { query } from './query';
-import { userType } from './types';
+import { types } from './types';
+import { queries } from './queries';
 
-export const typeDefs = [query, userType];
+export const typeDefs = [types, queries];

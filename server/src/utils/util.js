@@ -64,3 +64,40 @@ export const emailValidate = (email) =>
   const validator = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
   return validator.test(email);
 }
+
+export const fullCalendarDateFormat = (date) =>
+{
+  const formattedDate = new Date(date);
+  const year = formattedDate.getFullYear();
+  const month = `${formattedDate.getMonth() + 1}`.padStart(2, '0');
+  const day = `${formattedDate.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export const fullCalendarTimeFormat = (date) =>
+{
+  const formattedDate = new Date(date);
+  const hh = `${formattedDate.getHours()}`.padStart(2, '0');
+  const mm = `${formattedDate.getMinutes()}`.padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
+// for schedule sharing
+export const getScheduleSharingToken = (payload) =>
+{
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {
+    expiresIn: '356d', // 1 Week
+  });
+  return token;
+};
+
+export const getScheduleSharingPayload = (token) =>
+{
+  try {
+    const payload = jwt.verify(token, process.env.SECRET_KEY);
+    return { payload };
+  } catch (err) {
+    // Add Err Message
+    return { payload: null };
+  }
+};

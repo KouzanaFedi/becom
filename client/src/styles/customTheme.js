@@ -5,21 +5,24 @@ const customTheme = createMuiTheme({
         fontFamily: [
             'Mulish', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', 'sans-serif',
         ].join(','),
+        button: {
+            textTransform: 'none'
+        }
     },
     palette: {
         primary: {
-            main: '#7B2A89',
-            dark: '#36123C',
-            light: '#BF41D5',
+            main: 'rgba(223,49,69,1)',
+            dark: 'rgba(223,49,69,1)',
+            light: 'rgba(223,49,69,1)'
         },
         secondary: {
-            main: '#E33A4F',
-            dark: '#FF4141',
-            light: '#962634',
+            main: 'rgba(123,33,125,1)',
+            dark: 'rgba(123,33,125,1)',
+            light: 'rgba(123,33,125,1)'
         }
     },
     custom: {
-        inBetween: '#B11F6A'
+        background: 'linear-gradient(135deg, rgba(223,49,69,1) 0%, rgba(123,33,125,1) 100%)'
     }
 });
 

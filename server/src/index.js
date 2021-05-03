@@ -2,8 +2,7 @@ import { ApolloServer } from 'apollo-server';
 import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers/index';
 import { connectDB } from './utils/db';
-// import { getPayload } from './utils/util';
-
+import { getPayload } from './utils/util';
 import 'dotenv/config';
 
 const DB_URL = process.env.DB_URI;
@@ -12,20 +11,36 @@ const DB_URL = process.env.DB_URI;
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  subscriptions: { path: '/subscription' },
-  context: ({ req }) => {
+  subscriptions: {
+    path: '/subscription',
+    onConnect: async (connectionParams, webSocket, context) =>
+    {
+      console.log(`Subscription client connected using Apollo server's built-in SubscriptionServer.`)
+    },
+    onDisconnect: async (webSocket, context) =>
+    {
+      console.log(`Subscription client disconnected.`)
+    }
+  },
+  context: ({ req, connection }) =>
+  {
     connectDB(DB_URL);
+    if (connection) {
+      return {
+        ...connection.context,
+      };
+    };
 
-    // // get the user token from the headers
-    // const token = req.headers.authorization || '';
-    // // try to retrieve a user with the token
-    // const { payload: user, loggedIn } = getPayload(token);
+    const tokenWithBearer = req.headers.authorization || '';
+    const token = tokenWithBearer.split(' ')[1];
 
-    // // add the user to the context
-    // return { user, loggedIn };
+    const { payload: user, loggedIn } = getPayload(token);
+
+    return { user, loggedIn };
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url }) =>
+{
   console.log(`🚀  Server ready at ${url}`);
 });

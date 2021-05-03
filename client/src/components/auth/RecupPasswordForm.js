@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, CircularProgress, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Box, Button, CircularProgress, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { recupEmail, recupCode, canRecupCode, SET_EMAIL_RECUP, SET_CODE_READY_RECUP, SET_CODE_RECUP, SET_STEP_TWO, SET_CODE_ERROR, recupStep, passwordCode, SET_NEW_PASSWORD_RECUP, SET_STEP_THREE, SET_NEW_PASSWORD_ERROR, RESET_RECUP } from "../../redux/auth/passwordRecupReducer";
+import { recupEmail, recupCode, canRecupCode, SET_EMAIL_RECUP, SET_CODE_READY_RECUP, SET_CODE_RECUP, SET_STEP_TWO, SET_CODE_ERROR, recupStep, passwordCode, SET_NEW_PASSWORD_RECUP, SET_STEP_THREE, SET_NEW_PASSWORD_ERROR, RESET_RECUP } from "../../redux/logic/auth/passwordRecupReducer";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GENERATE_RECUP_CODE, UPDATE_PASSWORD, VERIFY_RECUP_CODE } from "../../api/auth";
 import { Link } from "react-router-dom";
+import Logo from "../Logo";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
     // }
     succesMSG: {
         paddingTop: '15px'
+    },
+    logo: {
+        width: '30%',
+    },
+    title: {
+        fontWeight: 'bold'
     }
 }));
 
@@ -144,12 +150,12 @@ const RecupPasswordForm = () =>
 
     return (<Grid item xs={12} sm={8} md={4} square className={classes.root}>
         <Container className={classes.child}>
-            <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5" style={{ fontWeight: 'bold', paddingBottom: '48px' }}>
-                Password recupertaion
+            <Logo size='30%' />
+            <Box mb={2}>
+                <Typography component="h1" variant="h5" className={classes.title}>
+                    Password recupertaion
             </Typography>
+            </Box>
             {step === 1 && <form className={classes.form} noValidate>
                 {!codeReady ? <div>
                     <TextField
@@ -289,7 +295,7 @@ const RecupPasswordForm = () =>
                 <Link href="/login" to="/login" variant="body2" onClick={reset}>
                     login
                 </Link>
-            </span>}y
+            </span>}
         </Container>
     </Grid >)
 }

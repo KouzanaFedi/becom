@@ -1,27 +1,41 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ApolloProvider, HttpLink, split } from "@apollo/client";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloProvider, HttpLink, split, ApolloClient, InMemoryCache, ApolloLink, concat } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { AUTH_TOKEN } from "./utils/constants";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+import { API } from "./config";
+
+import "./index.css";
 import "dotenv/config";
 
-const API = "localhost:4000";
-//const API = "172.27.47.211:4000";
+const token = localStorage.getItem(AUTH_TOKEN);
 
 const wsLink = new WebSocketLink({
   uri: `ws://${API}/subscription`,
-  options: { reconnect: true },
+  options: { reconnect: true, connectionParams: { authToken: token ? token : '' }, },
 });
 
 const httpLink = new HttpLink({
   uri: `http://${API}`,
+});
+
+const authMiddleware = new ApolloLink((operation, forward) =>
+{
+  operation.setContext({
+    headers: {
+      authorization: token ? `Bearer ${token}` : null,
+    }
+  });
+
+  return forward(operation);
 });
 
 const splitLink = split(
@@ -34,13 +48,13 @@ const splitLink = split(
     );
   },
   wsLink,
-  httpLink
+  concat(authMiddleware, httpLink)
 );
 
 const client = new ApolloClient({
   link: splitLink,
   cache: new InMemoryCache(),
-  connectToDevTools: true
+  connectToDevTools: true,
 });
 
 ReactDOM.render(
@@ -48,7 +62,9 @@ ReactDOM.render(
     <Provider store={store}>
       <ApolloProvider client={client}>
         <BrowserRouter>
-          <App />
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <App />
+          </MuiPickersUtilsProvider>
         </BrowserRouter>
       </ApolloProvider>
     </Provider>

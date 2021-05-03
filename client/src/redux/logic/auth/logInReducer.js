@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { emailValidate } from "../../utils/stringValidation";
+import { emailValidate } from "../../../utils/stringValidation";
 
 const logInReducer = createSlice({
   name: "logIn",

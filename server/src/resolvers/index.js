@@ -1,3 +1,4 @@
-import { userResolvers } from './userResolvers';
+import { scheduleResolver } from './schedule.resolver';
+import { accountResolver } from './account.resolvers';
 
-export const resolvers = [userResolvers];
+export const resolvers = [accountResolver, scheduleResolver];

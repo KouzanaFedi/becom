@@ -1,0 +1,24 @@
+import { TaskType } from "../schema/project/taskType";
+
+export const projectResolver = {
+    Mutation: {
+        createProject: async (_, args) =>
+        {
+            const { name, owner } = args;
+            const project = new Project({ name, owner });
+            project.save();
+            return {
+                succes: true
+            }
+        },
+        createTaskType: async (_, args) =>
+        {
+            const { name } = args;
+            const taskType = new TaskType({name});
+            taskType.save();
+            return {
+                succes: true
+            }
+        }
+    }
+}

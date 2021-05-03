@@ -1,23 +1,7 @@
-import { gql } from 'apollo-server';
+import { mergeTypeDefs } from "@graphql-tools/merge";
+import { accountType } from "./account.type";
+import { scheduleType } from "./schedule.type";
 
-export const userType = gql`
-  type User {
-    id: ID!
-    name: String!
-    password: String!
-    email: String!
-    token: String!
-    createdAt: String!
-    updatedAt: String!
-  }
+const typeTypes = [accountType, scheduleType];
 
-  type GenerateRecupCodeResponse {
-    email: String!
-    code: String!
-    createdAt: String!
-  }
-
-  type BasicResponse {
-    succes: Boolean!
-  }
-`;
+export const types = mergeTypeDefs(typeTypes);

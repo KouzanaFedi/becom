@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { emailValidate } from "../../utils/stringValidation";
+import { emailValidate } from "../../../utils/stringValidation";
 
 const registerReducer = createSlice({
     name: 'register',
@@ -26,7 +26,6 @@ const registerReducer = createSlice({
         },
         canSubmit: false
     },
-
     reducers: {
         SET_NAME_REGISTER: (state, action) =>
         {

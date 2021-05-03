@@ -1,14 +1,14 @@
-import { Avatar, Box, Button, CircularProgress, Container, Divider, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Box, Button, CircularProgress, Container, Divider, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
 import { Link, useHistory } from "react-router-dom";
 import Copyright from "../Copyright";
 import { useDispatch, useSelector } from "react-redux";
-import { registerCanSubmit, registerEmail, registerName, SET_NAME_REGISTER, SET_EMAIL_REGISTER, SET_PASSWORD_REGISTER, SET_CONFIRME_PASSWORD_REGISTER, UPDATE_FIELDS_WHEN_EMAIL_EXISTS_REGISTER, registerPassword, registerConfirmePassword, RESET_REGISTER } from "../../redux/auth/registerReducer";
+import { registerCanSubmit, registerEmail, registerName, SET_NAME_REGISTER, SET_EMAIL_REGISTER, SET_PASSWORD_REGISTER, SET_CONFIRME_PASSWORD_REGISTER, UPDATE_FIELDS_WHEN_EMAIL_EXISTS_REGISTER, registerPassword, registerConfirmePassword, RESET_REGISTER } from "../../redux/logic/auth/registerReducer";
 import { useMutation } from "@apollo/client";
 import { REGISTER } from "../../api/auth";
 import { USER_EXISTS_ERROR } from "../../utils/errors";
 import facebook from "../../assets/iconsfacebook.png";
 import google from "../../assets/iconsgoogle.png";
+import Logo from "../Logo";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,11 +21,6 @@ const useStyles = makeStyles((theme) => ({
     },
     child: {
         padding: '24px 48px',
-    },
-    avatar: {
-        backgroundColor: theme.palette.secondary.main,
-        margin: 'auto',
-        marginBottom: '24px'
     },
     submit: {
         margin: theme.spacing(2, 0, 2),
@@ -45,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
     },
     paddingRightImg: {
         paddingRight: '10px'
+    },
+    logo: {
+        width: '30%',
+    },
+    title: {
+        fontWeight: 'bold'
     }
 }));
 
@@ -109,12 +110,12 @@ const RegisterForm = () =>
 
     return (<Grid item xs={12} sm={8} md={4} className={classes.root}>
         <Container className={classes.child}>
-            <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5" style={{ fontWeight: 'bold', paddingBottom: '48px' }}>
-                Register a new account
+            <Logo size='30%' />
+            <Box mb={2}>
+                <Typography component="h1" variant="h5" className={classes.title}>
+                    Register a new account
             </Typography>
+            </Box>
             <form noValidate style={{ display: 'flex', flexDirection: 'column' }}>
                 <TextField
                     variant="filled"

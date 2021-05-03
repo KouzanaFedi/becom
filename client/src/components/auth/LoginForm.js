@@ -1,15 +1,15 @@
-import { Avatar, Box, Button, CircularProgress, Container, Divider, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, Container, Divider, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link, useHistory, useLocation } from "react-router-dom"
 import Copyright from "../Copyright"
-import { logInPassword, logInEmail, SET_PASSWORD_LOGIN, SET_EMAIL_LOGIN, logInCanSubmit, SET_PASSWORD_ERROR_LOGIN, RESET_LOGIN } from "../../redux/auth/logInReducer";
+import { logInPassword, logInEmail, SET_PASSWORD_LOGIN, SET_EMAIL_LOGIN, logInCanSubmit, SET_PASSWORD_ERROR_LOGIN, RESET_LOGIN } from "../../redux/logic/auth/logInReducer";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../../api/auth";
 import { USER_NOT_EXISTS_ERROR, PASSWORD_INVALIDE_ERROR } from '../../utils/errors'
 import { AUTH_TOKEN } from "../../utils/constants";
 import facebook from "../../assets/iconsfacebook.png";
 import google from "../../assets/iconsgoogle.png";
+import Logo from "../Logo";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,11 +22,6 @@ const useStyles = makeStyles((theme) => ({
     },
     child: {
         padding: '24px 48px',
-    },
-    avatar: {
-        backgroundColor: theme.palette.secondary.main,
-        margin: 'auto',
-        marginBottom: '24px'
     },
     submit: {
         margin: theme.spacing(2, 0, 2),
@@ -46,6 +41,12 @@ const useStyles = makeStyles((theme) => ({
     },
     paddingRightImg: {
         paddingRight: '10px'
+    },
+    logo: {
+        width: '30%',
+    },
+    title: {
+        fontWeight: 'bold'
     }
 }));
 
@@ -65,7 +66,7 @@ const LoginForm = () =>
         {
             dispatch(RESET_LOGIN());
             localStorage.setItem(AUTH_TOKEN, login.token);
-            history.replace('/home');
+            history.replace('/dashbord');
         }, onError: ({ message }) =>
         {
             const errorCode = message.split(':')[0].trim();
@@ -101,12 +102,12 @@ const LoginForm = () =>
 
     return (<Grid item xs={12} sm={8} md={4} className={classes.root}>
         <Container className={classes.child}>
-            <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5" style={{ fontWeight: 'bold', paddingBottom: '48px' }}>
-                Login to your account
+            <Logo size='30%' />
+            <Box mb={2}>
+                <Typography component="h1" variant="h5" className={classes.title}>
+                    Login to your account
             </Typography>
+            </Box>
             <form noValidate style={{ display: 'flex', flexDirection: 'column' }}>
                 <TextField
                     variant="filled"
@@ -200,7 +201,6 @@ const LoginForm = () =>
                         color: 'black'
                     }}
                 >
-
                     <div className={classes.oauthButton}>
                         <img src={google} alt='google' className={classes.paddingRightImg} />
                         <span>google</span>
