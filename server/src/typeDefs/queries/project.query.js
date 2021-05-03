@@ -2,6 +2,7 @@ import { gql } from 'apollo-server';
 
 export const project = gql`
     type Query {
+    getTaskTypes: [TaskType!]!
   }
 
     type Mutation {
@@ -9,7 +10,4 @@ export const project = gql`
     createTaskType(name: String!): BasicResponse
   }
 
-    type Subscription {
-   
-  }
 `;

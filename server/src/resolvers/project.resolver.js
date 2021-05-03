@@ -1,6 +1,22 @@
 import { TaskType } from "../schema/project/taskType";
 
 export const projectResolver = {
+    Query: {
+        getTaskTypes: async (_, __) =>
+        {
+
+            const taskTypes = [];
+            await TaskType.find({}, (types) =>
+            {
+                types.forEach(element =>
+                {
+                    const { id, name } = element;
+                    taskTypes.push({ id, name });
+                });
+            });
+            return taskTypes;
+        }
+    },
     Mutation: {
         createProject: async (_, args) =>
         {
@@ -14,7 +30,7 @@ export const projectResolver = {
         createTaskType: async (_, args) =>
         {
             const { name } = args;
-            const taskType = new TaskType({name});
+            const taskType = new TaskType({ name });
             taskType.save();
             return {
                 succes: true
