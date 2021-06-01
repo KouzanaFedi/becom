@@ -17,7 +17,7 @@ export const scheduleType = gql`
     state: String!
   }
 
-  type EventId{
+  type IdResponse{
     id: ID!
   }
 
@@ -52,7 +52,7 @@ export const scheduleType = gql`
     recieverType: String!
     reciever: String!
     createdAt: String!
-    eventId: String!
+    eventId: String
   }
 
   input NoteInput {

@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import RecupPassword from "./pages/RecupPassword";
 import Dashboard from "./pages/Dashboard";
 import AuthProtectedRoute from "./routers/AuthProtectedRoute";
+import SharedSchedule from "./pages/ScharedSchedule";
 
 function App()
 {
@@ -21,6 +22,7 @@ function App()
           <Route exact path="/register" component={Register} />
           <Route exact path="/recup" component={RecupPassword} />
           <AuthProtectedRoute path="/dashbord" component={Dashboard} />
+          <Route path="/shared_schedule/:token" component={SharedSchedule} />
         </Switch>
       </div>
     </ThemeProvider>

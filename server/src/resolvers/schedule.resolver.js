@@ -1,10 +1,9 @@
-import { Project } from "../schema/project/project";
 import { Event, Note } from "../schema/schedule/event";
 import { ScheduleShare } from "../schema/schedule/scheduleShare";
 import { Holidays } from "../schema/schedule/holidays"
-import { comparePassword, encryptPassword, fullCalendarDateFormat, fullCalendarTimeFormat, getScheduleSharingPayload, getScheduleSharingToken } from "../utils/util";
+import { fullCalendarDateFormat, fullCalendarTimeFormat, getScheduleSharingPayload, getScheduleSharingToken } from "../utils/util";
 import { AuthenticationError } from "apollo-server-errors";
-import { INVALIDE_SHARE_TOKEN_ERROR, INVALIDE_PASSWORD_SHARE_ERROR, SCHEDULE_INVALIDE_ERROR, EVENT_INVALIDE_ERROR, INVALIDE_INPUT_ERROR } from "../utils/errors/EventError";
+import { INVALIDE_SHARE_TOKEN_ERROR, SCHEDULE_INVALIDE_ERROR, EVENT_INVALIDE_ERROR, INVALIDE_INPUT_ERROR } from "../utils/errors/EventError";
 import { PubSub, withFilter } from "graphql-subscriptions";
 
 const pubsub = new PubSub();
@@ -16,13 +15,15 @@ export const scheduleResolver = {
             const events = [];
             await Holidays.find({}, (_, holidays) =>
             {
-                holidays.forEach((holi) =>
-                {
-                    events.push({
-                        title: holi.title,
-                        start: fullCalendarDateFormat(holi.start),
+                if (holidays != undefined) {
+                    holidays.forEach((holi) =>
+                    {
+                        events.push({
+                            title: holi.title,
+                            start: fullCalendarDateFormat(holi.start),
+                        });
                     });
-                });
+                }
             });
 
             return events;
@@ -33,21 +34,23 @@ export const scheduleResolver = {
             const events = [];
             await Event.find({ projectId }, (_, eventsData) =>
             {
-                eventsData.forEach((event) =>
-                {
-                    const data = {
-                        id: event._id,
-                        title: event.title,
-                        start: fullCalendarDateFormat(event.start),
-                        startTime: fullCalendarTimeFormat(event.start),
-                        projectId: event.projectId,
-                        state: event.state
-                    }
-                    if (event.end != undefined) {
-                        data['end'] = fullCalendarDateFormat(event.end);
-                    }
-                    events.push(data);
-                });
+                if (eventsData != undefined) {
+                    eventsData.forEach((event) =>
+                    {
+                        const data = {
+                            id: event._id,
+                            title: event.title,
+                            start: fullCalendarDateFormat(event.start),
+                            startTime: fullCalendarTimeFormat(event.start),
+                            projectId: event.projectId,
+                            state: event.state
+                        }
+                        if (event.end != undefined) {
+                            data['end'] = fullCalendarDateFormat(event.end);
+                        }
+                        events.push(data);
+                    });
+                }
             });
             return events;
         },
@@ -61,7 +64,6 @@ export const scheduleResolver = {
             }
             event.notes.forEach((note) =>
             {
-                console.log(note);
                 const { _id, message, senderType, sender, recieverType, reciever, createdAt } = note;
                 notes.push({
                     id: _id,
@@ -86,34 +88,50 @@ export const scheduleResolver = {
                 if (err) {
                     throw new AuthenticationError(INVALIDE_INPUT_ERROR.toString());
                 }
-                shared.forEach((share) =>
-                {
-                    const response = {
-                        id: share._id,
-                        projectId: share.projectId,
-                        start: share.start,
-                        end: share.end,
-                        name: share.name,
-                        cible: []
-                    }
-                    share.cible.forEach((cible) =>
+                if (shared != undefined) {
+                    shared.forEach((share) =>
                     {
-                        const { _id, email, firstName, lastName } = cible;
-                        response.cible.push({
-                            id: _id,
-                            email,
-                            firstName,
-                            lastName
+                        const response = {
+                            id: share._id,
+                            projectId: share.projectId,
+                            start: share.start,
+                            end: share.end,
+                            token: share.token,
+                            name: share.name,
+                            cible: []
+                        }
+                        share.cible.forEach((cible) =>
+                        {
+                            const { _id, email, firstName, lastName } = cible;
+                            response.cible.push({
+                                id: _id,
+                                email,
+                                firstName,
+                                lastName
+                            });
                         });
+                        sharedSchedules.push(response);
                     });
-                    sharedSchedules.push(response);
-                });
+                }
             });
             return sharedSchedules;
         },
+        verifySharedScheduleToken: async (_, args) =>
+        {
+            const { token } = args;
+            const { payload } = getScheduleSharingPayload(token);
+
+            if (payload === null) {
+                throw new Error(INVALIDE_SHARE_TOKEN_ERROR.toString())
+            }
+
+            return {
+                succes: true
+            }
+        },
         getSharedSchedule: async (_, args) =>
         {
-            const { token, password } = args
+            const { token } = args
             const { payload } = getScheduleSharingPayload(token);
             const { shareId } = payload;
 
@@ -122,42 +140,49 @@ export const scheduleResolver = {
             if (share == null) {
                 throw new AuthenticationError(INVALIDE_SHARE_TOKEN_ERROR.toString());
             }
-            const validPassword = await comparePassword(password, share.password);
 
-            if (validPassword) {
-                const { projectId, start, end } = share;
-                const events = [];
-                await Event.find({ projectId }, (_, eventsData) =>
-                {
+            const { projectId, start, end } = share;
+            const events = [];
+            await Event.find({ projectId }, (_, eventsData) =>
+            {
+                if (eventsData != undefined) {
                     eventsData.forEach((event) =>
                     {
-                        const data = {
-                            id: event._id,
-                            name: event.name,
-                            title: event.title,
-                            token: event.token,
-                            start: fullCalendarDateFormat(event.start),
-                            startTime: fullCalendarTimeFormat(event.start),
-                            projectId: event.projectId
+                        if (event.state === "pending") {
+                            const data = {
+                                id: event._id,
+                                name: event.name,
+                                title: event.title,
+                                token: event.token,
+                                start: fullCalendarDateFormat(event.start),
+                                startTime: fullCalendarTimeFormat(event.start),
+                                projectId: event.projectId,
+                                state: event.state
+                            }
+                            if (event.end != undefined) {
+                                data['end'] = fullCalendarDateFormat(event.end);
+                            }
+                            events.push(data);
                         }
-                        if (event.end != undefined) {
-                            data['end'] = fullCalendarDateFormat(event.end);
-                        }
-                        events.push(data);
                     });
-                });
-                const finalEvent = events.filter((event) =>
-                {
-                    const startDate = new Date(start).getTime();
-                    const endDate = new Date(end).getTime();
-                    const eventDate = new Date(`${event.start} ${event.startTime}`).getTime();
-                    return (eventDate >= startDate) && (endDate >= eventDate);
-                });
-                return finalEvent;
+                }
+            });
+            const finalEvent = events.filter((event) =>
+            {
+                const startDate = new Date(start).getTime();
+                const endDate = new Date(end).getTime();
+                const eventDate = new Date(`${event.start} ${event.startTime}`).getTime();
+                return (eventDate >= startDate) && (endDate >= eventDate);
+            });
 
-            } else {
-                throw new AuthenticationError(INVALIDE_PASSWORD_SHARE_ERROR.toString());
-            }
+            finalEvent.sort((a, b) =>
+            {
+                const aDate = new Date(`${a.start} ${a.startTime}`);
+                const bDate = new Date(`${b.start} ${b.startTime}`);
+
+                return aDate - bDate;
+            });
+            return finalEvent;
         }
     },
     Mutation: {
@@ -261,8 +286,8 @@ export const scheduleResolver = {
         },
         generateScheduleLink: async (_, args) =>
         {
-            const { projectId, start, end, password, cible, name } = args;
-            const scheduleLink = { name, projectId, start, end, password: await encryptPassword(password), cible: [] };
+            const { projectId, start, end, cible, name } = args;
+            const scheduleLink = { name, projectId, start, end, cible: [] };
             cible.forEach((val) =>
             {
                 const { email, firstName, lastName } = val;
@@ -282,16 +307,18 @@ export const scheduleResolver = {
                 end: scheduleShare.end,
                 cible: []
             }
-            scheduleShare.cible.forEach((cible) =>
-            {
-                const { _id, email, firstName, lastName } = cible;
-                response.cible.push({
-                    id: _id,
-                    email,
-                    firstName,
-                    lastName
-                });
-            })
+            if (scheduleShare.cible != undefined) {
+                scheduleShare.cible.forEach((cible) =>
+                {
+                    const { _id, email, firstName, lastName } = cible;
+                    response.cible.push({
+                        id: _id,
+                        email,
+                        firstName,
+                        lastName
+                    });
+                })
+            }
             return response;
         },
         addUserToScheduleLink: async (_, args) =>
@@ -343,26 +370,26 @@ export const scheduleResolver = {
                 },
                 { new: true });
             if (schedule == null) throw new AuthenticationError(SCHEDULE_INVALIDE_ERROR.toString());
-            const response = {
-                id: schedule._id,
-                name: schedule.name,
-                projectId: schedule.projectId,
-                start: schedule.start,
-                end: schedule.end,
-                token: schedule.token,
-                cible: []
-            };
-            schedule.cible.forEach((cible) =>
-            {
-                const { _id, email, firstName, lastName } = cible;
-                response.cible.push({
-                    id: _id,
-                    email,
-                    firstName,
-                    lastName
-                });
-            });
-            return response
+            // const response = {
+            //     id: schedule._id,
+            //     name: schedule.name,
+            //     projectId: schedule.projectId,
+            //     start: schedule.start,
+            //     end: schedule.end,
+            //     token: schedule.token,
+            //     cible: []
+            // };
+            // schedule.cible.forEach((cible) =>
+            // {
+            //     const { _id, email, firstName, lastName } = cible;
+            //     response.cible.push({
+            //         id: _id,
+            //         email,
+            //         firstName,
+            //         lastName
+            //     });
+            // });
+            return { succes: true };
         },
         deleteScheduleLink: async (_, args) =>
         {
@@ -426,10 +453,8 @@ export const scheduleResolver = {
                 () => pubsub.asyncIterator(['NOTE_SEND']),
                 (payload, variables) =>
                 {
-                    const { eventId } = variables;
-                    console.log(variables);
-                    console.log(payload.noteSend);
-                    return (payload.noteSend.eventId === eventId);
+                    const { eventId, listenerType } = variables;
+                    return (payload.noteSend.eventId === eventId && payload.noteSend.senderType !== listenerType);
                 }
             )
         }

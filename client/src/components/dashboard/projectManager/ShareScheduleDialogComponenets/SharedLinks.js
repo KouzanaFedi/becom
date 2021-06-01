@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme) => (
         sharedLinksDataButton: {
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            marginBottom: '8px'
         },
         title: {
             fontWeight: 'bold'

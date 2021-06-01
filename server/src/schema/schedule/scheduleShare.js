@@ -18,10 +18,6 @@ const ScheduleShareSchema = new Schema({
         type: Date,
         required: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     token: String,
     cible: [
         {

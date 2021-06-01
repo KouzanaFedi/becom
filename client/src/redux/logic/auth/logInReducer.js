@@ -14,7 +14,8 @@ const logInReducer = createSlice({
       error: null,
       ready: false,
     },
-    canSubmit: false
+    canSubmit: false,
+    staySignedIn: false,
   },
   reducers: {
     SET_EMAIL_LOGIN: (state, action) =>
@@ -46,14 +47,20 @@ const logInReducer = createSlice({
       const resetItem = { value: "", error: null, ready: false };
       state.email = resetItem;
       state.password = resetItem;
+    },
+    SET_STAY_SIGNED_IN: (state, action) =>
+    {
+      const { checked } = action.payload;
+      state.staySignedIn = checked;
     }
   },
 });
 
-export const { SET_EMAIL_LOGIN, SET_PASSWORD_LOGIN, SET_PASSWORD_ERROR_LOGIN, RESET_LOGIN } = logInReducer.actions;
+export const { SET_EMAIL_LOGIN, SET_PASSWORD_LOGIN, SET_PASSWORD_ERROR_LOGIN, RESET_LOGIN, SET_STAY_SIGNED_IN } = logInReducer.actions;
 
 export const logInEmail = (state) => state.logIn.email;
 export const logInPassword = (state) => state.logIn.password;
 export const logInCanSubmit = (state) => state.logIn.email.ready && state.logIn.password.ready;
+export const logInStaySignedIn = (state) => state.logIn.staySignedIn;
 
 export default logInReducer.reducer;

@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from "@material-ui/core"
 import { useDispatch, useSelector } from "react-redux";
-import { scheduleEventToCreate, SET_EVENTS, SET_EVENT_TITLE, SET_CREATED_DATE } from "../../../redux/logic/projectManager/scheduleSlice";
+import { scheduleEventToCreate, ADD_EVENT_TO_LIST, SET_EVENT_TITLE, SET_CREATED_DATE } from "../../../redux/logic/projectManager/scheduleSlice";
 import { KeyboardDatePicker, KeyboardTimePicker } from "@material-ui/pickers";
 import { Schedule } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
@@ -10,7 +10,6 @@ const AddEventDialog = ({ open, onClose }) =>
 {
     const eventToCreate = useSelector(scheduleEventToCreate);
     const dispatch = useDispatch();
-    // $title: String!, $start: String!, $projectId: String!
     const [addEvent, { loading }] = useMutation(ADD_EVENT, {
         variables: {
             start: `${eventToCreate.day} ${eventToCreate.time}`,
@@ -19,7 +18,7 @@ const AddEventDialog = ({ open, onClose }) =>
         },
         onCompleted: ({ addEvent }) =>
         {
-            dispatch(SET_EVENTS({ events: [addEvent] }));
+            dispatch(ADD_EVENT_TO_LIST({ event: addEvent }));
         }
     });
 
@@ -91,7 +90,7 @@ const AddEventDialog = ({ open, onClose }) =>
                 >
                     Cancel
                 </Button>
-                { <Button
+                {<Button
                     type="submit"
                     variant="contained"
                     disabled={!eventToCreate.title.ready}

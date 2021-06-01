@@ -1,19 +1,19 @@
-import { Box, makeStyles } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core"
 import logo from "../assets/comguruLogo.png";
 
-const useStyles = makeStyles((theme) => ({
-    logo: props =>
+const useStyles = makeStyles((_) => ({
+    logo: (props) =>
     ({
-        width: props.size
+        width: props.size ? props.size : '100%',
+        filter: props.shadow ? 'drop-shadow(5px 5px 5px rgba(0, 0, 0, .25))' : 'none'
     })
 }))
 
-const Logo = (props = { size: '100%' }) =>
+const Logo = (props) =>
 {
     const classes = useStyles(props);
-    return <Box mb={2}>
-        <img src={logo} alt='logo' className={classes.logo} />
-    </Box>
+    return <img src={logo} alt='logo' className={classes.logo} />
+
 }
 
 export default Logo;

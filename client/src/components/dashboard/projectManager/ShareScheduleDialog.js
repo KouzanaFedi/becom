@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, m
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { scheduleDisplayCalendarForm, SET_DISPLAY_CALENDAR_FORM } from "../../../redux/logic/projectManager/scheduleSlice";
-import SharedLinkForm from "./ShareScheduleDialogComponenets/SharedLinkForm";
+import RightDialComponent from "./ShareScheduleDialogComponenets/RightDialComponent";
 import SharedLinks from "./ShareScheduleDialogComponenets/SharedLinks";
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +55,7 @@ const ShareScheduleDialog = ({ open, onClose }) =>
                     <Grid container item xs={9} justify='flex-end' className={classes.formBorder}>
                         <Grid item xs={12} >
                             <Box py={2}>
-                                {displayCalendarForm != null && <SharedLinkForm />}
+                                {displayCalendarForm != null && <RightDialComponent />}
                             </Box>
                         </Grid>
                     </Grid>

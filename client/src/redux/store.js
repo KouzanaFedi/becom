@@ -4,6 +4,8 @@ import registerReducer from "./logic/auth/registerReducer";
 import passwordRecupReducer from "./logic/auth/passwordRecupReducer";
 import drawerReducer from "./ui/drawerReducer";
 import scheduleSlice from "./logic/projectManager/scheduleSlice";
+import sharedScheduleSlice from "./logic/projectManager/sharedScheduleSlice";
+import kanbanBoardSlice from "./logic/projectManager/kanbanBoardSlice";
 
 export default configureStore({
   reducer: {
@@ -12,5 +14,7 @@ export default configureStore({
     passwordRecup: passwordRecupReducer,
     drawerReducer: drawerReducer,
     schedule: scheduleSlice,
+    sharedSchedule: sharedScheduleSlice,
+    kanbanBoard: kanbanBoardSlice,
   }
 });

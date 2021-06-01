@@ -58,17 +58,18 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ApolloProvider client={client}>
-        <BrowserRouter>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <App />
-          </MuiPickersUtilsProvider>
-        </BrowserRouter>
-      </ApolloProvider>
-    </Provider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <Provider store={store}>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <App />
+        </MuiPickersUtilsProvider>
+      </BrowserRouter>
+    </ApolloProvider>
+  </Provider>
+  // </React.StrictMode>
+  ,
   document.getElementById("root")
 );
 

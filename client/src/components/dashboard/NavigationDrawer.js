@@ -78,22 +78,12 @@ const NavigationDrawer = () =>
 {
     const classes = useStyles();
     const drawerState = useSelector(uiDrawerState);
-    // const calendarRef = useSelector(uiCalendarRef);
     const dispatch = useDispatch();
     const history = useHistory()
-
-    // function updateCalendarSize()
-    // {
-    //     console.log(calendarRef);
-    //     if (calendarRef !== null) {
-    //         calendarRef.current.getApi().updateSize();
-    //     }
-    // }
 
     const handleDrawerClose = () =>
     {
         dispatch(CLOSE_DRAWER());
-        // updateCalendarSize();
     };
 
     const handleDrawerOpen = () =>
@@ -104,20 +94,18 @@ const NavigationDrawer = () =>
     const handlePinDrawer = () =>
     {
         dispatch(PIN_DRAWER());
-        // updateCalendarSize();
     };
 
     const handleUnpinDrawer = () =>
     {
         dispatch(UNPIN_DRAWER());
-        // updateCalendarSize();
     };
 
     function handleLogOut()
     {
         handleDrawerClose()
         localStorage.removeItem(AUTH_TOKEN);
-        history.replace("/");
+        window.location.reload();
     };
 
     return (

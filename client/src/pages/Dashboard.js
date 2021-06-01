@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import NavigationDrawer from '../components/dashboard/NavigationDrawer';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import TestContent from '../components/TestContent';
+import KanbanBoard from '../components/KanbanBoard';
 import EventScheduler from '../components/dashboard/projectManager/ProjectManager';
 
 const drawerWidth = 240;
@@ -59,7 +59,7 @@ export default function Dashboard()
                 <main className={classes.content}>
                     <Switch>
                         <Route exact path={'/projectManager'} component={EventScheduler} />
-                        <Route exact path={'/test'} component={TestContent} />
+                        <Route exact path={'/board'} component={KanbanBoard} />
                     </Switch>
                 </main>
             </BrowserRouter>

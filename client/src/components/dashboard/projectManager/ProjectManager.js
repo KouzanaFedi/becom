@@ -11,6 +11,8 @@ import { useRef, useState } from "react";
 import moment from "moment";
 import DisplayEventDialog from "./DisplayEventDialog";
 import ShareScheduleDialog from "./ShareScheduleDialog";
+import bootstrapPlugin from '@fullcalendar/bootstrap';
+
 // import { INIT_CALENDAR_REF } from "../../../redux/ui/drawerReducer";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,8 +58,9 @@ const EventScheduler = () =>
                         <FullCalendar
                             ref={calendar}
                             selectable={true}
-                            plugins={[dayGridPlugin, interactionPlugin]}
+                            plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
                             initialView="dayGridMonth"
+                            themeSystem='bootstrap'
                             aspectRatio={5 / 3.5}
                             customButtons={{
                                 share: {

@@ -31,7 +31,9 @@ const scheduleSlice = createSlice({
                 day: null,
                 time: null,
                 didUpdate: false,
+                state: ''
             },
+            notes: []
         },
         sharedLinks: [],
         displayCalendarForm: null,
@@ -43,8 +45,8 @@ const scheduleSlice = createSlice({
             const links = action.payload.sharedLink;
             state.sharedLinks = [];
             for (const link in links) {
-                const { id, projectId, start, end, cible, name } = links[link];
-                state.sharedLinks.push({ id, projectId, start, end, cible, name });
+                const { id, projectId, start, end, cible, name, token } = links[link];
+                state.sharedLinks.push({ id, projectId, start, end, cible, name, token });
             }
         },
         SET_HOLIDAYS: (state, action) =>
@@ -58,12 +60,42 @@ const scheduleSlice = createSlice({
         },
         SET_EVENTS: (state, action) =>
         {
-            const events = action.payload.events;
             state.events = [];
+            const events = action.payload.events;
+            const colorPalette = { pending: '#8c8c8c', confirmed: 'green', denied: 'red' };
             for (const event in events) {
-                const { title, start, id, projectId, startTime } = events[event];
-                state.events.push({ title, start, extendedProps: { id, projectId, startTime } });
+                const { title, start, id, projectId, startTime, state: eventState } = events[event];
+                state.events.push({
+                    title,
+                    start,
+                    backgroundColor: colorPalette[eventState],
+                    borderColor: colorPalette[eventState],
+                    extendedProps: {
+                        id,
+                        projectId,
+                        startTime,
+                        eventState,
+                        notes: []
+                    }
+                });
             }
+        },
+        ADD_EVENT_TO_LIST: (state, action) =>
+        {
+            const { title, start, id, projectId, startTime, state: eventState } = action.payload.event;
+            state.events.push({
+                title,
+                start,
+                backgroundColor: '#8c8c8c',
+                borderColor: '#8c8c8c',
+                extendedProps: {
+                    id,
+                    projectId,
+                    startTime,
+                    eventState,
+                    notes: []
+                }
+            })
         },
         SET_CREATED_DATE: (state, action) =>
         {
@@ -116,6 +148,9 @@ const scheduleSlice = createSlice({
                     ready: true,
                 }
             }
+
+            const index = state.events.findIndex((event) => event.extendedProps.id === id);
+            state.selectedEvent.updated.state = state.events[index].extendedProps.eventState;
         },
         RESET_SELECTED_EVENT: (state, _) =>
         {
@@ -127,7 +162,7 @@ const scheduleSlice = createSlice({
                     ready: false
                 },
                 day: null,
-                time: null
+                time: null,
             };
             state.selectedEvent.original = {
                 id: null,
@@ -204,7 +239,6 @@ const scheduleSlice = createSlice({
             state.displayCalendarForm = type;
 
             if (type != null) {
-                // const { id, projectId, start, end, cible, name } = links[link];
                 if (type === 'edit') {
                     state.calendarForm.original = data;
                     state.calendarForm.edited = data;
@@ -221,16 +255,60 @@ const scheduleSlice = createSlice({
             } else {
                 state.calendarForm = {}
             }
+        },
+        INIT_SELECTED_EVENT_NOTES: (state, action) =>
+        {
+            state.selectedEvent.notes = [];
+            const { notes } = action.payload;
+            state.selectedEvent.notes = notes;
+        },
+        PUSH_NEW_NOTE_SELECTED_EVENT: (state, action) =>
+        {
+            const { note } = action.payload;
+            state.selectedEvent.notes.push(note);
+        },
+        UPDATE_EVENT_STATUS: (state, action) =>
+        {
+            const { id, newState } = action.payload;
+            state.selectedEvent.updated.state = newState;
+
+            const index = state.events.findIndex((event) => event.extendedProps.id === id);
+            state.events[index].extendedProps.eventState = newState;
+            state.events[index].backgroundColor = '#8c8c8c';
+            state.events[index].borderColor = '#8c8c8c';
+        },
+        DELETE_SHARED_LINK_CIBLE: (state, action) =>
+        {
+            const { cibleId, sharedLinkId } = action.payload;
+            const sIndex = state.sharedLinks.é((shared) => shared.id === sharedLinkId);
+            const cIndex = state.sharedLinks[sIndex].cible.findIndex((cible) => cible.id === cibleId);
+
+            const newList = [
+                ...state.sharedLinks[sIndex].cible.slice(0, cIndex),
+                ...state.sharedLinks[sIndex].cible.slice(cIndex + 1),
+            ];
+            const tmp = state.sharedLinks[sIndex];
+            const final = { ...tmp, cible: newList };
+            state.sharedLinks[sIndex] = final;
+            state.calendarForm.edited = final;
+        },
+        DELETE_SCHEDULE_LINK: (state, action) =>
+        {
+            const { id } = action.payload;
+            const index = state.sharedLinks.findIndex((shared) => shared.id === id);
+            state.sharedLinks.splice(index, 1);
+            state.displayCalendarForm = null;
         }
     }
 });
 
-export const { SET_HOLIDAYS, SET_EVENTS, SET_CREATED_DATE, SET_EVENT_TITLE, RESET_CREATED_EVENT, INIT_SELECTED_EVENT, RESET_SELECTED_EVENT, UPDATE_SELECTED_TITLE, UPDATE_SELECTED_DATE, RESET_UPDATED_EVENT, CHECK_IF_DID_UPDATE, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, SET_DISPLAY_CALENDAR_FORM } = scheduleSlice.actions;
+export const { SET_HOLIDAYS, SET_EVENTS, SET_CREATED_DATE, SET_EVENT_TITLE, RESET_CREATED_EVENT, INIT_SELECTED_EVENT, RESET_SELECTED_EVENT, UPDATE_SELECTED_TITLE, UPDATE_SELECTED_DATE, RESET_UPDATED_EVENT, CHECK_IF_DID_UPDATE, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, SET_DISPLAY_CALENDAR_FORM, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS, DELETE_SHARED_LINK_CIBLE, DELETE_SCHEDULE_LINK, ADD_EVENT_TO_LIST } = scheduleSlice.actions;
 
 export const scheduleHolidays = (state) => state.schedule.holidays;
 export const scheduleEvents = (state) => state.schedule.events;
 export const scheduleEventToCreate = (state) => state.schedule.eventToCreate;
 export const scheduleSelectedEvent = (state) => state.schedule.selectedEvent.updated;
+export const scheduleSelectedEventNotes = (state) => state.schedule.selectedEvent.notes;
 export const scheduleSharedLinks = (state) => state.schedule.sharedLinks;
 export const scheduleDisplayCalendarForm = (state) => state.schedule.displayCalendarForm;
 export const scheduleCalendarForm = (state) => state.schedule.calendarForm;

@@ -26,7 +26,7 @@ const TaskSchema = new Schema({
         enum: ['todo', 'doing', 'done', 'toreview'],
         default: 'todo'
     },
-    descriptin: {
+    description: {
         type: String,
         required: true
     },

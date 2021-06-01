@@ -41,9 +41,9 @@ export const ListItems = () =>
       <ListItemText primary="Projects" className={classes.whiteFont} />
     </ListItem>
 
-    <ListItem button component={Link} to='/test'
-      className={clsx({ [classes.activeTab]: activeTab === 'test' })}
-      onClick={() => handleTabClick('test')}
+    <ListItem button component={Link} to='/board'
+      className={clsx({ [classes.activeTab]: activeTab === 'board' })}
+      onClick={() => handleTabClick('board')}
     >
       <ListItemIcon className={classes.whiteLogo}>
         <ShoppingCartIcon />

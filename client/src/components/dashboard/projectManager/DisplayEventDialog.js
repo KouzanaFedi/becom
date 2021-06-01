@@ -1,23 +1,40 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, makeStyles, TextField, Typography } from "@material-ui/core"
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, makeStyles, TextField, Typography } from "@material-ui/core"
 import { KeyboardDatePicker, KeyboardTimePicker } from "@material-ui/pickers";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { DELETE_EVENT_STATE, RESET_UPDATED_EVENT, scheduleSelectedEvent, UPDATE_EVENT_STATE, UPDATE_SELECTED_DATE, UPDATE_SELECTED_TITLE } from "../../../redux/logic/projectManager/scheduleSlice";
+import { DELETE_EVENT_STATE, RESET_UPDATED_EVENT, scheduleSelectedEvent, UPDATE_EVENT_STATE, UPDATE_SELECTED_DATE, UPDATE_SELECTED_TITLE, scheduleSelectedEventNotes, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS } from "../../../redux/logic/projectManager/scheduleSlice";
 import { Schedule, Edit, Close } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
-import { DELETE_EVENT, UPDATE_EVENT } from "../../../api/events";
+import { DELETE_EVENT, UPDATE_EVENT, UPDATE_EVENT_STATE_STATUS } from "../../../api/events";
+import Notes from "../../sharedSchedule/Notes";
 
 const useStyles = makeStyles((theme) => ({
     actions: {
         justifyContent: "space-between"
+    },
+    notes: {
+        height: '250px'
     }
 }));
 const DisplayEventDialog = ({ open, onClose }) =>
 {
     const classes = useStyles();
     const dispatch = useDispatch();
+
     const [isEditMode, setIsEditMode] = useState(false);
     const selectedEvent = useSelector(scheduleSelectedEvent);
+    const selectedEventNotes = useSelector(scheduleSelectedEventNotes);
+
+    const initEventNotes = (id, eventNotes) =>
+    {
+        dispatch(INIT_SELECTED_EVENT_NOTES({ notes: eventNotes }));
+    }
+    const pushNewNote = (id, sendNotes) =>
+    {
+        dispatch(PUSH_NEW_NOTE_SELECTED_EVENT({ note: sendNotes }));
+    }
+
+
 
     const [updateEventQuery, { loading: loadingUpdate }] = useMutation(UPDATE_EVENT, {
         variables: {
@@ -45,12 +62,33 @@ const DisplayEventDialog = ({ open, onClose }) =>
         }
     });
 
+    const [updateEventState, { loading: updateStateLoading }] = useMutation(UPDATE_EVENT_STATE_STATUS, {
+        variables: {
+            id: selectedEvent.id,
+            state: "pending"
+        }, onCompleted: (_) =>
+        {
+            dispatch(UPDATE_EVENT_STATUS({ id: selectedEvent.id, newState: 'pending' }));
+        }
+    });
+
     return <Dialog maxWidth='md' fullWidth open={open} onEscapeKeyDown={onClose}>
         <Box p={2} >
             <DialogTitle style={{ paddingTop: 0, paddingRight: 0 }} >
                 <Box display="flex" alignItems="center" justifyContent='space-between'>
-                    <Box >Event Display {selectedEvent.id}</Box>
+                    <Box >Event Display</Box>
                     <Box>
+                        {selectedEvent.state !== 'pending' &&
+                            <Button
+                                variant="contained"
+                                onClick={() =>
+                                {
+                                    updateEventState();
+                                }}
+                            >
+                                {updateStateLoading ? <CircularProgress size={24} /> : 'Revalidate'}
+                            </Button>}
+
                         {!isEditMode ? < IconButton onClick={() => { setIsEditMode(true) }}>
                             <Edit />
                         </IconButton> : < IconButton onClick={() =>
@@ -100,8 +138,8 @@ const DisplayEventDialog = ({ open, onClose }) =>
                                 }}
                             />}
                     </Grid>
-                    <Grid container justify='flex-end'>
-                        <Grid item xs={12} >
+                    <Grid item container xs={9} >
+                        <Grid item xs={6}>
                             {!isEditMode ? <span> {selectedEvent.title.value}</span> : <TextField
                                 id="outlined-multiline-static"
                                 label="Title"
@@ -119,6 +157,15 @@ const DisplayEventDialog = ({ open, onClose }) =>
                                 }}
                             />}
                         </Grid>
+                        <Grid item xs={6} className={classes.notes}>
+                            <Notes
+                                id={selectedEvent.id}
+                                notes={selectedEventNotes}
+                                senderType={'agence'}
+                                initEventNotes={initEventNotes}
+                                pushNewNote={pushNewNote} />
+                        </Grid>
+
                     </Grid>
                 </Grid>
             </DialogContent>
@@ -149,7 +196,7 @@ const DisplayEventDialog = ({ open, onClose }) =>
                     >
                         Cancel
                     </Button>
-                    
+
                     {isEditMode && <Button
                         type="submit"
                         variant="contained"
