@@ -3,8 +3,12 @@ import { gql } from "@apollo/client";
 export const LOGIN = gql`
   mutation loginQuery($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      token
       id
+      name
+      email
+      image
+      token
+      createdAt
     }
   }
 `;
@@ -46,6 +50,28 @@ export const UPDATE_PASSWORD = gql`
 export const USER_CREATION_SUB = gql`
   subscription UserSub {
     usersCreated {
+      name
+    }
+  }
+`;
+
+export const TOKEN_VERIFY = gql`
+  query verifyTokenQuery($token: String!){
+    verifyToken(token: $token){
+      id
+      name
+      email
+      token
+      image
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_PROFILE_IMG = gql`
+  mutation uploadFile($email: String!, $file: Upload!){ 
+    uploadProfileImg(email: $email, file: $file){
       name
     }
   }

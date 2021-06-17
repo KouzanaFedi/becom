@@ -71,7 +71,7 @@ const KanbanBoard = () =>
                         setOpenCreate(true);
                     }}>
                     Add Task
-            </Button>
+                </Button>
                 <ThemedButton
                     onClick={() => { console.log("it works"); }}
                     buttonStyle={{ type: "primary" }}>Register </ThemedButton>
@@ -84,8 +84,6 @@ const KanbanBoard = () =>
                     style={{ background: 'transparent' }}
                     handleDragEnd={(cardId, sourceLaneId, targetLaneId, r, rr) =>
                     {
-                        console.log(r);
-                        console.log(rr);
                         if (sourceLaneId !== targetLaneId) {
                             updateCardState({
                                 variables: {

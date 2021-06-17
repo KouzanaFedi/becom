@@ -1,25 +1,40 @@
 import { createMuiTheme } from "@material-ui/core";
 
-const customTheme = createMuiTheme({
-    typography: {
-        fontFamily: [
-            'Helvetica Neue', 'Mulish', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'sans-serif',
-        ].join(','),
-    },
-    palette: {
-        primary: {
-            main: 'rgba(123,33,125,1)',
+function getTheme(theme)
+{
+    return createMuiTheme({
+        typography: {
+            fontFamily: [
+                'Helvetica Neue', 'Mulish', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'sans-serif',
+            ].join(','),
         },
-        secondary: {
-            main: 'rgba(223,49,69,1)',
+        overrides: {
+            MuiToolbar: {
+                regular: {
+                    height: "40px",
+                    minHeight: "40px",
+                    '@media (min-width: 600px)': {
+                        minHeight: "40px"
+                    }
+                }
+            },
         },
-        text: {
-            primary: "#626262",
+        palette: {
+            type: theme.mode,
+            primary: {
+                main: 'rgba(123,33,125,1)',
+            },
+            secondary: {
+                main: 'rgba(223,49,69,1)',
+            },
+            text: {
+                primary: theme.mode === 'dark' ? '#fff' : "#3f3f3f",
+            },
+            background: {
+                default: theme.mode === 'dark' ? '#3f3f3f' : '#EFEFEF',
+            }
         },
-        background: {
-            default: '#EFEFEF'
-        }
-    },
-});
+    });
+}
 
-export default customTheme;
+export default getTheme;

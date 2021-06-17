@@ -1,14 +1,14 @@
-import { gql } from 'apollo-server';
+import { gql } from 'apollo-server-express';
 
 export const accountType = gql`
   type User {
     id: ID!
     name: String!
-    password: String!
     email: String!
     token: String!
-    createdAt: String!
-    updatedAt: String!
+    image: String
+    createdAt: String
+    updatedAt: String
   }
 
   type GenerateRecupCodeResponse {
@@ -19,5 +19,16 @@ export const accountType = gql`
 
   type BasicResponse {
     succes: Boolean!
+  }
+ 
+
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+
+  type ImageName {
+    name: String!
   }
 `;

@@ -1,36 +1,28 @@
-import { Box, Button, CircularProgress, Container, Divider, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Box, CircularProgress, Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import { Link, useHistory } from "react-router-dom";
-import Copyright from "../Copyright";
 import { useDispatch, useSelector } from "react-redux";
 import { registerCanSubmit, registerEmail, registerName, SET_NAME_REGISTER, SET_EMAIL_REGISTER, SET_PASSWORD_REGISTER, SET_CONFIRME_PASSWORD_REGISTER, UPDATE_FIELDS_WHEN_EMAIL_EXISTS_REGISTER, registerPassword, registerConfirmePassword, RESET_REGISTER } from "../../redux/logic/auth/registerReducer";
 import { useMutation } from "@apollo/client";
 import { REGISTER } from "../../api/auth";
 import { USER_EXISTS_ERROR } from "../../utils/errors";
-import facebook from "../../assets/iconsfacebook.png";
-import google from "../../assets/iconsgoogle.png";
+// import facebook from "../../assets/iconsfacebook.png";
+// import google from "../../assets/iconsgoogle.png";
 import Logo from "../Logo";
+import ThemedTextField from "../themedComponents/ThemedTextField";
+import ThemedButton from "../themedComponents/ThemedButton";
+import ThemedTooltip from "../themedComponents/ThemedTooltip";
+import { createRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        borderRadius: '24px',
         minHeight: '100%',
-        boxShadow: '0 0 5px rgba(0,0,0,0.3)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
     },
     child: {
-        padding: '24px 48px',
-    },
-    submit: {
-        margin: theme.spacing(2, 0, 2),
-        backgroundColor: '#192d3e',
-        width: '75%',
-        color: 'white',
-        '&:hover': {
-            backgroundColor: 'rgb(18, 34, 48)'
-        },
-        alignSelf: 'center'
+        padding: '0 48px',
+        textAlign: 'center'
     },
     oauthButton: {
         height: '24px',
@@ -42,11 +34,38 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: '10px'
     },
     logo: {
-        width: '30%',
+        width: '100px',
+        height: '100px',
+        borderRadius: '20px',
+        boxShadow: '4px 4px 5px 0px rgb(0, 0, 0, 0.3)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 'auto',
+        backgroundColor: '#fff'
     },
     title: {
-        fontWeight: 'bold'
-    }
+        fontSize: '28px',
+        margin: "30px 0 25px 0 ",
+        color: '#000'
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    haveAccount: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        marginTop: '25px',
+        fontSize: '14px'
+    },
+    marginTop25: {
+        marginTop: '25px'
+    },
+    buttonIcon: {
+        height: '20px',
+        paddingRight: '10px'
+    },
 }));
 
 
@@ -60,6 +79,8 @@ const RegisterForm = () =>
     const password = useSelector(registerPassword);
     const confirmePassword = useSelector(registerConfirmePassword);
     const canSubmit = useSelector(registerCanSubmit);
+
+    const tooltipRef = createRef();
 
     const history = useHistory();
     const [register, { loading }] = useMutation(REGISTER, {
@@ -107,148 +128,149 @@ const RegisterForm = () =>
         dispatch(SET_CONFIRME_PASSWORD_REGISTER({ confirmePassword: event.target.value }));
     }
 
+    const tooltipOpen = () =>
+    {
+        return (email.error !== null) ||
+            (password.error !== null) ||
+            (name.error !== null) ||
+            (confirmePassword.error !== null);
+    }
+    const tooltipMsg = () =>
+    {
+        return `${name.error !== null ? name.error + '\n' : ''}
+        ${email.error !== null ? email.error + '\n' : ''}
+        ${password.error !== null ? password.error + '\n' : ''} 
+        ${confirmePassword.error !== null ? confirmePassword.error : ''}`;
+    }
 
     return (<Grid item xs={12} sm={8} md={4} className={classes.root}>
         <Container className={classes.child}>
-            <Logo size='30%' />
-            <Box mb={2}>
-                <Typography component="h1" variant="h5" className={classes.title}>
-                    Register a new account
-            </Typography>
+            <Box className={classes.logo}>
+                <Logo size='80px' shadow={false} />
             </Box>
-            <form noValidate style={{ display: 'flex', flexDirection: 'column' }}>
-                <TextField
-                    variant="filled"
-                    margin="normal"
+            <Typography component="h1" className={classes.title}>
+                Register client account
+            </Typography>
+            <form noValidate className={classes.form}>
+                <ThemedTextField
+                    borderRadius="5px 5px 0 0"
                     required
-                    fullWidth
-                    size="small"
-                    id="username"
-                    label="Username"
-                    name="username"
-                    autoComplete="username"
-                    error={name.error !== null}
-                    helperText={name.error !== null && name.error}
+                    id="name"
+                    placeholder="name"
+                    name="name"
+                    autoComplete="name"
+                    autoFocus
                     value={name.value}
                     onChange={handleNameChange}
+                    backgroundColor='#fff'
                 />
-                <TextField
-                    variant="filled"
-                    margin="normal"
+                <ThemedTextField
+                    borderRadius="0px"
                     required
-                    fullWidth
-                    size="small"
                     id="email"
-                    label="Email"
+                    placeholder="email"
                     name="email"
                     autoComplete="email"
+                    autoFocus
                     value={email.value}
-                    error={email.error !== null}
-                    helperText={email.error !== null && email.error}
                     onChange={handleEmailChange}
+                    backgroundColor='#fff'
                 />
-                <TextField
-                    variant="filled"
-                    margin="normal"
+                <ThemedTooltip
+                    open={tooltipOpen}
+                    placement="left"
+                    title={tooltipMsg}
+                    ref={tooltipRef}
+                    arrow
+                >
+                    <div />
+                </ThemedTooltip>
+                <ThemedTextField
+                    borderRadius="0px"
                     required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
                     id="password"
-                    size="small"
-                    value={password.value}
-                    error={password.error !== null}
-                    helperText={password.error !== null && password.error}
-                    onChange={handlePasswordChange}
-                />
-                <TextField
-                    variant="filled"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="confirmePassword"
-                    label="Confirme password"
+                    placeholder="password"
+                    name="password"
+                    autoComplete="password"
                     type="password"
-                    id="confirmePassword"
-                    size="small"
-                    value={confirmePassword.value}
-                    error={confirmePassword.error !== null}
-                    helperText={confirmePassword.error !== null && confirmePassword.error}
-                    onChange={handleConfirmePasswordChange}
+                    autoFocus
+                    value={password.value}
+                    onChange={handlePasswordChange}
+                    backgroundColor='#fff'
                 />
-                <Button
+                <ThemedTextField
+                    borderRadius="0 0 5px 5px"
+                    required
+                    id="confirmePassword"
+                    placeholder="Confirme password"
+                    name="confirmePassword"
+                    type="password"
+                    autoFocus
+                    value={confirmePassword.value}
+                    onChange={handleConfirmePasswordChange}
+                    backgroundColor='#fff'
+                />
+                <div className={classes.marginTop25} />
+                <ThemedButton
+                    buttonStyle={{ type: "primary" }}
                     disabled={!canSubmit}
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    className={classes.submit}
                     onClick={handleSubmit}
                 >
-                    {loading ? <CircularProgress size={24} /> : 'Register'}
-                </Button>
-                <div style={{
+                    {loading ? <CircularProgress
+                        color="secondary"
+                        size={24} /> : 'Register'}
+                </ThemedButton>
+                {/* <div style={{
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    margin: '25px 0'
                 }}>
-                    <Divider style={{ width: '3rem' }} />
+                    <Divider style={{ width: '5rem' }} />
                     <div style={{
-                        fontWeight: 'bold',
-                        padding: '0 12px '
-                    }}>OR <span style={{ fontWeight: 'normal' }}>register with</span></div>
-                    <Divider style={{ width: '3rem' }} />
+                        padding: '0 5px',
+                        color: '#9F9F9F'
+                    }}>Or register with  </div>
+                    <Divider style={{
+                        width: '5rem',
+                        color: '#9F9F9F'
+                    }} />
                 </div>
 
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    className={classes.submit}
-                    style={{
-                        width: '60%',
-                        backgroundColor: '#039BE5'
-                    }}
-                >
-                    <div className={classes.oauthButton}>
-                        <img src={facebook} alt='fb' className={classes.paddingRightImg} />
-                        <span>Facebook</span>
-                    </div>
-                </Button>
-
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    className={classes.submit}
-                    style={{
-                        marginTop: '0',
-                        width: '60%',
-                        backgroundColor: 'white',
-                        color: 'black'
-                    }}
-                >
-
-                    <div className={classes.oauthButton}>
-                        <img src={google} alt='google' className={classes.paddingRightImg} />
-                        <span>google</span>
-                    </div>
-                </Button>
-
-                <p style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    marginTop: '10px'
-                }}>
-                    Already have an account? <Link href="/login" to="/login" variant="body2" >
-                        Login.
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <ThemedButton
+                            buttonStyle={{
+                                backgroundColor: '#039BE5',
+                                fontColor: '#fff'
+                            }}
+                        >
+                            <img src={facebook} alt='fb' className={classes.buttonIcon} />
+                            <span>Facebook</span>
+                        </ThemedButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <ThemedButton
+                            buttonStyle={{
+                                backgroundColor: '#fff',
+                                fontColor: '#000'
+                            }}
+                            onClick={() =>
+                            {
+                            }}
+                        >
+                            <img src={google} alt='google' className={classes.buttonIcon} />
+                            <span>Google</span>
+                        </ThemedButton>
+                    </Grid>
+                </Grid> */}
+                <Typography className={classes.haveAccount}>
+                    Already got an account?&nbsp;
+                    <Link href="#" to="/login" variant="body2">
+                        Sign in
                     </Link>
-                </p>
-
-                <Box mt={5}>
-                    <Copyright />
-                </Box>
+                </Typography>
             </form>
         </Container>
     </Grid>)

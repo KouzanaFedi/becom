@@ -1,26 +1,25 @@
-import { Box, Button, CircularProgress, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Box, CircularProgress, Container, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { recupEmail, recupCode, canRecupCode, SET_EMAIL_RECUP, SET_CODE_READY_RECUP, SET_CODE_RECUP, SET_STEP_TWO, SET_CODE_ERROR, recupStep, passwordCode, SET_NEW_PASSWORD_RECUP, SET_STEP_THREE, SET_NEW_PASSWORD_ERROR, RESET_RECUP } from "../../redux/logic/auth/passwordRecupReducer";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GENERATE_RECUP_CODE, UPDATE_PASSWORD, VERIFY_RECUP_CODE } from "../../api/auth";
 import { Link } from "react-router-dom";
 import Logo from "../Logo";
+import ThemedTextField from "../themedComponents/ThemedTextField";
+import ThemedButton from "../themedComponents/ThemedButton";
+import ThemedTooltip from "../themedComponents/ThemedTooltip";
+import { createRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        borderRadius: '24px',
         minHeight: '100%',
-        boxShadow: '0 0 5px rgba(0,0,0,0.3)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
-    }, child: {
-        padding: '24px 48px',
     },
-    avatar: {
-        backgroundColor: theme.palette.secondary.main,
-        margin: 'auto',
-        marginBottom: '24px'
+    child: {
+        padding: '0 48px',
+        textAlign: 'center'
     },
     submit: {
         margin: theme.spacing(1, 0, 1),
@@ -36,24 +35,36 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column'
     },
-    // roundedBorders: {
-    //     borderRadius: '24px',
-    //     backgroundColor: 'white'
-    // },
-    // codeInput: {
-    //     paddingTop: '10.5px',
-    //     paddingBottom: '10.5px',
-    //     display: 'flex'
-
-    // }
     succesMSG: {
         paddingTop: '15px'
     },
     logo: {
-        width: '30%',
+        width: '100px',
+        height: '100px',
+        borderRadius: '20px',
+        boxShadow: '4px 4px 5px 0px rgb(0, 0, 0, 0.3)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 'auto',
+        backgroundColor: '#fff'
     },
     title: {
-        fontWeight: 'bold'
+        fontSize: '28px',
+        margin: "30px 0 25px 0 ",
+        color: '#000'
+    },
+    stretch: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    marginTop25: {
+        marginTop: '25px'
+    },
+    divider: {
+        width: '10rem',
+        margin: '15px 0',
+        alignSelf: 'center'
     }
 }));
 
@@ -67,6 +78,10 @@ const RecupPasswordForm = () =>
     const step = useSelector(recupStep);
     const codeReady = useSelector(canRecupCode);
     const newPassword = useSelector(passwordCode);
+
+    const emailTooltip = createRef();
+    const codeTooltip = createRef();
+    const recupTooltip = createRef();
 
     const [generateCode, { loading }] = useMutation(GENERATE_RECUP_CODE, {
         onCompleted: (_) =>
@@ -93,6 +108,7 @@ const RecupPasswordForm = () =>
         onCompleted: () =>
         {
             dispatch(SET_STEP_THREE());
+            handleCodeReset();
         },
         onError: () =>
         {
@@ -148,145 +164,121 @@ const RecupPasswordForm = () =>
         dispatch(RESET_RECUP());
     }
 
-    return (<Grid item xs={12} sm={8} md={4} square className={classes.root}>
+    return (<Grid item xs={12} sm={8} md={4} className={classes.root}>
         <Container className={classes.child}>
-            <Logo size='30%' />
-            <Box mb={2}>
-                <Typography component="h1" variant="h5" className={classes.title}>
-                    Password recupertaion
-            </Typography>
+            <Box className={classes.logo}>
+                <Logo size='80px' shadow={false} />
             </Box>
+            <Typography component="h1" className={classes.title}>
+                Recuperate password
+            </Typography>
             {step === 1 && <form className={classes.form} noValidate>
-                {!codeReady ? <div>
-                    <TextField
-                        variant="filled"
-                        margin="normal"
-                        required
-                        fullWidth
-                        size="small"
-                        id="name"
-                        label="Email"
-                        name="email"
-                        autoComplete="name"
-                        autoFocus
-                        value={email.value}
-                        onChange={handleEmailChange}
-                        error={email.error !== null}
-                        helperText={email.error !== null && email.error}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        className={classes.submit}
-                        variant="contained"
+                {!codeReady ? <div className={classes.stretch}>
+                    <ThemedTooltip
+                        open={() => email.error != null}
+                        placement="left"
+                        title={() => email.error}
+                        ref={emailTooltip}
+                        arrow>
+                        <ThemedTextField
+                            borderRadius="5px "
+                            required
+                            id="email"
+                            placeholder="Email"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                            value={email.value}
+                            onChange={handleEmailChange}
+                            backgroundColor='#fff'
+                        />
+                    </ThemedTooltip>
+                    <div className={classes.marginTop25} />
+                    <ThemedButton
+                        buttonStyle={{ type: "primary" }}
                         disabled={!email.ready}
                         onClick={handleEmailSubmit}
                     >
-                        {loading ? <CircularProgress size={24} /> : 'Generate recuperation code'}
-
-                    </Button>  </div> :
+                        {loading ? <CircularProgress color="secondary"
+                            size={24} /> : 'Generate recuperation code'}
+                    </ThemedButton>
+                </div> :
                     <div>
                         <Box my={2} >
                             Validation code of 9 digits was send to <span style={{ fontWeight: 'bold' }}>{email.value}</span>.
                             <br />Expires in 24 hours.
                         </Box>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
+                        <ThemedButton
+                            buttonStyle={{ type: "denied" }}
                             onClick={handleCodeReset}
                         >
-                            {loading ? <CircularProgress size={24} /> : 'Reset'}
-                        </Button>
+                            {loading ? <CircularProgress color="secondary"
+                                size={24} /> : 'Reset'}
+                        </ThemedButton>
                     </div>}
-
-
-
-
-                <TextField
-                    variant="filled"
-                    margin="normal"
-                    required
-                    fullWidth
-                    size="small"
-                    id="code"
-                    label="Code"
-                    name="code"
-                    autoFocus
-                    disabled={!codeReady}
-                    value={code.value}
-                    inputProps={{ maxLength: 9 }}
-                    type="text"
-                    onChange={handleCodeChange}
-                    error={code.error !== null}
-                    helperText={code.error !== null && code.error}
-                />
-                {/* <div className={classes.codeInput}>
-                    {
-                        code.value.map((value, key) =>
-                        {
-                            return <div>
-                                <TextField
-                                    size="small"
-                                    variant="filled"
-                                    id={key.toString()}
-                                    key={key}
-                                    inputProps={{
-                                        maxLength: 1,
-                                        style: {
-                                            paddingLeft: 0,
-                                            paddingRight: 0,
-                                            textAlign: 'center'
-                                        }
-                                    }}
-                                // value={value}
-                                />
-                                {key + 1 % 3 === 0 && <span>-</span>}
-                            </div>
-                        })
-                    }
-                </div> */}
-                <Button
-                    type="submit"
-                    fullWidth
-                    className={classes.submit}
-                    variant="contained"
+                <Divider className={classes.divider} />
+                <ThemedTooltip
+                    open={() => code.error !== null}
+                    placement="left"
+                    title={() => code.error}
+                    ref={codeTooltip}
+                    arrow>
+                    <ThemedTextField
+                        borderRadius="5px "
+                        required
+                        id="code"
+                        placeholder="code"
+                        name="code"
+                        autoComplete="code"
+                        autoFocus
+                        disabled={!codeReady}
+                        inputProps={{ maxLength: 9 }}
+                        type="text"
+                        value={code.value}
+                        onChange={handleCodeChange}
+                        backgroundColor='#fff'
+                    />
+                </ThemedTooltip>
+                <div className={classes.marginTop25} />
+                <ThemedButton
+                    buttonStyle={{ type: "primary" }}
                     disabled={!code.ready}
                     onClick={handleCodeSubmit}
                 >
-                    {false ? <CircularProgress size={24} /> : 'Recuperate'}
-
-                </Button>
+                    {loading ? <CircularProgress color="secondary"
+                        size={24} /> : 'Recuperate'}
+                </ThemedButton>
             </form>}
             {step === 2 && < form className={classes.form} noValidate>
-                <TextField
-                    variant="filled"
-                    margin="normal"
-                    required
-                    fullWidth
-                    size="small"
-                    id="newPassword"
-                    label="New password"
-                    name="newPassword"
-                    autoFocus
-                    disabled={!codeReady}
-                    value={newPassword.value}
-                    type="password"
-                    onChange={handlePasswordChange}
-                    error={newPassword.error !== null}
-                    helperText={newPassword.error !== null && newPassword.error}
-                />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    className={classes.submit}
-                    disabled={!code.ready}
+                <ThemedTooltip
+                    open={() => newPassword.error !== null}
+                    placement="left"
+                    title={() => newPassword.error}
+                    ref={recupTooltip}
+                    arrow   >
+                    <ThemedTextField
+                        borderRadius="5px "
+                        required
+                        id="newPassword"
+                        placeholder="New password"
+                        name="newPassword"
+                        autoComplete="newPassword"
+                        autoFocus
+                        type="password"
+                        value={newPassword.value}
+                        onChange={handlePasswordChange}
+                        backgroundColor='#fff'
+                    />
+                </ThemedTooltip>
+                <div className={classes.marginTop25} />
+                <ThemedButton
+                    buttonStyle={{ type: "primary" }}
+                    disabled={!newPassword.ready}
                     onClick={handlePasswordSubmit}
                 >
-                    {false ? <CircularProgress size={24} /> : 'Update password'}
-
-                </Button>
+                    {loading ? <CircularProgress color="secondary"
+                        size={24} /> : 'Update password'}
+                </ThemedButton>
             </form>}
             {step === 3 && < span className={classes.succesMSG}>
                 Password change succeeded!

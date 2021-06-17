@@ -7,4 +7,5 @@ export const PASSWORD_INVALIDE_ERROR = new CustomErrorMsg('Password invalide', 4
 export const RECUP_CODE_INVALIDE_ERROR = new CustomErrorMsg('Code invalide', 4005);
 export const RECUP_CODE_EXPIRED_ERROR = new CustomErrorMsg('Code expired', 4006);
 export const UNAUTHENTICATED_ERROR = new CustomErrorMsg('Unauthenticated', 4007);
+export const INVALIDE_TOKEN = new CustomErrorMsg('Invalide token', 4008);
 

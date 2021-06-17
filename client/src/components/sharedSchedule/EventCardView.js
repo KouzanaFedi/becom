@@ -66,7 +66,9 @@ const EventCardView = ({ data }) =>
                     color: 'white',
                 }}
             >
-                {loading ? <CircularProgress size={24} /> : 'Decline'}
+                {loading ? <CircularProgress
+                    color="secondary"
+                    size={24} /> : 'Decline'}
             </Button>
             <Button
                 variant="contained"
@@ -79,7 +81,8 @@ const EventCardView = ({ data }) =>
                     color: 'white',
                 }}
             >
-                {loading ? <CircularProgress size={24} /> : 'Confirme'}
+                {loading ? <CircularProgress size={24}
+                    color="secondary" /> : 'Confirme'}
             </Button>
         </CardActions>
     </Card >

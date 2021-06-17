@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ApolloProvider, HttpLink, split, ApolloClient, InMemoryCache, ApolloLink, concat } from "@apollo/client";
+import { ApolloProvider, split, ApolloClient, InMemoryCache, ApolloLink, concat } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
@@ -11,7 +11,9 @@ import store from "./redux/store";
 import { AUTH_TOKEN } from "./utils/constants";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import { API } from "./config";
+import { API, SUBSCRIPTION } from "./config";
+import { createUploadLink } from 'apollo-upload-client';
+
 
 import "./index.css";
 import "dotenv/config";
@@ -19,11 +21,11 @@ import "dotenv/config";
 const token = localStorage.getItem(AUTH_TOKEN);
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${API}/subscription`,
+  uri: `ws://${SUBSCRIPTION}`,
   options: { reconnect: true, connectionParams: { authToken: token ? token : '' }, },
 });
 
-const httpLink = new HttpLink({
+const httpLink = new createUploadLink({
   uri: `http://${API}`,
 });
 

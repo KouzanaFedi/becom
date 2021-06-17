@@ -1,8 +1,10 @@
-import { comparePassword, emailValidate, encryptPassword, recupCode, getToken } from '../utils/util';
-import { AuthenticationError, PubSub } from 'apollo-server';
+import { comparePassword, emailValidate, encryptPassword, recupCode, getToken, getPayload } from '../utils/util';
+import { AuthenticationError } from 'apollo-server';
 import { RecupCode } from '../schema/user/recupCode';
 import { User } from '../schema/user/user';
-import { INVALIDE_EMAIL_ERROR, USER_EXISTS_ERROR, PASSWORD_INVALIDE_ERROR, USER_NOT_EXISTS_ERROR, RECUP_CODE_INVALIDE_ERROR, RECUP_CODE_EXPIRED_ERROR, UNAUTHENTICATED_ERROR } from '../utils/errors/UserError';
+import { INVALIDE_EMAIL_ERROR, USER_EXISTS_ERROR, PASSWORD_INVALIDE_ERROR, USER_NOT_EXISTS_ERROR, RECUP_CODE_INVALIDE_ERROR, RECUP_CODE_EXPIRED_ERROR, INVALIDE_TOKEN } from '../utils/errors/UserError';
+import { processUpload } from '../utils/fileUpload';
+import { mkdir } from 'fs';
 
 export const accountResolver = {
   Query: {
@@ -33,6 +35,25 @@ export const accountResolver = {
           }
         }
       }
+    },
+    verifyToken: async (_, args) =>
+    {
+      const { token } = args;
+      const { payload, loggedIn } = getPayload(token);
+      if (!loggedIn) {
+        throw new AuthenticationError(INVALIDE_TOKEN.toString());
+      } else {
+        const user = await User.findById(payload._id);
+        return {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          token,
+          createdAt: user.created_at,
+          updatedAt: user.updated_at,
+        }
+      }
     }
   },
   Mutation: {
@@ -46,7 +67,12 @@ export const accountResolver = {
       if (isMatch) {
         const token = getToken(user.toJSON());
         return {
-          id: user.id, email: user.email, name: user.name, password: user.password, token, createdAt: user.created_at,
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          token,
+          createdAt: user.created_at,
           updatedAt: user.updated_at,
         };
       } else {
@@ -73,9 +99,9 @@ export const accountResolver = {
         return {
           id: regUser.id,
           name: regUser.name,
-          password: regUser.password,
           email: regUser.email,
-          token,
+          image: regUser.image,
+          token
         };
       } catch (e) {
         console.log(e);
@@ -120,6 +146,24 @@ export const accountResolver = {
       return {
         succes: true
       }
+    },
+    uploadProfileImg: async (_, args) =>
+    {
+      const file = await args.file;
+      const { email } = args;
+
+      const loaded = await processUpload(file);
+
+      await User.findOneAndUpdate({ email }, { $set: { image: loaded.id } }, { new: true }, (err, _) =>
+      {
+        if (err) {
+          throw new AuthenticationError(RECUP_CODE_EXPIRED_ERROR.toString());
+        }
+      })
+      return {
+        name: loaded.id
+      }
     }
   },
+
 };

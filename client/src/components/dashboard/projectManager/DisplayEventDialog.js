@@ -86,7 +86,8 @@ const DisplayEventDialog = ({ open, onClose }) =>
                                     updateEventState();
                                 }}
                             >
-                                {updateStateLoading ? <CircularProgress size={24} /> : 'Revalidate'}
+                                {updateStateLoading ? <CircularProgress
+                                    color="secondary" size={24} /> : 'Revalidate'}
                             </Button>}
 
                         {!isEditMode ? < IconButton onClick={() => { setIsEditMode(true) }}>

@@ -1,7 +1,7 @@
 import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction';
-import { Box, Button, Grid, makeStyles, Paper } from "@material-ui/core";
+import { Box, Grid, makeStyles, Paper } from "@material-ui/core";
 import { useQuery } from "@apollo/client";
 import { EVENTS } from "../../../api/events";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,12 +13,10 @@ import DisplayEventDialog from "./DisplayEventDialog";
 import ShareScheduleDialog from "./ShareScheduleDialog";
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 
-// import { INIT_CALENDAR_REF } from "../../../redux/ui/drawerReducer";
-
 const useStyles = makeStyles((theme) => ({
     container: {
         margin: theme.spacing(2),
-    },
+    }
 }));
 
 const EventScheduler = () =>
@@ -56,6 +54,7 @@ const EventScheduler = () =>
                 <Paper elevation={2}>
                     <Box p={4}>
                         <FullCalendar
+                            className={classes.root}
                             ref={calendar}
                             selectable={true}
                             plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
@@ -118,11 +117,6 @@ const EventScheduler = () =>
                             {
                                 setOpenShareDial(false);
                             }} />
-
-                        <Button onClick={() =>
-                        {
-                            calendar.current.getApi().updateSize();
-                        }}>Test</Button>
                     </Box>
                 </Paper>
             </Grid>

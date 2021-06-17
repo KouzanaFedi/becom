@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
         },
         '&:disabled': {
             color: 'white',
-            backgroundColor: 'rgb(180,180,180)',
+            backgroundColor: `${Color(props.backgroundColor).alpha(.6)}`,
             boxShadow: 'none'
         }
     })

@@ -1,4 +1,4 @@
-import { Box, Checkbox, CircularProgress, Container, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Box, Checkbox, CircularProgress, Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation } from "react-router-dom"
 import { logInPassword, logInEmail, SET_PASSWORD_LOGIN, SET_EMAIL_LOGIN, logInCanSubmit, SET_PASSWORD_ERROR_LOGIN, RESET_LOGIN, logInStaySignedIn, SET_STAY_SIGNED_IN } from "../../redux/logic/auth/logInReducer";
@@ -6,13 +6,14 @@ import { useMutation } from "@apollo/client";
 import { LOGIN } from "../../api/auth";
 import { USER_NOT_EXISTS_ERROR, PASSWORD_INVALIDE_ERROR } from '../../utils/errors'
 import { AUTH_TOKEN, STAY_LOGGED_IN } from "../../utils/constants";
-import facebook from "../../assets/iconsfacebook.png";
-import google from "../../assets/iconsgoogle.png";
+// import facebook from "../../assets/iconsfacebook.png";
+// import google from "../../assets/iconsgoogle.png";
 import Logo from "../Logo";
 import ThemedTextField from "../themedComponents/ThemedTextField";
 import ThemedButton from "../themedComponents/ThemedButton";
 import ThemedTooltip from "../themedComponents/ThemedTooltip";
 import { createRef } from "react";
+import { INIT_USER_DATA } from "../../redux/logic/userSlice";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,19 +27,14 @@ const useStyles = makeStyles((theme) => ({
         padding: '0 48px',
         textAlign: 'center'
     },
-    oauthButton: {
-        height: '24px',
-        display: 'flex',
-        justifyContent: 'center',
-    },
     buttonIcon: {
         height: '20px',
         paddingRight: '10px'
     },
     title: {
-        fontWeight: 'bold',
-        fontSize: '31px',
-        margin: "30px 0 25px 0 "
+        fontSize: '28px',
+        margin: "30px 0 25px 0 ",
+        color: '#000'
     },
     logo: {
         width: '100px',
@@ -68,6 +64,10 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-start',
         marginTop: '25px',
         fontSize: '14px'
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column'
     }
 }));
 
@@ -88,11 +88,15 @@ const LoginForm = () =>
     const [loginQuery, { loading }] = useMutation(LOGIN, {
         onCompleted: ({ login }) =>
         {
+            const { name, id, email, image, token, createdAt } = login;
+
             dispatch(RESET_LOGIN());
-            console.log(staySignedIn);
-            localStorage.setItem(AUTH_TOKEN, login.token);
+            localStorage.setItem(AUTH_TOKEN, token);
             localStorage.setItem(STAY_LOGGED_IN, staySignedIn);
-            history.replace('/dashbord');
+
+            dispatch(INIT_USER_DATA({ name, id, email, image, token, createdAt }));
+
+            history.replace('/');
         }, onError: ({ message }) =>
         {
             const errorCode = message.split(':')[0].trim();
@@ -128,7 +132,6 @@ const LoginForm = () =>
 
     const tooltipOpen = () =>
     {
-        console.log((email.error !== null) || (password.error !== null));
         return (email.error !== null) || (password.error !== null);
     }
     const tooltipMsg = () =>
@@ -145,14 +148,14 @@ const LoginForm = () =>
             <Typography component="h1" className={classes.title}>
                 Sign in to platform
             </Typography>
-            <form noValidate style={{ display: 'flex', flexDirection: 'column' }}>
+            <form noValidate className={classes.form}>
                 <ThemedTextField
                     borderRadius="5px 5px 0 0"
                     required
-                    id="name"
+                    id="email"
                     placeholder="Email"
                     name="email"
-                    autoComplete="name"
+                    autoComplete="email"
                     autoFocus
                     value={email.value}
                     onChange={handleEmailChange}
@@ -194,14 +197,15 @@ const LoginForm = () =>
                     disabled={!canSubmit}
                     onClick={handleSubmit}
                 >
-                    {loading ? <CircularProgress size={24} /> : 'Sign in'}
+                    {loading ? <CircularProgress color="secondary"
+                        size={24} /> : 'Sign in'}
                 </ThemedButton>
 
                 <Box className={classes.forgotPwd}>
                     <Link to="/recup">Forgot password?</Link>
                 </Box>
 
-                <div style={{
+                {/* <div style={{
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'center',
@@ -217,8 +221,8 @@ const LoginForm = () =>
                         width: '5rem',
                         color: '#9F9F9F'
                     }} />
-                </div>
-                <Grid container spacing={2}>
+                </div> */}
+                {/* <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <ThemedButton
                             buttonStyle={{
@@ -244,7 +248,7 @@ const LoginForm = () =>
                             <span>Google</span>
                         </ThemedButton>
                     </Grid>
-                </Grid>
+                </Grid> */}
                 <Typography className={classes.haveAccount}>
                     Don't have an account?&nbsp;
                     <Link href="#" to="/register" variant="body2">

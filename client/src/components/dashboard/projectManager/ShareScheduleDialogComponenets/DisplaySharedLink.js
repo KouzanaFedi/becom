@@ -77,8 +77,9 @@ const DisplaySharedLink = () =>
     const [deleteShared, { loading }] = useMutation(DELETE_SHARED_LINK, {
         variables: {
             id: calendarForm.edited.id
-        }, onCompleted: (_) => { 
-           dispatch(DELETE_SCHEDULE_LINK({id:calendarForm.edited.id})) ;
+        }, onCompleted: (_) =>
+        {
+            dispatch(DELETE_SCHEDULE_LINK({ id: calendarForm.edited.id }));
         }
     });
     return <div>
@@ -179,7 +180,8 @@ const DisplaySharedLink = () =>
                 deleteShared();
             }}
         >
-            {loading ? <CircularProgress size={24} /> : 'Delete'}
+            {loading ? <CircularProgress color="secondary"
+                size={24} /> : 'Delete'}
         </Button>
     </div >
 }

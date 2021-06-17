@@ -7,7 +7,6 @@ import logo from "../../assets/comguru-logo-white.png";
 
 import clsx from 'clsx';
 import { AUTH_TOKEN } from "../../utils/constants";
-import { useHistory } from "react-router";
 
 const drawerWidth = 240;
 
@@ -79,7 +78,6 @@ const NavigationDrawer = () =>
     const classes = useStyles();
     const drawerState = useSelector(uiDrawerState);
     const dispatch = useDispatch();
-    const history = useHistory()
 
     const handleDrawerClose = () =>
     {

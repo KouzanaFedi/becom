@@ -74,9 +74,11 @@ const passwordRecupReducer = createSlice({
         SET_NEW_PASSWORD_RECUP: (state, action) =>
         {
             state.password.value = action.payload.password.toString();
-            if (state.password.value.length === 0)
-                state.password.error = "Obligatory field";
-            else state.password.error = null;
+            if (state.password.value.length < 6) {
+                if (state.password.value.length === 0)
+                    state.password.error = "Obligatory field";
+                else state.password.error = "Minimum 6 characters";
+            } else state.password.error = null;
             state.password.ready = state.password.error === null;
         },
         SET_NEW_PASSWORD_ERROR: (state, _) =>
