@@ -8,6 +8,8 @@ import sharedScheduleSlice from "./logic/projectManager/sharedScheduleSlice";
 import kanbanBoardSlice from "./logic/projectManager/kanbanBoardSlice";
 import userSlice from "./logic/userSlice";
 import menuSlice from "./ui/menuSlice";
+import invoiceSlice from "./logic/projectManager/invoiceSlice";
+import invoiceUiSlice from "./ui/invoiceUiSlice";
 
 export default configureStore({
   reducer: {
@@ -20,5 +22,7 @@ export default configureStore({
     schedule: scheduleSlice,
     sharedSchedule: sharedScheduleSlice,
     kanbanBoard: kanbanBoardSlice,
+    invoice: invoiceSlice,
+    invoiceUI: invoiceUiSlice,
   }
 });

@@ -18,6 +18,21 @@ function getTheme(theme)
                     }
                 }
             },
+            MuiDialog: {
+                paper: {
+                    backgroundColor: theme.mode === 'dark' ? '#3f3f3f' : '#EFEFEF'
+                }
+            },
+            MuiButton: {
+                root: {
+                    textTransform: 'unset',
+                }
+            },
+            MuiCard: {
+                root: {
+                    backgroundColor: theme.mode === 'dark' ? '#3f3f3f' : '#EFE'
+                }
+            }
         },
         palette: {
             type: theme.mode,
@@ -26,6 +41,9 @@ function getTheme(theme)
             },
             secondary: {
                 main: 'rgba(223,49,69,1)',
+            },
+            third: {
+                main: '#0F91F3'
             },
             text: {
                 primary: theme.mode === 'dark' ? '#fff' : "#3f3f3f",

@@ -103,7 +103,7 @@ const ThemedAppBar = (props) =>
         if (prevOpen.current === true && open === false) {
             anchorRef.current.focus();
         }
-
+        
         prevOpen.current = open;
     }, [open]);
 
@@ -123,7 +123,7 @@ const ThemedAppBar = (props) =>
                     </ClickAwayListener>
                 </Paper>
             </Popper>
-            <HideOnScroll {...props}>
+            <HideOnScroll {...props} >
                 <AppBar className={classes.root} elevation={0} >
                     <Box className={classes.content} ml={1}>
                         <Box className={classes.menu}>

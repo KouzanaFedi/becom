@@ -1,5 +1,5 @@
-import { ThemeProvider } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import "./App.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -19,6 +19,7 @@ function App()
   return (
     <ThemeProvider theme={customTheme} >
       <div className="App">
+      <CssBaseline />
         <Switch>
           <AuthProtectedRoute exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />

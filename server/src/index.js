@@ -4,6 +4,7 @@ import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers/index';
 import { connectDB } from './utils/db';
 import { getPayload } from './utils/util';
+import cors from 'cors';
 import http from 'http';
 
 import 'dotenv/config';
@@ -14,6 +15,12 @@ import path from 'path';
 const DB_URL = process.env.DB_URI;
 
 const app = express();
+
+app.use(cors({
+  origin: '*',
+  credentials: true,
+  optionSuccessStatus: 200
+}));
 
 const server = new ApolloServer({
   typeDefs,
@@ -49,7 +56,10 @@ const server = new ApolloServer({
 
 app.use("/public", express.static(path.join(__dirname, '..', 'public')));
 
-server.applyMiddleware({ app });
+
+
+server.applyMiddleware({ app, cors: false });
+
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 

@@ -7,6 +7,9 @@ import { useDispatch } from 'react-redux';
 import { SET_ACTIVE_TAB } from '../redux/ui/menuSlice';
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        overflow: 'hidden'
+    }
 }));
 
 export default function Dashboard()

@@ -68,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
     form: {
         display: 'flex',
         flexDirection: 'column'
+    },
+    unsetGapeBetwwenFields: {
+        marginTop: '-2px'
     }
 }));
 
@@ -136,8 +139,10 @@ const LoginForm = () =>
     }
     const tooltipMsg = () =>
     {
-        return `${email.error !== null ? email.error + '\n' : ''} 
-        ${password.error !== null ? password.error : ''}`;
+        return <div style={{ whiteSpace: 'pre-line' }}>
+            {email.error !== null ? 'Email: ' + email.error + '\n' : ''}
+            {password.error !== null ? 'Password: ' + password.error : ''}
+        </div>;
     }
 
     return (<Grid item xs={12} sm={8} md={4} className={classes.root}>
@@ -170,6 +175,7 @@ const LoginForm = () =>
                     <div></div>
                 </ThemedTooltip>
                 <ThemedTextField
+                    className={classes.unsetGapeBetwwenFields}
                     borderRadius="0 0 5px 5px"
                     required
                     name="password"
@@ -193,7 +199,9 @@ const LoginForm = () =>
                     <Typography>Keep me signed in</Typography>
                 </Box>
                 <ThemedButton
+
                     buttonStyle={{ type: "primary" }}
+                    variant="outlined"
                     disabled={!canSubmit}
                     onClick={handleSubmit}
                 >

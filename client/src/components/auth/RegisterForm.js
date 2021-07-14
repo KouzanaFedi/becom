@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
         height: '20px',
         paddingRight: '10px'
     },
+    unsetGapeBetwwenFields: {
+        marginTop: '-2.5px'
+    }
 }));
 
 
@@ -137,10 +140,12 @@ const RegisterForm = () =>
     }
     const tooltipMsg = () =>
     {
-        return `${name.error !== null ? name.error + '\n' : ''}
-        ${email.error !== null ? email.error + '\n' : ''}
-        ${password.error !== null ? password.error + '\n' : ''} 
-        ${confirmePassword.error !== null ? confirmePassword.error : ''}`;
+        return <div style={{ whiteSpace: 'pre-line' }}>
+            {name.error !== null ? 'Name: ' + name.error + '\n' : ''}
+            {email.error !== null ? 'Email: ' + email.error + '\n' : ''}
+            {password.error !== null ? 'Password: ' + password.error + '\n' : ''}
+            {confirmePassword.error !== null ? 'Confirme password: ' + confirmePassword.error : ''}
+        </div>
     }
 
     return (<Grid item xs={12} sm={8} md={4} className={classes.root}>
@@ -165,6 +170,7 @@ const RegisterForm = () =>
                     backgroundColor='#fff'
                 />
                 <ThemedTextField
+                    className={classes.unsetGapeBetwwenFields}
                     borderRadius="0px"
                     required
                     id="email"
@@ -188,6 +194,7 @@ const RegisterForm = () =>
                 <ThemedTextField
                     borderRadius="0px"
                     required
+                    className={classes.unsetGapeBetwwenFields}
                     id="password"
                     placeholder="password"
                     name="password"
@@ -201,6 +208,7 @@ const RegisterForm = () =>
                 <ThemedTextField
                     borderRadius="0 0 5px 5px"
                     required
+                    className={classes.unsetGapeBetwwenFields}
                     id="confirmePassword"
                     placeholder="Confirme password"
                     name="confirmePassword"
@@ -214,6 +222,7 @@ const RegisterForm = () =>
                 <ThemedButton
                     buttonStyle={{ type: "primary" }}
                     disabled={!canSubmit}
+                    variant="outlined"
                     onClick={handleSubmit}
                 >
                     {loading ? <CircularProgress

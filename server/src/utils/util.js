@@ -101,3 +101,12 @@ export const getScheduleSharingPayload = (token) =>
     return { payload: null };
   }
 };
+
+export const serializeMongoDocument = (document) =>
+{
+  const doc = { ...document._doc }
+  doc['id'] = doc._id;
+  delete doc._id;
+  delete doc.__v;
+  return doc;
+}

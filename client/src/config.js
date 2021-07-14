@@ -1,5 +1,5 @@
-const ADDRESS = "172.17.120.48";
-// const ADDRESS = "localhost";
+// const ADDRESS = "172.20.192.86";
+const ADDRESS = "localhost";
 
 export const API = `${ADDRESS}:4000/graphql`;
 export const SUBSCRIPTION = `${ADDRESS}:4000/subscription`;

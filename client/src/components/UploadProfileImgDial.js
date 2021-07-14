@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Dialog, DialogActions, DialogContent, makeStyles } from "@material-ui/core"
+import { Dialog, DialogActions, DialogContent, makeStyles, Button, Typography } from "@material-ui/core"
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { UPDATE_PROFILE_IMG } from "../api/auth";
@@ -14,13 +14,25 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
     },
     space: {
-        marginBottom: '15px'
+        marginBottom: '15px',
+        display: 'none'
+    },
+    uploadBtn: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    label: {
+        marginBottom: '0px',
+        marginRight: '15px'
     }
 }));
 const UploadProfileImgDial = ({ open, onClose, name, email }) =>
 {
     const classes = useStyles();
     const [newImage, setNewImage] = useState(null);
+    const [imageName, setImageName] = useState('No image selected.');
+
     const dispatch = useDispatch();
     const [updateImageQuery] = useMutation(UPDATE_PROFILE_IMG, {
         onCompleted: ({ uploadProfileImg }) =>
@@ -32,17 +44,26 @@ const UploadProfileImgDial = ({ open, onClose, name, email }) =>
         }
     });
 
-    return <Dialog open={open} onEscapeKeyDown={onClose}>
+    return <Dialog open={open} fullWidth maxWidth='xs' onEscapeKeyDown={onClose}>
         <DialogContent className={classes.root}>
-            <input
-                className={classes.space}
-                accept="image/*"
-                id="icon-button-file"
-                type="file"
-                onChange={(event) =>
-                {
-                    setNewImage(event.target.files[0]);
-                }} />
+            <div className={classes.uploadBtn}>
+                <input
+                    accept="image/*"
+                    className={classes.space}
+                    id="contained-button-file"
+                    type="file"
+                    onChange={(event) =>
+                    {
+                        setNewImage(event.target.files[0]);
+                        setImageName(event.target.files[0].name + '.');
+                    }} />
+                <label className={classes.label} htmlFor="contained-button-file">
+                    <Button variant="contained" color="primary" component="span">
+                        Upload
+                    </Button>
+                </label>
+                <Typography>{imageName}</Typography>
+            </div >
             <ThemedAvatar type="display" name={name} image={newImage !== null ? URL.createObjectURL(newImage) : null} />
         </DialogContent>
         <DialogActions>

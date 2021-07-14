@@ -33,9 +33,6 @@ const ThemedSectionIcon = ({ icon, title, onClick, small, name, link }) =>
 {
     const activeTab = useSelector(menuActiveTab);
     const active = activeTab === name;
-    console.log(name);
-    console.log(active);
-    
 
     const classes = useStyles({ small, active });
     return <Link to={`${link}`} className={classes.link} onClick={() =>
