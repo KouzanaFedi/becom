@@ -2,7 +2,7 @@ import { Button, Dialog, DialogContent } from "@material-ui/core";
 import { Box, Typography, makeStyles, Paper } from "@material-ui/core";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { invoiceTemplatesData, RESET_INVOICE_TEMPLATE_EDIT_DATE } from "../../redux/logic/projectManager/invoiceSlice";
+import { invoiceTemplatesData, RESET_INVOICE_TEMPLATE_EDIT_DATA } from "../../redux/logic/projectManager/invoiceSlice";
 import { SET_INVOICE_ADDITIONAL_TAB } from "../../redux/ui/invoiceUiSlice";
 import TemplateCard from "./invoiceTemplates/TemplateCard";
 
@@ -54,7 +54,7 @@ const InvoiceTemplates = () =>
                 className={classes.newTemplate}
                 onClick={() =>
                 {
-                    dispatch(RESET_INVOICE_TEMPLATE_EDIT_DATE());
+                    dispatch(RESET_INVOICE_TEMPLATE_EDIT_DATA());
                     dispatch(SET_INVOICE_ADDITIONAL_TAB({ additionalTab: 'template_edit', data: { mode: 'create' } }));
                 }}
             >

@@ -86,7 +86,7 @@ export const fullCalendarTimeFormat = (date) =>
 export const getScheduleSharingToken = (payload) =>
 {
   const token = jwt.sign(payload, process.env.SECRET_KEY, {
-    expiresIn: '356d', // 1 Week
+    expiresIn: '356d', 
   });
   return token;
 };

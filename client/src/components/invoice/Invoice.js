@@ -38,9 +38,9 @@ const Invoice = () =>
     const invoiceUIdata = useSelector(invoiceUIData);
 
     useQuery(INVOICE_TEMPLATES, {
-        onCompleted: ({ invoiceTemplates }) =>
+        onCompleted: ({ invoiceTemplates, invoicesImages }) =>
         {
-            dispatch(INIT_INVOICE_TEMPLATE(invoiceTemplates));
+            dispatch(INIT_INVOICE_TEMPLATE({ invoiceTemplates, invoicesImages }));
         }
     })
 

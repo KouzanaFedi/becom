@@ -1,4 +1,4 @@
-import { Grid, Switch, makeStyles, MenuItem, Box, Paper, Typography, RadioGroup, FormControlLabel, Radio, Button } from "@material-ui/core";
+import { Grid, Switch, makeStyles, MenuItem, Box, Paper, Typography, RadioGroup, FormControlLabel, Radio, Button, CircularProgress } from "@material-ui/core";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,8 +9,10 @@ import InvoiceParamAddInfo from "./invoiceParameters/InvoiceParamAddInfo";
 import InvoiceParamEntreprise from "./invoiceParameters/InvoiceParamEntrerpise";
 import InvoicePreviewDial from "./InvoicePreviewDial";
 import { Close } from "@material-ui/icons";
-import { invoiceEditTabData, invoiceTemplatesImagesData, UPDATE_INVOICE_TEMPLATE_EDIT_DATE } from "../../redux/logic/projectManager/invoiceSlice";
+import { invoiceEditTabData, invoiceTemplatesImagesData, UPDATE_INVOICE_TEMPLATE_EDIT_DATA } from "../../redux/logic/projectManager/invoiceSlice";
 import { IMAGE_ENDPOINT } from "../../config";
+import { useMutation } from "@apollo/client";
+import { CREATE_INVOICE_TEMPLATES, UPDATE_INVOICE_TEMPLATES } from "../../api/invoice";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -95,9 +97,11 @@ const useStyles = makeStyles(() => ({
 const TemplateEdit = () =>
 {
     const classes = useStyles();
+    const [newValues, setNewValues] = useState({});
 
     const invoicTemplateData = useSelector(invoiceEditTabData);
-    const { handleSubmit, register, formState: { errors }, control, setValue } = useForm({
+    const [previewData, setPreviewData] = useState({});
+    const { handleSubmit, register, formState: { errors, isValid }, control, setValue, setError, getValues } = useForm({
         defaultValues: useMemo(() =>
         {
             return invoicTemplateData;
@@ -106,11 +110,10 @@ const TemplateEdit = () =>
 
     useEffect(() =>
     {
-        // reset(invoicTemplateData);
+        register('imageUpload');
+        setValue('imageUpload', null);
         for (const [key, value] of Object.entries(invoicTemplateData)) {
-            setValue(key, value, {
-                shouldDirty: true,
-            });
+            setValue(key, value);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [invoicTemplateData]);
@@ -128,14 +131,51 @@ const TemplateEdit = () =>
     {
         setUseLocalImage(event.target.checked);
     };
+    const [updateInvoiceTemplateQuery, { loading: loadingUpdate }] = useMutation(UPDATE_INVOICE_TEMPLATES, {
+        onCompleted: ({ updateInvoiceTemplate }) =>
+        {
+            setNewValues({ ...newValues, ...updateInvoiceTemplate });
+            dispatch(UPDATE_INVOICE_TEMPLATE_EDIT_DATA({ data: { ...newValues, ...updateInvoiceTemplate }, mode: data.mode }));
+        }
+    });
+
+    const [createInvoiceTemplateQuery, { loading: createLoading }] = useMutation(CREATE_INVOICE_TEMPLATES, {
+        onCompleted: ({ createInvoiceTemplate }) =>
+        {
+            setNewValues({ ...newValues, ...createInvoiceTemplate });
+            dispatch(UPDATE_INVOICE_TEMPLATE_EDIT_DATA({ data: { ...newValues, ...createInvoiceTemplate }, mode: data.mode }));
+        }
+    });
 
     const submit = (data) =>
     {
-        dispatch(UPDATE_INVOICE_TEMPLATE_EDIT_DATE(data));
+        let res = { ...data };
+        if (useLocalImage) {
+            res = { ...res, imageUpload: imageSelected, image: null, id: invoicTemplateData.id };
+        } else {
+            res = { ...res, imageUpload: null, id: invoicTemplateData.id };
+        }
+
+        try {
+            res.sender.phone = parseInt(res.sender.phone);
+        } catch (error) {
+            setError('sender.phone', { message: "Invalide format." }, { shouldFocus: true });
+        }
+        if (isValid) {
+            setNewValues({ ...res });
+            if (data.mode === 'edit') {
+                console.log(res);
+                updateInvoiceTemplateQuery({ variables: { ...res } });
+            }
+            else {
+                delete res.id;
+                createInvoiceTemplateQuery({ variables: { ...res } });
+            }
+        }
     }
 
     return <Paper>
-        <form onSubmit={handleSubmit(submit)}>
+        < form onSubmit={handleSubmit(submit)} >
             <Box p={2} className={classes.root}>
                 <Typography className={classes.title}>Invoice templates </Typography>
                 <Typography className={classes.sectionTitle}>General</Typography>
@@ -169,7 +209,7 @@ const TemplateEdit = () =>
                     </Grid>
                     <Typography component="div">
                         <Grid component="label" container alignItems="center" spacing={1}>
-                            <Grid item>Already used images</Grid>
+                            <Grid item>Already used logo</Grid>
                             <Grid item>
                                 <Switch
                                     checked={useLocalImage}
@@ -178,7 +218,7 @@ const TemplateEdit = () =>
                                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 />
                             </Grid>
-                            <Grid item>Local image</Grid>
+                            <Grid item>Local logo</Grid>
                         </Grid>
                     </Typography>
                     {!useLocalImage ? <Grid item xs={12}>
@@ -200,11 +240,11 @@ const TemplateEdit = () =>
                                     >
                                         {invoiceTemplatesImages.map((image, key) => <FormControlLabel
                                             key={key}
-                                            value={`${image.image}`}
+                                            value={`${image}`}
                                             control={<Radio />}
                                             label={
                                                 <Fragment>
-                                                    <img src={`${IMAGE_ENDPOINT}${image.image}`} alt="sup"
+                                                    <img src={`${IMAGE_ENDPOINT}${image}`} alt="sup"
                                                         width="40px"
                                                         height="auto"
                                                         className={classes.marginRight}
@@ -224,8 +264,8 @@ const TemplateEdit = () =>
                             type="file"
                             onChange={(event) =>
                             {
+                                setValue('imageUpload', event.target.files[0]);
                                 setImageSelected(event.target.files[0]);
-                                // setImageName(event.target.files[0].name + '.');
                             }} />
                         <label className={classes.label} htmlFor="contained-button-file">
                             <Button variant="outlined" color="primary" component="span">
@@ -237,6 +277,7 @@ const TemplateEdit = () =>
                             <Button
                                 onClick={() =>
                                 {
+                                    setValue('imageUpload', null);
                                     setImageSelected(null);
                                 }}>
                                 <Close />
@@ -279,7 +320,8 @@ const TemplateEdit = () =>
                             fullWidth={false}
                             type="submit"
                             onClick={() => { }}>
-                            Update
+                            {loadingUpdate ? <CircularProgress color="primary"
+                                size={24} /> : 'Update'}
                         </ThemedButton> :
                         <ThemedButton
                             variant="outlined"
@@ -287,7 +329,8 @@ const TemplateEdit = () =>
                             fullWidth={false}
                             type="submit"
                             onClick={() => { }}>
-                            Create
+                            {createLoading ? <CircularProgress color="primary"
+                                size={24} /> : 'Create'}
                         </ThemedButton>}
                     <ThemedButton
                         buttonStyle={{ type: 'secondary' }}
@@ -295,20 +338,21 @@ const TemplateEdit = () =>
                         fullWidth={false}
                         onClick={() =>
                         {
+                            setPreviewData(getValues());
                             setDialOpen(true);
                         }}>
                         Preview
                     </ThemedButton>
                 </Box>
             </Box>
-        </form>
+        </form >
         <InvoicePreviewDial
             open={dialOpen}
             onClose={() => { setDialOpen(false) }}
             page={page}
-            invoice={invoicTemplateData}
+            invoice={previewData}
             setPage={setPage} />
-    </Paper>
+    </Paper >
 }
 
 export default TemplateEdit;

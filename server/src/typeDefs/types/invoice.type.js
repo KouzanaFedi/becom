@@ -52,4 +52,7 @@ export const invoiceType = gql`
         matFisc: String!
     }
 
+    type invoiceImagesResult {
+        images : [String!]!
+    }
 `;

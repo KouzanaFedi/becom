@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { isNonNullType } from "graphql";
 import { IMAGE_ENDPOINT } from "../../../config";
 
 const invoiceSlice = createSlice({
@@ -217,22 +216,21 @@ const invoiceSlice = createSlice({
         },
         INIT_INVOICE_TEMPLATE: (state, action) =>
         {
-            if (action.payload.length > 0) {
+            const { invoiceTemplates, invoicesImages } = action.payload;
+            if (invoiceTemplates.length > 0) {
                 const invoices = [];
-                const invoiceImages = [];
-                if (action.payload.length > 0) {
-                    action.payload.forEach(element =>
+                if (invoiceTemplates.length > 0) {
+                    invoiceTemplates.forEach(element =>
                     {
                         const { id, image, invoiceType, createdAt, additionalInfo: { country, entrepriseType, matFisc, rc }, sender: { address, email, entreprise, phone, street, web }, templateName, updatedAt } = element;
 
                         invoices.push({
                             id, image, invoiceType, createdAt, additionalInfo: { country, entrepriseType, matFisc, rc }, sender: { address, email, entreprise, phone, street, web }, templateName, updatedAt
                         })
-                        invoiceImages.push({ image, name: templateName });
                     });
 
                     state.invoiceTemplates = [...invoices];
-                    state.invoiceTemplatesImages = [...invoiceImages];
+                    state.invoiceTemplatesImages = [...invoicesImages.images];
                 }
             }
         },
@@ -242,11 +240,20 @@ const invoiceSlice = createSlice({
             const index = state.invoiceTemplates.findIndex((item) => item.id === templateId);
             state.editTabData = { ...state.invoiceTemplates[index] };
         },
-        UPDATE_INVOICE_TEMPLATE_EDIT_DATE: (state, action) =>
+        UPDATE_INVOICE_TEMPLATE_EDIT_DATA: (state, action) =>
         {
-            state.editTabData = { ...action.payload };
+            const { data, mode } = action.payload;
+            const { id } = data;
+            if (mode === "edit") {
+                state.editTabData = { ...data };
+                const templateId = state.invoiceTemplates.findIndex((template) => template.id === id);
+                state.invoiceTemplates[templateId] = { ...data };
+            } else {
+                state.editTabData = { ...data };
+                state.invoiceTemplates.push({ ...data });
+            }
         },
-        RESET_INVOICE_TEMPLATE_EDIT_DATE: (state, _) =>
+        RESET_INVOICE_TEMPLATE_EDIT_DATA: (state, _) =>
         {
             state.editTabData = {
                 id: null,
@@ -270,13 +277,19 @@ const invoiceSlice = createSlice({
                 templateName: null,
                 updatedAt: null
             };
+        },
+        DELETE_INVOICE_TEMPLATE_EDIT_DATA: (state, action) =>
+        {
+            const { id } = action.payload;
+            const templateId = state.invoiceTemplates.findIndex((template) => template.id === id);
+            state.invoiceTemplates.splice(templateId, 1);
         }
     }
 });
 
 export default invoiceSlice.reducer;
 
-export const { SET_PDF_PAGES, SET_INVOICE_ENTREPRISE, INIT_INVOICE_TEMPLATE, INTI_INVOICE_TEMPLATE_EDIT_DATA, UPDATE_INVOICE_TEMPLATE_EDIT_DATE, RESET_INVOICE_TEMPLATE_EDIT_DATE } = invoiceSlice.actions;
+export const { SET_PDF_PAGES, SET_INVOICE_ENTREPRISE, INIT_INVOICE_TEMPLATE, INTI_INVOICE_TEMPLATE_EDIT_DATA, UPDATE_INVOICE_TEMPLATE_EDIT_DATA, RESET_INVOICE_TEMPLATE_EDIT_DATA,DELETE_INVOICE_TEMPLATE_EDIT_DATA } = invoiceSlice.actions;
 
 export const invoiceData = (state) => state.invoice.data;
 export const invoicePages = (state) => state.invoice.pages;
