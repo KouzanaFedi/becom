@@ -1,4 +1,5 @@
-import { Container, CssBaseline, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Container, CssBaseline, Grid, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import ThemedAppBar from "../components/themedComponents/ThemedAppBar";
 import Illustration404 from "../assets/404.png";
 

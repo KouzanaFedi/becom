@@ -1,5 +1,6 @@
 import { useMutation } from "@apollo/client";
-import { Box, Button, CircularProgress, Grid, IconButton, makeStyles, TextField } from "@material-ui/core"
+import { Box, Button, CircularProgress, Grid, IconButton, TextField } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Delete, EmailOutlined } from "@material-ui/icons";
 import { useDispatch } from "react-redux";
 import { DELETE_CIBLE } from "../../../../api/events";
@@ -89,7 +90,7 @@ const CibleForm = ({ data, edit, sharedLink }) =>
             </Box>
         </Box>
         <Box mt={1}>
-            <Grid container item justify='flex-end'>
+            <Grid container item justifyContent='flex-end'>
                 <Button
                     size="small"
                     startIcon={<EmailOutlined />}

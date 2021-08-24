@@ -19,7 +19,7 @@ const NotesSchema = new Schema({
         type: String,
         enum: ['client', 'agence'],
         required: true
-    },
+    },    
     reciever: {
         type: String,
         required: true

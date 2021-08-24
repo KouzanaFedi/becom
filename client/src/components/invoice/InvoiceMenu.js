@@ -1,9 +1,9 @@
-import { Box, makeStyles, MenuItem, MenuList, Typography } from "@material-ui/core";
+import { Box, MenuItem, MenuList, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { SET_INVOICE_ACTIVE_TAB } from "../../redux/ui/invoiceUiSlice";
-import archive from '../../assets/icons/archive.png'
-import template from '../../assets/icons/template.png'
-import request from '../../assets/icons/request.png'
+import { INVOICE_SECTIONS } from "../../routers/InvoiceSections";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -15,6 +15,15 @@ const useStyles = makeStyles((theme) => ({
         width: '20px',
         marginRight: '20px',
         color: theme.palette.text
+    },
+    link: {
+        color: 'unset',
+        '&:hover': {
+            textDecoration: 'none'
+        }
+    },
+    title: {
+        fontWeight: '500'
     }
 }));
 const InvoiceMenu = () =>
@@ -24,32 +33,20 @@ const InvoiceMenu = () =>
 
     return <Box className={classes.root}>
         <MenuList>
-            <MenuItem
-                button
+            {INVOICE_SECTIONS.map((section, key) => <Link
+                key={key}
+                to={`${section.url}`}
+                className={classes.link}
                 onClick={() =>
                 {
-                    dispatch(SET_INVOICE_ACTIVE_TAB({ tabType: 'invoice_requests' }));
+                    dispatch(SET_INVOICE_ACTIVE_TAB({ tabType: section.name }));
                 }}>
-                <img className={classes.icon} src={request} alt='icon' /> <Typography>Requests</Typography>
-            </MenuItem>
-            <MenuItem
-                button
-                onClick={() =>
-                {
-                    dispatch(SET_INVOICE_ACTIVE_TAB({ tabType: 'invoice_templates' }));
-                }}>
-                <img className={classes.icon} src={template} alt='icon' /> <Typography>Template</Typography>
-            </MenuItem>
-            <MenuItem
-                button
-                onClick={() =>
-                {
-                    dispatch(SET_INVOICE_ACTIVE_TAB({ tabType: 'template_archive' }));
-                }}>
-                <img className={classes.icon} src={archive} alt='icon' /> <Typography>Archive</Typography>
-            </MenuItem>
+                <MenuItem button>
+                    <img className={classes.icon} src={section.icon} alt='icon' /> <Typography className={classes.title}>{section.title}</Typography>
+                </MenuItem>
+            </Link>)}
         </MenuList>
-    </Box>
+    </Box >
 }
 
 export default InvoiceMenu;

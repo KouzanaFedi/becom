@@ -1,10 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ThemedAppBar from '../components/themedComponents/ThemedAppBar';
 import { useHistory, useParams } from 'react-router-dom';
 import { DASHBOARD_SECTIONS } from '../routers/DashboardSections';
-import { useDispatch } from 'react-redux';
-import { SET_ACTIVE_TAB } from '../redux/ui/menuSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { menuActiveTab, SET_ACTIVE_TAB } from '../redux/ui/menuSlice';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,6 +18,8 @@ export default function Dashboard()
     const history = useHistory();
     const { section } = useParams();
     const dispatch = useDispatch();
+
+    const sectionName = useSelector(menuActiveTab);
 
     function getSectionComponent(section)
     {
@@ -35,7 +37,7 @@ export default function Dashboard()
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <ThemedAppBar type='menu' />
+            <ThemedAppBar type='menu' name={sectionName} />
             <SectionComponent />
         </div >
     );

@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@graphql-tools/merge": "^6.2.13",
+    "@types/mongoose": "^5.11.97",
     "apollo-server": "^2.21.0",
     "apollo-server-express": "^2.25.0",
     "bcryptjs": "^2.4.3",

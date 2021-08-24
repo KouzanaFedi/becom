@@ -1,5 +1,6 @@
 import { Route, Switch } from "react-router-dom";
-import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { CssBaseline, StyledEngineProvider } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/core/styles";
 import "./App.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -11,27 +12,31 @@ import Home from "./pages/Home";
 import Screen404 from "./pages/Screen404";
 import InvalideRoute from "./routers/InvalideRoute";
 import getTheme from "./styles/customTheme";
+import SplashScreen from "./pages/SplashScreen";
 
 function App()
 {
   const customTheme = getTheme({ mode: 'light' });
 
   return (
-    <ThemeProvider theme={customTheme} >
-      <div className="App">
-      <CssBaseline />
-        <Switch>
-          <AuthProtectedRoute exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/recup" component={RecupPassword} />
-          <AuthProtectedRoute path="/dashboard/:section" component={Dashboard} />
-          <Route path="/shared_schedule/:token" component={SharedSchedule} />
-          <Route exact path="/404" component={Screen404} />
-          <InvalideRoute />
-        </Switch>
-      </div>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={customTheme} >
+        <div className="App">
+          <CssBaseline />
+          <Switch>
+            <AuthProtectedRoute exact path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/recup" component={RecupPassword} />
+            <AuthProtectedRoute path="/dashboard/:section?/:subsection?/:subsubsection?" component={Dashboard} />
+            <Route path="/shared_schedule/:token" component={SharedSchedule} />
+            <Route exact path="/404" component={Screen404} />
+            <Route exact path="/splash" component={SplashScreen} />
+            <InvalideRoute />
+          </Switch>
+        </div>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

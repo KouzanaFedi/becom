@@ -4,7 +4,7 @@ import mulish700 from '../../fonts/mulish-v3-latin-700.ttf';
 import InvoiceTableItem from "./invoicePDF/InvoiceTableItem";
 import InvoiceTotal from "./invoicePDF/InvoiceTotal";
 import imagePlaceholder from "../../assets/imagePlaceholder.jpg";
-import { IMAGE_ENDPOINT } from "../../config";
+import { useEffect, useRef, useState } from "react";
 
 Font.register({
     family: 'mulish',
@@ -198,10 +198,20 @@ const styles = StyleSheet.create({
 
 const InvoiceView = ({ invoice, invoiceUI }) =>
 {
+    const [image, setImage] = useState(imagePlaceholder);
+    const ref = useRef(null);
+
+    useEffect(() =>
+    {
+        if (invoice?.image !== null) {
+            setImage(invoice?.image);
+        }
+    }, [invoice])
+
     return <Document >
         <Page size="A4" style={styles.page} >
             <View style={styles.header} fixed >
-                <Image src={invoice?.image !== null ? `${IMAGE_ENDPOINT}${invoice.image}` : imagePlaceholder} style={styles.logo} />
+                <Image ref={ref} src={image} style={styles.logo} />
                 <View style={styles.headerData}>
                     <Text style={styles.title}>{invoice?.invoiceType !== undefined ? invoice.invoiceType : "%Invoice title%"}</Text>
                     <Text style={styles.ref}>Réf. : {invoice?.generalInfo?.ref !== undefined ? invoice.generalInfo.ref : "%Ref%"}</Text>

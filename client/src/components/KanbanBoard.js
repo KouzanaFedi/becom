@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Container, makeStyles, Paper, Button, Box } from "@material-ui/core"
+import { Container, Paper, Button, Box } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Board from 'react-trello';

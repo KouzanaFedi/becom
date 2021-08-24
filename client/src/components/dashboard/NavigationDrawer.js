@@ -1,4 +1,5 @@
-import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles } from "@material-ui/core"
+import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useDispatch, useSelector } from "react-redux";
 import { CLOSE_DRAWER, OPEN_DRAWER, uiDrawerState, PIN_DRAWER, UNPIN_DRAWER } from "../../redux/ui/drawerReducer";
 import { ChevronLeft, ChevronRight, ExitToApp } from '@material-ui/icons/';

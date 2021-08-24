@@ -1,4 +1,5 @@
-import { Box, CircularProgress, IconButton, makeStyles, Paper } from "@material-ui/core";
+import { Box, CircularProgress, IconButton, Paper } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { ArrowLeft, ArrowRight } from '@material-ui/icons';
 import { useLayoutEffect } from "react";
 import { useRef } from "react";
@@ -48,30 +49,36 @@ const InvoicePageNavigation = ({ page, setPage }) =>
         return () => window.removeEventListener('resize', updateScale);
     }, [ref, dispatch])
 
-    return <Box mb={1}>
-        <Paper ref={ref} className={classes.root}>
-            {pdfPages === null ? <CircularProgress size='24px' /> : <div className={classes.pagesNavigation}>
-                {page !== 1 ? <IconButton onClick={() =>
-                {
-                    if (page > 1) {
-                        setPage(page - 1)
-                    }
-                }}>
-                    <ArrowLeft />
-                </IconButton> :
-                    <div className={classes.blankSpace} />}
-                {page} / {pdfPages}
-                {page < pdfPages ? <IconButton onClick={() =>
-                {
-                    if (page < pdfPages) {
-                        setPage(page + 1)
-                    }
-                }}>
-                    <ArrowRight />
-                </IconButton> : <div className={classes.blankSpace} />}
-            </div>}
-        </Paper>
-    </Box>
+    return (
+        <Box mb={1}>
+            <Paper ref={ref} className={classes.root}>
+                {pdfPages === null ? <CircularProgress size='24px' /> : <div className={classes.pagesNavigation}>
+                    {page !== 1 ? <IconButton
+                        onClick={() =>
+                        {
+                            if (page > 1) {
+                                setPage(page - 1)
+                            }
+                        }}
+                        size="large">
+                        <ArrowLeft />
+                    </IconButton> :
+                        <div className={classes.blankSpace} />}
+                    {page} / {pdfPages}
+                    {page < pdfPages ? <IconButton
+                        onClick={() =>
+                        {
+                            if (page < pdfPages) {
+                                setPage(page + 1)
+                            }
+                        }}
+                        size="large">
+                        <ArrowRight />
+                    </IconButton> : <div className={classes.blankSpace} />}
+                </div>}
+            </Paper>
+        </Box>
+    );
 }
 
 export default InvoicePageNavigation;

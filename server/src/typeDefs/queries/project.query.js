@@ -2,21 +2,35 @@ import { gql } from 'apollo-server-express';
 
 export const project = gql`
     type Query {
-    getTaskTypes: [TaskType!]!
-    getActiveTaskTypes: [TaskType!]!
-    getProjectsByOwner(owner: String!): [Project!]!
-    getTasksByProject(projectId: String!): ProjectData
+    getProjectsByClient(client: String!): [Project!]!
+    getProjectById(id: String!): ProjectData
+    getTags: [Tag!]!
+    getStatusOptions: [Status!]!
+    getMembers: [Member!]!
   }
 
     type Mutation {
-    createProject(name: String!, owner: String!): BasicResponse
-    createTaskType(name: String!): BasicResponse
-    updateTaskType(id: String!, name: String!): BasicResponse
-    updateActiveTaskTypeState(id: String!, active: Boolean!): BasicResponse
-    createTask(name: String!, typeId: String!, assignedToId: String!, start: String!, end: String!, description: String!, projectId: String!): Task
-    updateTaskPrio(taskId: String!, priority: Int!): BasicResponse
-    deleteTask(taskId: String!): IdResponse
-    updateTaskInfo(taskId: String!, name: String, description: String, taskTypeId: String, assignedToId: String, start: String, end: String): Task
-    updateTaskState(taskId: String!, state: String!, oldState: String!): TaskState
+    createProject(title: String!, client: String!): BasicResponse
+    deleteProject(id: String!): BasicResponse
+    addStatusesToProject(projectId: String!, status: [String!]): BasicResponse
+    createServiceForProject(title: String!, description: String!, dueTime: String, projectId: String!): BasicResponse
+    deleteServiceFromProject(serviceId: String!, projectId: String!): BasicResponse
+    createTaskForService(title: String!, description: String!, dueTime: String, status: String!, serviceId: String!): BasicResponse
+    deleteTaskFromService(serviceId: String!, taskId: String!): BasicResponse
+    addTagToTask(id: String!, tag: String!): BasicResponse
+    deleteTagFromTask(id: String!, tag: String!): BasicResponse
+    updateTaskDescription(id : String!, description: String!): BasicResponse
+    assignMemberToTask(id: String!, member: String!): BasicResponse
+    unassignMemberFromTask(id: String!, member: String!): BasicResponse
+    setTaskCoverImage(src: String, taskId: String!): BasicResponse
+    setTaskStatus(status: String, taskId: String!): BasicResponse
+    setTaskDueTime(id: String!, time: String): BasicResponse
+    sendAttachementToTask(file: Upload!, addedBy: String!, projectTitle: String!, taskId: String!): Attachement
+    deleteAttachement(attachementId: String!,taskId: String!): BasicResponse
+    sendNotesToProject(sender: String!, message: String!, id: String!, toTask: Boolean!): BasicResponse
+    createStatus(title: String!, color: String!, type: String!): BasicResponse
+    deleteStatus(id: String!): BasicResponse
+    createTag(title: String!, color: String!): Tag
+    deleteTag(id: String!): BasicResponse
   }
 `;

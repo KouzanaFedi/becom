@@ -1,4 +1,14 @@
-import { Box, Button, CircularProgress, ClickAwayListener, Grid, makeStyles, Tooltip, Typography, Zoom } from "@material-ui/core";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    ClickAwayListener,
+    Grid,
+    Tooltip,
+    Typography,
+    Zoom,
+} from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useState } from "react";
 import { CLIENT_ADDRESS } from "../../../../config";
 import { Check } from "@material-ui/icons";

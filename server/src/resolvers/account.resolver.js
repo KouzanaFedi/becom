@@ -151,16 +151,15 @@ export const accountResolver = {
       const file = await args.file;
       const { email } = args;
 
-      const loaded = await processUpload(file);
-
-      await User.findOneAndUpdate({ email }, { $set: { image: loaded.id } }, { new: true }, (err, _) =>
+      const loaded = await processUpload(file, '/profiles');
+      await User.findOneAndUpdate({ email }, { $set: { image: loaded.src } }, { new: true }, (err, _) =>
       {
         if (err) {
           throw new AuthenticationError(RECUP_CODE_EXPIRED_ERROR.toString());
         }
       })
       return {
-        name: loaded.id
+        name: loaded.src
       }
     }
   },

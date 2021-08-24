@@ -1,5 +1,6 @@
 import React from 'react';
-import { CssBaseline, Grid, makeStyles } from '@material-ui/core';
+import { CssBaseline, Grid } from '@material-ui/core';
+import makeStyles from '@material-ui/styles/makeStyles';
 import RecupPasswordForm from '../components/auth/RecupPasswordForm';
 import backgroundBlur from '../assets/backgroundBlur.png';
 

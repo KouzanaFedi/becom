@@ -1,4 +1,5 @@
-import { makeStyles, MenuItem, Typography } from "@material-ui/core"
+import { MenuItem, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { menuActiveTab } from "../../redux/ui/menuSlice";

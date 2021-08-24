@@ -1,5 +1,6 @@
 import { useMutation } from "@apollo/client";
-import { Dialog, DialogActions, DialogContent, makeStyles, Button, Typography } from "@material-ui/core"
+import { Dialog, DialogActions, DialogContent, Button, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { UPDATE_PROFILE_IMG } from "../api/auth";
@@ -27,7 +28,7 @@ const useStyles = makeStyles(() => ({
         marginRight: '15px'
     }
 }));
-const UploadProfileImgDial = ({ open, onClose, name, email }) =>
+const UploadProfileImgDial = ({ open, onClose, name, email, disableBackdropClick, disableEscapeKeyDown }) =>
 {
     const classes = useStyles();
     const [newImage, setNewImage] = useState(null);
@@ -44,7 +45,21 @@ const UploadProfileImgDial = ({ open, onClose, name, email }) =>
         }
     });
 
-    return <Dialog open={open} fullWidth maxWidth='xs' onEscapeKeyDown={onClose}>
+    const handleClose = (event, reason) =>
+    {
+        if (disableBackdropClick && reason === "backdropClick") {
+            return false;
+        }
+
+        if (disableEscapeKeyDown && reason === "escapeKeyDown") {
+            return false;
+        }
+
+        if (typeof onClose === "function") {
+            onClose();
+        }
+    }
+    return <Dialog open={open} fullWidth maxWidth='xs' onClose={handleClose} >
         <DialogContent className={classes.root}>
             <div className={classes.uploadBtn}>
                 <input

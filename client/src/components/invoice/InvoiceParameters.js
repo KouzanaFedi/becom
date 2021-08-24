@@ -1,5 +1,6 @@
 import { Grid, Paper, Typography } from "@material-ui/core";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useSelector } from "react-redux";
 import { invoiceData } from "../../redux/logic/projectManager/invoiceSlice";
 import InvoiceParamGeneralInfo from "./invoiceParameters/InvoiceParamGeneralInfo";
@@ -62,7 +63,7 @@ const InvoiceParameters = ({ openDial }) =>
         <Box p={2} className={classes.root}>
             <Typography className={classes.title}>Invoice templates </Typography>
             <InvoiceParamGeneralInfo invoice={invoice} classes={classes} />
-            <Grid container spacing={2} justify="center">
+            <Grid container spacing={2} justifyContent="center">
                 <InvoiceParamEntreprise invoice={invoice} classes={classes} />
                 <InvoiceParamClient invoice={invoice} classes={classes} />
             </Grid>

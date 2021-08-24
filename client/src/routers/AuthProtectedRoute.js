@@ -1,11 +1,11 @@
 import { useLazyQuery } from "@apollo/client";
-import { CircularProgress } from "@material-ui/core";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, useHistory } from "react-router";
 import { TOKEN_VERIFY } from "../api/auth";
 import { INIT_USER_DATA, userDataInit } from "../redux/logic/userSlice";
 import { AUTH_TOKEN } from "../utils/constants";
+import SplashScreen from "../pages/SplashScreen"
 
 const AuthProtectedRoute = ({ component, path }) =>
 {
@@ -39,7 +39,7 @@ const AuthProtectedRoute = ({ component, path }) =>
     }, [isAuth, userInit, userDataInitQuery, history]);
 
     return (isAuth ?
-        (userInit ? <Route exact path={path} component={component} /> : <CircularProgress />) :
+        (userInit ? <Route exact path={path} component={component} /> : <SplashScreen />) :
         <Redirect to='/login' />);
 }
 

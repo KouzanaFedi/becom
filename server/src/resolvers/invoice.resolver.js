@@ -1,5 +1,5 @@
 import { InvoiceTemplate } from "../schema/invoices/invoiceTemplate";
-import { processUploadInvoiceImages } from "../utils/fileUpload";
+import { processUpload } from "../utils/fileUpload";
 import { fullCalendarDateFormat, serializeMongoDocument } from "../utils/util";
 import fs from 'fs';
 import path from "path";
@@ -45,7 +45,7 @@ export const invoiceResolver = {
             let imageUploaded;
 
             if (imageUpload) {
-                imageUploaded = await processUploadInvoiceImages(imageUpload);
+                imageUploaded = await processUpload(imageUpload, '/invoiceImages');
             }
 
             const invoiceTemplate = await InvoiceTemplate.create({
@@ -81,7 +81,7 @@ export const invoiceResolver = {
             let imageUploaded;
 
             if (imageUpload) {
-                imageUploaded = await processUploadInvoiceImages(imageUpload);
+                imageUploaded = await processUpload(imageUpload, '/invoiceImages');
             }
 
             const invoiceTemplate = await InvoiceTemplate.findByIdAndUpdate(id, {

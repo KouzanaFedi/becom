@@ -1,4 +1,5 @@
-import { Box, CircularProgress, Container, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Box, CircularProgress, Container, Divider, Grid, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useDispatch, useSelector } from "react-redux";
 import { recupEmail, recupCode, canRecupCode, SET_EMAIL_RECUP, SET_CODE_READY_RECUP, SET_CODE_RECUP, SET_STEP_TWO, SET_CODE_ERROR, recupStep, passwordCode, SET_NEW_PASSWORD_RECUP, SET_STEP_THREE, SET_NEW_PASSWORD_ERROR, RESET_RECUP } from "../../redux/logic/auth/passwordRecupReducer";
 import { useLazyQuery, useMutation } from "@apollo/client";

@@ -86,7 +86,7 @@ export const fullCalendarTimeFormat = (date) =>
 export const getScheduleSharingToken = (payload) =>
 {
   const token = jwt.sign(payload, process.env.SECRET_KEY, {
-    expiresIn: '356d', 
+    expiresIn: '356d',
   });
   return token;
 };
@@ -109,4 +109,15 @@ export const serializeMongoDocument = (document) =>
   delete doc._id;
   delete doc.__v;
   return doc;
+}
+
+export const prettifyDate = (date) =>
+{
+  const formattedDate = new Date(date);
+  const year = formattedDate.getFullYear();
+  const month = `${formattedDate.getMonth() + 1}`.padStart(2, '0');
+  const day = `${formattedDate.getDate()}`.padStart(2, '0');
+  const hour = `${formattedDate.getHours()}`.padStart(2, '0');
+  const minute = `${formattedDate.getMinutes()}`.padStart(2, '0');
+  return `${month}/${day}/${year} ${hour}:${minute}`;
 }

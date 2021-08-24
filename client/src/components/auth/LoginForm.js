@@ -1,4 +1,5 @@
-import { Box, Checkbox, CircularProgress, Container, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Box, Checkbox, CircularProgress, Container, Grid, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation } from "react-router-dom"
 import { logInPassword, logInEmail, SET_PASSWORD_LOGIN, SET_EMAIL_LOGIN, logInCanSubmit, SET_PASSWORD_ERROR_LOGIN, RESET_LOGIN, logInStaySignedIn, SET_STAY_SIGNED_IN } from "../../redux/logic/auth/logInReducer";
@@ -199,13 +200,12 @@ const LoginForm = () =>
                     <Typography>Keep me signed in</Typography>
                 </Box>
                 <ThemedButton
-
                     buttonStyle={{ type: "primary" }}
                     variant="outlined"
                     disabled={!canSubmit}
                     onClick={handleSubmit}
                 >
-                    {loading ? <CircularProgress color="secondary"
+                    {loading ? <CircularProgress color="primary"
                         size={24} /> : 'Sign in'}
                 </ThemedButton>
 

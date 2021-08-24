@@ -1,4 +1,5 @@
-import { Box, Grid, Typography, makeStyles, Button } from "@material-ui/core"
+import { Box, Grid, Typography, Button } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import InvoiceItem from "./InvoiceItem";
 import { Add } from "@material-ui/icons"
 

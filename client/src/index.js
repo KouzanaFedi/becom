@@ -9,10 +9,10 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { AUTH_TOKEN } from "./utils/constants";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import MomentUtils from "@date-io/moment";
 import { API, SUBSCRIPTION } from "./config";
 import { createUploadLink } from 'apollo-upload-client';
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
+import DateAdapter from '@material-ui/lab/AdapterMoment';
 
 
 import "./index.css";
@@ -64,9 +64,10 @@ ReactDOM.render(
   <Provider store={store}>
     <ApolloProvider client={client}>
       <BrowserRouter>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
+      
+        <LocalizationProvider dateAdapter={DateAdapter}>
           <App />
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </BrowserRouter>
     </ApolloProvider>
   </Provider>

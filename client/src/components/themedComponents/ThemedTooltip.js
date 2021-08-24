@@ -1,4 +1,5 @@
-import { makeStyles, Tooltip } from "@material-ui/core"
+import { Tooltip } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { forwardRef } from "react";
 
 const useStyles = makeStyles((theme) => ({

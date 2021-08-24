@@ -1,4 +1,5 @@
-import { CircularProgress, Dialog, DialogContent, makeStyles, Paper } from "@material-ui/core";
+import { CircularProgress, Dialog, DialogContent, Paper } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { usePDF } from "@react-pdf/renderer";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";

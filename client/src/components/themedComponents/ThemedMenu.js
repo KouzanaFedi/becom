@@ -1,7 +1,6 @@
 import MenuList from '@material-ui/core/MenuList';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import ThemedSectionIcon from './ThemedSectionIcon';
-
 import exitIcon from '../../assets/icons/exit.png';
 import house from '../../assets/icons/house.png';
 import { useHistory } from 'react-router-dom';
@@ -11,12 +10,12 @@ import { SET_ACTIVE_TAB, UNSET_ACTIVE_TAB } from '../../redux/ui/menuSlice';
 import { DASHBOARD_SECTIONS } from '../../routers/DashboardSections';
 
 const useStyles = makeStyles((theme) => ({
-    root: (small) => ({
+    root: ({ small }) =>
+    ({
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'center',
-        maxWidth: `${small ? '400px' : '460px'}`,
+        maxWidth: small ? '376px' : '476px',
         padding: '8px',
     }),
     paper: {
@@ -24,20 +23,21 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ThemedMenu = ({ open, handleListKeyDown, small = false }) =>
+const ThemedMenu = ({ open, handleListKeyDown, small = false, close }) =>
 {
     const history = useHistory();
     const dispatch = useDispatch();
     const classes = useStyles({ small });
-
     function setActiveSection(name)
     {
         dispatch(SET_ACTIVE_TAB({ name }));
+        if (close) close()
     }
 
     function unsetActiveSection()
     {
         dispatch(UNSET_ACTIVE_TAB());
+        if (close) close()
     }
 
     function handleLogOut()

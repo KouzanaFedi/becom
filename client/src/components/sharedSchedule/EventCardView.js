@@ -1,5 +1,15 @@
 import { useMutation } from "@apollo/client";
-import { Card, CardActions, CardContent, CardHeader, Grid, Button, makeStyles, Box, CircularProgress } from "@material-ui/core"
+import {
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    Grid,
+    Button,
+    Box,
+    CircularProgress,
+} from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useDispatch } from "react-redux";
 import { UPDATE_EVENT_STATE_STATUS } from "../../api/events";
 import { DELETE_EVENT_FROM_LIST, INIT_EVENT_NOTES, PUSH_NEW_NOTE } from "../../redux/logic/projectManager/sharedScheduleSlice";

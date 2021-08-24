@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useSubscription } from "@apollo/client";
-import { Box, CircularProgress, IconButton, makeStyles, TextField } from "@material-ui/core";
+import { Box, CircularProgress, IconButton, TextField } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { GET_NOTES_BY_EVENT_ID, NEW_NOTES_SUBSCRIPTION, SEND_NOTE } from "../../api/events";
 import { Send } from '@material-ui/icons'
 import { useState } from "react";

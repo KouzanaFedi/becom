@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Add, Edit } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { SHARED_LINKS_BY_PROJECTID } from "../../../../api/events";

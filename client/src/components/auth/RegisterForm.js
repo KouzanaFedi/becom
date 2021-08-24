@@ -1,4 +1,5 @@
-import { Box, CircularProgress, Container, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Box, CircularProgress, Container, Grid, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerCanSubmit, registerEmail, registerName, SET_NAME_REGISTER, SET_EMAIL_REGISTER, SET_PASSWORD_REGISTER, SET_CONFIRME_PASSWORD_REGISTER, UPDATE_FIELDS_WHEN_EMAIL_EXISTS_REGISTER, registerPassword, registerConfirmePassword, RESET_REGISTER } from "../../redux/logic/auth/registerReducer";

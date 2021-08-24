@@ -1,4 +1,5 @@
-import { Box, Container, CssBaseline, makeStyles, Typography } from "@material-ui/core";
+import { Box, Container, CssBaseline, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import ThemedAppBar from "../components/themedComponents/ThemedAppBar";
 import { useSelector } from "react-redux";
 import { userData } from '../redux/logic/userSlice';
@@ -65,7 +66,7 @@ const Home = () =>
                 <Typography className={classes.greetingMsg}>{user.name !== null && greetingMsg(user.name)}</Typography>
             </Box>
             <Box>
-                <ThemedMenu open={true} handleListKeyDown={() => { }} />
+                <ThemedMenu open={true} />
             </Box>
         </Container>
     </div>

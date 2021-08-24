@@ -1,4 +1,5 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, makeStyles } from "@material-ui/core"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { scheduleDisplayCalendarForm, SET_DISPLAY_CALENDAR_FORM } from "../../../redux/logic/projectManager/scheduleSlice";
@@ -52,7 +53,7 @@ const ShareScheduleDialog = ({ open, onClose }) =>
                             <SharedLinks />
                         </Box>
                     </Grid>
-                    <Grid container item xs={9} justify='flex-end' className={classes.formBorder}>
+                    <Grid container item xs={9} justifyContent='flex-end' className={classes.formBorder}>
                         <Grid item xs={12} >
                             <Box py={2}>
                                 {displayCalendarForm != null && <RightDialComponent />}

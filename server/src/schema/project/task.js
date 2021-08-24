@@ -1,42 +1,31 @@
 import { Schema, model, Types } from 'mongoose';
 
 const TaskSchema = new Schema({
-    name: {
+    title: {
         type: String,
         required: true,
-    },
-    typeId: {
-        type: Types.ObjectId,
-        required: true,
-    },
-    assignedToId: {
-        type: Types.ObjectId,
-        required: true,
-    },
-    start: {
-        type: Date,
-        required: true,
-    },
-    end: {
-        type: Date,
-        required: false
-    },
-    state: {
-        type: String,
-        enum: ['todo', 'doing', 'done', 'toreview'],
-        default: 'todo'
     },
     description: {
         type: String,
         required: true
     },
-    priority: {
-        type: Number,
-        default: 0
+    dueTime: {
+        type: Date,
+        required: false
     },
-    projectId: {
+    tags: [{ type: Types.ObjectId, ref: 'tag' }],
+    members: [{ type: Types.ObjectId, ref: 'users' }],
+    attachement: [{ type: Types.ObjectId, ref: 'attachement' }],
+    notes: [{ type: Types.ObjectId, ref: 'projectNote' }],
+    coverImage: {
+        type: String,
+        required: false,
+        default: null
+    },
+    status: {
         type: Types.ObjectId,
-        required: true
+        required: true,
+        default: null
     }
 }, { timestamps: true });
 

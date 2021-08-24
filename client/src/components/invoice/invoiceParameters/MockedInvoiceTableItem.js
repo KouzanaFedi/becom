@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ADD_ITEM_HEIGHT } from "../../../redux/ui/invoiceUiSlice";

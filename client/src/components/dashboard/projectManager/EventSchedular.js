@@ -1,7 +1,8 @@
 import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction';
-import { Box, Grid, makeStyles, Paper } from "@material-ui/core";
+import { Box, Grid, Paper } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { useQuery } from "@apollo/client";
 import { EVENTS } from "../../../api/events";
 import { useDispatch, useSelector } from "react-redux";

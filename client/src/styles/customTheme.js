@@ -1,8 +1,8 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme, adaptV4Theme } from "@material-ui/core";
 
 function getTheme(theme)
 {
-    return createMuiTheme({
+    return createTheme(adaptV4Theme({
         typography: {
             fontFamily: [
                 'Helvetica Neue', 'Mulish', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'sans-serif',
@@ -32,10 +32,10 @@ function getTheme(theme)
                 root: {
                     backgroundColor: theme.mode === 'dark' ? '#3f3f3f' : '#EFE'
                 }
-            }
+            },
         },
         palette: {
-            type: theme.mode,
+            mode: theme.mode,
             primary: {
                 main: 'rgba(123,33,125,1)',
             },
@@ -52,7 +52,7 @@ function getTheme(theme)
                 default: theme.mode === 'dark' ? '#3f3f3f' : '#EFEFEF',
             }
         },
-    });
+    }));
 }
 
 export default getTheme;

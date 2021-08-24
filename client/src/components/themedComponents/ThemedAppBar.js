@@ -1,6 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { AppBar, Toolbar, CssBaseline, useScrollTrigger, Slide, makeStyles, Box, Button, Popper, Paper, ClickAwayListener } from '@material-ui/core';
+import
+{
+    AppBar,
+    Toolbar,
+    CssBaseline,
+    useScrollTrigger,
+    Slide,
+    Box,
+    Button,
+    Popper,
+    Paper,
+    ClickAwayListener,
+    Typography,
+} from '@material-ui/core';
+import makeStyles from '@material-ui/styles/makeStyles';
 import Logo from '../../assets/comguru-logo-white.png';
 import { ArrowDropDown } from '@material-ui/icons';
 import { Fragment } from 'react';
@@ -51,6 +65,19 @@ const useStyles = makeStyles((theme) => ({
         },
         marginTop: '5px',
     },
+    sectionName: {
+        marginLeft: '5px',
+        fontSize: "20px",
+        fontFamily: 'Dancing Script',
+        fontWeight: '600'
+    },
+    logo: {
+        padding: '3px 0px'
+    },
+    popper: {
+        top: '45px !important',
+        left: '5px !important'
+    }
 }));
 
 function HideOnScroll(props)
@@ -103,14 +130,20 @@ const ThemedAppBar = (props) =>
         if (prevOpen.current === true && open === false) {
             anchorRef.current.focus();
         }
-        
+
         prevOpen.current = open;
     }, [open]);
 
+    function getSectionName(name)
+    {
+        return name[0].toUpperCase() + name.substring(1);
+    }
+
     return (
-        <Fragment>
+        <Fragment >
             <CssBaseline />
             <Popper
+                className={classes.popper}
                 open={open}
                 anchorEl={anchorRef.current}
                 role={undefined}
@@ -118,7 +151,7 @@ const ThemedAppBar = (props) =>
                 <Paper classes={{ root: classes.paper }}>
                     <ClickAwayListener onClickAway={handleClose} >
                         <div> {/*Avoid "Invalid prop `children` supplied to `ClickAwayListener`. Expected an element that can hold a ref. Did you accidentally use a plain function component for an element instead?" */}
-                            <ThemedMenu small open={open} handleListKeyDown={handleListKeyDown} />
+                            <ThemedMenu small open={open} close={() => setOpen(false)} handleListKeyDown={handleListKeyDown} />
                         </div>
                     </ClickAwayListener>
                 </Paper>
@@ -135,9 +168,10 @@ const ThemedAppBar = (props) =>
                                 disableRipple
                                 className={classes.menuButton}
                             >
-                                <img alt="logo" src={Logo} height="36px" />
+                                <img className={classes.logo} alt="logo" src={Logo} height="36px" />
+                                {props.name && <Typography className={classes.sectionName}>{getSectionName(props.name)}</Typography>}
                                 <ArrowDropDown />
-                            </Button> : <img alt="logo" src={Logo} height="36px" />}
+                            </Button> : <img className={classes.logo} alt="logo" src={Logo} height="36px" />}
                         </Box>
                     </Box>
                 </AppBar>

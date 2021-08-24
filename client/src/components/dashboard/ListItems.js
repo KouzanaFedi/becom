@@ -3,7 +3,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Link } from 'react-router-dom';
 import { Work } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';

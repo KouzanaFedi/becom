@@ -31,6 +31,7 @@ const userSlice = createSlice({
 export const { INIT_USER_DATA, SET_PROFILE_IMG } = userSlice.actions;
 
 export const userData = (state) => state.user.data;
+export const userID = (state) => state.user.data.id;
 export const userDataInit = (state) => state.user.userInit;
 
 export default userSlice.reducer;

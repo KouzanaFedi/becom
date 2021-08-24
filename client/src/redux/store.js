@@ -10,6 +10,8 @@ import userSlice from "./logic/userSlice";
 import menuSlice from "./ui/menuSlice";
 import invoiceSlice from "./logic/projectManager/invoiceSlice";
 import invoiceUiSlice from "./ui/invoiceUiSlice";
+import projectsUiSlice from "./ui/projectsUiSlice";
+import projectSlice from "./logic/projectManager/projectSlice";
 
 export default configureStore({
   reducer: {
@@ -24,5 +26,7 @@ export default configureStore({
     kanbanBoard: kanbanBoardSlice,
     invoice: invoiceSlice,
     invoiceUI: invoiceUiSlice,
+    projectsUi: projectsUiSlice,
+    project: projectSlice
   }
 });

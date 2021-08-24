@@ -1,4 +1,5 @@
-import { Avatar, Badge, IconButton, makeStyles } from "@material-ui/core"
+import { Avatar, Badge, IconButton } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { AddAPhoto } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +26,7 @@ const ThemedAvatar = ({ type, opneDial, name, image }) =>
 {
     const classes = useStyles();
     return <Badge
-        overlap="circle"
+        overlap="circular"
         anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',

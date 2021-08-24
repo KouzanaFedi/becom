@@ -1,16 +1,19 @@
-import { makeStyles, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 const useStyles = makeStyles({
     root: (props) => ({
         minHeight: '40px',
         lineHeight: '20px',
-        '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-                borderRadius: props.borderRadius ? `${props.borderRadius}` : '5px',
-            },
-            backgroundColor: props.backgroundColor ? props.backgroundColor : 'transparent',
-            fontSize: '14px',
+        '& fieldset': {
+            borderRadius: props.borderRadius ? `${props.borderRadius}` : '5px',
         },
+        '& legend': {
+            width: props.label !== undefined ? 'auto' : 'unset'
+        },
+        backgroundColor: props.backgroundColor ? props.backgroundColor : 'transparent',
+        fontSize: '14px',
         '& .MuiSelect-root': {
             textAlign: 'start'
         }
@@ -23,9 +26,9 @@ const ThemedTextField = (props) =>
     const fieldProps = { ...props };
     delete fieldProps.borderRadius;
     delete fieldProps.backgroundColor;
+
     return < TextField
         inputProps={props.inputProps}
-        variant="outlined"
         size="small"
         classes={{ root: classes.root }}
         {...fieldProps}
