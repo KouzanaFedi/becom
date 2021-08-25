@@ -32,7 +32,8 @@ const useStyles = makeStyles(() => ({
         height: '34px'
     }
 }));
-const NoteSender = ({ toTask, id, serviceId }) =>
+
+const NoteSender = ({ taskId, serviceId }) =>
 {
     const classes = useStyles();
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -45,7 +46,10 @@ const NoteSender = ({ toTask, id, serviceId }) =>
         onCompleted: () =>
         {
             dispatch(ADD_NOTE_TO_PROJECT({
-                serviceId, taskId: id, message: messageSend, sender: {
+                serviceId,
+                taskId,
+                message: messageSend,
+                sender: {
                     _id: user.id,
                     name: user.name,
                     image: user.image,
@@ -58,7 +62,7 @@ const NoteSender = ({ toTask, id, serviceId }) =>
     const submit = ({ note }) =>
     {
         setMessageSend(note);
-        sendNote({ variables: { sender: user.id, message: note, id, toTask } });
+        sendNote({ variables: { sender: user.id, message: note, id: taskId ? taskId : serviceId, toTask: taskId !== undefined } });
         if (!loading) reset();
     }
 

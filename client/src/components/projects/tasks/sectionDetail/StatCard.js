@@ -10,7 +10,6 @@ const useStyles = makeStyles(() => ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-around',
-        marginBottom: '10px'
     },
     title: {
         fontSize: '16px',
@@ -35,13 +34,13 @@ const useStyles = makeStyles(() => ({
     }),
 }));
 
-const StatCard = ({ data: { name, value, color, type } }) =>
+const StatCard = ({ data: { title, tasks, color, type } }) =>
 {
     const classes = useStyles({ color });
     return <Paper className={classes.root}>
-        <Typography className={classes.title}>{name.toUpperCase()}</Typography>
+        <Typography className={classes.title}>{title.toUpperCase()}</Typography>
         <div className={classes.numSection}>
-            <Typography className={classes.number}>{value}</Typography>
+            <Typography className={classes.number}>{tasks.length}</Typography>
             <Typography className={classes.subTitle}>{type}</Typography>
         </div>
     </Paper>

@@ -16,7 +16,6 @@ import { AddAttachementToTask } from '../../../api/project';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../../redux/logic/userSlice';
 import { ADD_ATTACHEMENT_TO_TASK, clientsActiveProject } from '../../../redux/logic/projectManager/projectSlice';
-import ThemedBackDrop from '../../themedComponents/ThemedBackDrop';
 import Color from 'color';
 import DescriptionSection from './taskDetail/DescriptionSection';
 
@@ -115,11 +114,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const TaskDetail = ({ data }) =>
+const TaskDetail = ({ data, openBackDropOpen, closeBackDropOpen }) =>
 {
     const classes = useStyles();
     const [notesArray, setNotesArray] = useState([]);
-    const [backDropOpen, setBackDropOpen] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -139,7 +137,7 @@ const TaskDetail = ({ data }) =>
                 _id: user.id
             };
             dispatch(ADD_ATTACHEMENT_TO_TASK({ addedBy, createdAt, size, src, _id, taskId: data._id, serviceId: data.serviceId }));
-            setBackDropOpen(false);
+            closeBackDropOpen();
         }
     });
 
@@ -161,8 +159,8 @@ const TaskDetail = ({ data }) =>
                 menuContent={<DueDateOption
                     taskId={data._id}
                     serviceId={data.serviceId}
-                    openBackDropOpen={() => setBackDropOpen(true)}
-                    closeBackDropOpen={() => setBackDropOpen(false)}
+                    openBackDropOpen={openBackDropOpen}
+                    closeBackDropOpen={closeBackDropOpen}
                     taskDueTime={data.dueTime}
                 />}
             />
@@ -175,8 +173,8 @@ const TaskDetail = ({ data }) =>
                     assignedMembers={data.members}
                     taskId={data._id}
                     serviceId={data.serviceId}
-                    openBackDropOpen={() => setBackDropOpen(true)}
-                    closeBackDropOpen={() => setBackDropOpen(false)}
+                    openBackDropOpen={openBackDropOpen}
+                    closeBackDropOpen={closeBackDropOpen}
                 />}
             />
             <AppBarMenuButton
@@ -188,8 +186,8 @@ const TaskDetail = ({ data }) =>
                     usedTags={data.tags}
                     taskId={data._id}
                     serviceId={data.serviceId}
-                    openBackDropOpen={() => setBackDropOpen(true)}
-                    closeBackDropOpen={() => setBackDropOpen(false)}
+                    openBackDropOpen={openBackDropOpen}
+                    closeBackDropOpen={closeBackDropOpen}
                 />}
             />
             <div className={classes.uploadBtn}>
@@ -200,7 +198,7 @@ const TaskDetail = ({ data }) =>
                     type="file"
                     onChange={({ target }) =>
                     {
-                        setBackDropOpen(true);
+                        openBackDropOpen();
                         const file = target.files[0];
                         sendAttachement({ variables: { file, addedBy: user.id, taskId: data._id, projectTitle: currentProject.title } });
                     }} />
@@ -224,8 +222,8 @@ const TaskDetail = ({ data }) =>
             <DescriptionSection
                 serviceId={data.serviceId}
                 taskId={data._id}
-                openBackDropOpen={() => setBackDropOpen(true)}
-                closeBackDropOpen={() => setBackDropOpen(false)}
+                openBackDropOpen={openBackDropOpen}
+                closeBackDropOpen={closeBackDropOpen}
                 description={data.description} />
         </Grid>
         <Grid item xs={4}>
@@ -279,7 +277,7 @@ const TaskDetail = ({ data }) =>
                     </Box>
                     <Typography className={classes.semiBold}>Send note</Typography>
                 </div>
-                <NoteSender toTask id={data._id} serviceId={data.serviceId} />
+                <NoteSender taskId={data._id} serviceId={data.serviceId} />
             </Box>
         </Grid>
         <Grid item xs={12}>
@@ -293,7 +291,6 @@ const TaskDetail = ({ data }) =>
                 {notesArray.map((note) => <NoteFeed key={note._id} data={note} />)}
             </Box>
         </Grid>
-        <ThemedBackDrop backDropOpen={backDropOpen} />
     </Grid>
 }
 

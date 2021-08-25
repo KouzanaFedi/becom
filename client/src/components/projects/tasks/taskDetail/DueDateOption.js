@@ -3,9 +3,9 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import { useEffect, useState } from "react";
 import { DateTimePicker } from '@material-ui/lab';
 import { useMutation } from "@apollo/client";
-import { setTaskDueTime } from "../../../../api/project";
+import { setServiceDueTime, setTaskDueTime } from "../../../../api/project";
 import { useDispatch } from "react-redux";
-import { SET_TASK_DUE_TIME } from "../../../../redux/logic/projectManager/projectSlice";
+import { SET_SERVICE_DUE_TIME, SET_TASK_DUE_TIME } from "../../../../redux/logic/projectManager/projectSlice";
 import ThemedTextField from '../../../themedComponents/ThemedTextField';
 import { parseTimeTimePicker } from "../../../../utils/timeParser";
 
@@ -42,6 +42,15 @@ const DueDateOption = ({ taskId, serviceId, openBackDropOpen, closeBackDropOpen,
         }
     });
 
+
+    const [updateServiceDueTime] = useMutation(setServiceDueTime, {
+        onCompleted: () =>
+        {
+            dispatch(SET_SERVICE_DUE_TIME({ serviceId, time }));
+            closeBackDropOpen();
+        }
+    });
+
     useEffect(() =>
     {
         setDidMount(true);
@@ -51,7 +60,9 @@ const DueDateOption = ({ taskId, serviceId, openBackDropOpen, closeBackDropOpen,
     {
         if (didMount) {
             openBackDropOpen();
-            setDueTime({ variables: { id: taskId, time: time ? time.toString() : time } });
+            if (taskId) {
+                setDueTime({ variables: { id: taskId, time: time ? time.toString() : time } });
+            } else updateServiceDueTime({ variables: { id: serviceId, time: time ? time.toString() : time } });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [time]);

@@ -208,6 +208,29 @@ export const projectResolver = {
                 succes: true
             }
         },
+        updateServiceDescription: async (_, args) =>
+        {
+            const { id, description } = args;
+            const service = await Service.findById(id);
+            service.description = description;
+            service.save();
+
+            return {
+                succes: true
+            }
+        },
+        setServiceDueTime: async (_, args) =>
+        {
+            const { id, time } = args;
+
+            const service = await Service.findById(id);
+            service.dueTime = time;
+            service.save();
+
+            return {
+                succes: true
+            }
+        },
         //task
         createTaskForService: async (_, args) =>
         {

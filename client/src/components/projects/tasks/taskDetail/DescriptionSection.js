@@ -6,8 +6,8 @@ import ThemedTextField from "../../../themedComponents/ThemedTextField";
 import { useForm } from "react-hook-form";
 import Color from "color";
 import { useMutation } from "@apollo/client";
-import { updateTaskDescription } from "../../../../api/project";
-import { UPDATE_TASK_DESCRIPTION } from "../../../../redux/logic/projectManager/projectSlice";
+import { updateServiceDescription, updateTaskDescription } from "../../../../api/project";
+import { UPDATE_TASK_DESCRIPTION, UPDATE_SERVICE_DESCRIPTION } from "../../../../redux/logic/projectManager/projectSlice";
 import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles(() => ({
@@ -85,16 +85,30 @@ const DescriptionSection = ({ description, serviceId, openBackDropOpen, closeBac
         }
     });
 
+    const [sendServiceUpdate] = useMutation(updateServiceDescription, {
+        onCompleted: () =>
+        {
+            dispatch(UPDATE_SERVICE_DESCRIPTION({ description: descriptionStored, serviceId }));
+            closeBackDropOpen();
+        }
+    });
+
     function submit({ updateDescription })
     {
         setDescriptionStored(updateDescription);
         openBackDropOpen();
-        sendUpdate({
+        if (taskId) sendUpdate({
             variables: {
                 id: taskId,
                 description: updateDescription
             }
-        })
+        });
+        else sendServiceUpdate({
+            variables: {
+                id: serviceId,
+                description: updateDescription
+            }
+        });
         setEditing(false);
     }
 

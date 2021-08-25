@@ -56,15 +56,20 @@ const projectSlice = createSlice({
         ADD_NOTE_TO_PROJECT: (state, action) =>
         {
             const { serviceId, taskId, message, sender } = action.payload;
-            const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
-            const taskIndex = state.services[serviceIndex].tasks.findIndex((task) => task._id === taskId);
             const timestamp = new Date().getTime();
-            state.services[serviceIndex].tasks[taskIndex].notes.push({
+            const noteObj = {
                 _id: timestamp,
                 createdAt: timestamp,
                 message,
                 sender
-            });
+            };
+            const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
+
+            if (taskId) {
+                const taskIndex = state.services[serviceIndex].tasks.findIndex((task) => task._id === taskId);
+                state.services[serviceIndex].tasks[taskIndex].notes.push(noteObj);
+            } else state.services[serviceIndex].notes.push(noteObj);
+
         },
         SET_TASK_COVER_IMAGE: (state, action) =>
         {
@@ -133,11 +138,23 @@ const projectSlice = createSlice({
             const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
             const taskIndex = state.services[serviceIndex].tasks.findIndex((task) => task._id === taskId);
             state.services[serviceIndex].tasks[taskIndex].description = description;
-        }
+        },
+        SET_SERVICE_DUE_TIME: (state, action) =>
+        {
+            const { time, serviceId } = action.payload;
+            const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
+            state.services[serviceIndex].dueTime = time;
+        },
+        UPDATE_SERVICE_DESCRIPTION: (state, action) =>
+        {
+            const { description, serviceId } = action.payload;
+            const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
+            state.services[serviceIndex].description = description;
+        },
     }
 });
 
-export const { INIT_CLIENTS_PROJECT, SET_ACTIVE_PROJECT, SET_PROJECT_DATA, SET_SELECTED_TASK, ADD_NOTE_TO_PROJECT, SET_TASK_COVER_IMAGE, DELETE_ATTACHEMENT_FROM_TASK, ADD_ATTACHEMENT_TO_TASK, INIT_PROJECT_TAGS_AND_MEMBERS, ADD_TAG_TO_TASK, DELETE_TAG_FROM_TASK, ASSIGN_MEMBER_TO_TASK, UNASSIGN_MEMBER_FROM_TASK, SET_TASK_DUE_TIME, UPDATE_TASK_DESCRIPTION } = projectSlice.actions;
+export const { INIT_CLIENTS_PROJECT, SET_ACTIVE_PROJECT, SET_PROJECT_DATA, SET_SELECTED_TASK, ADD_NOTE_TO_PROJECT, SET_TASK_COVER_IMAGE, DELETE_ATTACHEMENT_FROM_TASK, ADD_ATTACHEMENT_TO_TASK, INIT_PROJECT_TAGS_AND_MEMBERS, ADD_TAG_TO_TASK, DELETE_TAG_FROM_TASK, ASSIGN_MEMBER_TO_TASK, UNASSIGN_MEMBER_FROM_TASK, SET_TASK_DUE_TIME, UPDATE_TASK_DESCRIPTION, SET_SERVICE_DUE_TIME, UPDATE_SERVICE_DESCRIPTION } = projectSlice.actions;
 
 export const clientsProject = (state) => state.project.clientsProjects;
 export const availableProjectTags = (state) => state.project.tags;

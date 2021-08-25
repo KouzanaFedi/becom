@@ -15,6 +15,8 @@ export const project = gql`
     addStatusesToProject(projectId: String!, status: [String!]): BasicResponse
     createServiceForProject(title: String!, description: String!, dueTime: String, projectId: String!): BasicResponse
     deleteServiceFromProject(serviceId: String!, projectId: String!): BasicResponse
+    updateServiceDescription(id: String!, description: String!): BasicResponse
+    setServiceDueTime(id: String!, time: String): BasicResponse
     createTaskForService(title: String!, description: String!, dueTime: String, status: String!, serviceId: String!): BasicResponse
     deleteTaskFromService(serviceId: String!, taskId: String!): BasicResponse
     addTagToTask(id: String!, tag: String!): BasicResponse

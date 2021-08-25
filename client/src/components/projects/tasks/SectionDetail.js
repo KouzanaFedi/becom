@@ -1,18 +1,44 @@
 import { Grid, Typography, Box } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
-import { Comment, Timeline } from "@material-ui/icons";
+import { Comment, Event, Timeline } from "@material-ui/icons";
 import { useEffect, useState, useMemo } from "react";
 import StatCard from "./sectionDetail/StatCard";
-import ActivityFeed from "./taskDetail/ActivityFeed";
 import NoteFeed from "./taskDetail/NoteFeed";
 import NoteSender from "./taskDetail/NoteSender";
 import TaskDoughnuts from "./sectionDetail/TaskDoughnuts";
+import AppBarMenuButton from "./taskDetail/AppBarMenuButton";
+import DueDateOption from "./taskDetail/DueDateOption";
+import { parseTime } from "../../../utils/timeParser";
+import DescriptionSection from "./taskDetail/DescriptionSection";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
+    appBar: {
+        height: '40px',
+        background: `linear-gradient(135deg,${theme.palette.secondary.main} 0%,  ${theme.palette.primary.main} 100%)`,
+        display: 'flex',
+        flexDirection: 'row',
+        position: 'fixed',
+        zIndex: '100',
+        width: '100%'
+    },
+    icon: {
+        color: '#fff',
+        marginRight: '5px'
+    },
+    btnTitle: {
+        color: '#fff',
+        fontWeight: '600',
+    },
+    iconGroup: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     title: {
         color: '#000',
         fontWeight: 700,
-        fontSize: '18px'
+        fontSize: '18px',
+        textTransform: 'uppercase'
     },
     label: {
         marginTop: '10px',
@@ -28,27 +54,24 @@ const useStyles = makeStyles(() => ({
     statRoot: {
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'space-between',
+        gap: '10px',
     },
-    iconGroup: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
+    fixMargin: {
+        marginTop: '40px'
     },
 }));
 
 
-const SectionDetail = ({ stats, data }) =>
+const SectionDetail = ({ stats, data, openBackDropOpen, closeBackDropOpen }) =>
 {
     const classes = useStyles();
-    console.log(data);
-    const simpleStat = useMemo(() => stats, [stats]);
     const [dougnhutData, setDougnhutData] = useState({});
     const [sum, setSum] = useState(0);
+    const [notesArray, setNotesArray] = useState([]);
 
     useEffect(() =>
     {
-        const data = {
+        const donutData = {
             labels: [],
             datasets: [
                 {
@@ -60,40 +83,64 @@ const SectionDetail = ({ stats, data }) =>
             ],
         };
 
-        simpleStat.forEach((stat) =>
+        data.tasksByStatus.forEach((stat) =>
         {
-            data.labels.push(stat.name);
-            data.datasets[0].data.push(stat.value);
-            data.datasets[0].backgroundColor.push(stat.color);
+            donutData.labels.push(stat.title);
+            donutData.datasets[0].data.push(stat.tasks.length);
+            donutData.datasets[0].backgroundColor.push(stat.color);
         });
-        setDougnhutData(data);
-        setSum(data.datasets[0].data.reduce((total, num) => total + num), 0);
+        setDougnhutData(donutData);
+        setSum(donutData.datasets[0].data.reduce((total, num) => total + num), 0);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [simpleStat]);
+    }, [data]);
+
+    useEffect(() =>
+    {
+        const notesData = [...data.notes];
+        const sortedNotesData = notesData.sort((n1, n2) => parseInt(n2.createdAt) - parseInt(n1.createdAt));
+        setNotesArray(sortedNotesData);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
+
 
     return <Grid container>
-        <Grid item xs={12}>
+        <Grid item xs={12} className={classes.appBar}>
+            <AppBarMenuButton
+                buttonContent={<div className={classes.iconGroup}>
+                    <Event className={classes.icon} />
+                    <Typography className={classes.btnTitle}>Due time</Typography>
+                </div>}
+                menuContent={<DueDateOption
+                    serviceId={data._id}
+                    openBackDropOpen={openBackDropOpen}
+                    closeBackDropOpen={closeBackDropOpen}
+                    taskDueTime={data.dueTime}
+                />}
+            />
+        </Grid>
+        <Grid item xs={12} className={classes.fixMargin} >
             <Box p={2}>
                 <Typography className={classes.title}>
-                    SITE WEB
+                    {data.title}
                 </Typography>
             </Box>
         </Grid>
         <Grid item xs={8}>
-            <Box px={2} pb={2}>
-                <Typography className={classes.label}>Description</Typography>
-                <Typography className={classes.content} >Cillum eiusmod ad et aliqua dolore exercitation qui ad nisi id deserunt et. Pariatur nisi excepteur deserunt occaecat fugiat excepteur anim non laborum qui. Sint esse culpa cupidatat aliqua laborum est et officia dolor labore esse ex sint laborum. Veniam minim labore aliquip qui Lorem ea elit et id ut.</Typography>
-            </Box>
+            <DescriptionSection
+                serviceId={data._id}
+                openBackDropOpen={openBackDropOpen}
+                closeBackDropOpen={closeBackDropOpen}
+                description={data.description} />
         </Grid>
         <Grid item xs={4}>
             <Box p={2}>
                 <Typography className={classes.label}>Due time</Typography>
-                <Typography className={classes.content} > 12-04-2009 15:25 </Typography>
+                <Typography className={classes.content} >  {data.dueTime ? parseTime(data.dueTime) : 'not set'} </Typography>
             </Box>
         </Grid>
         <Grid item xs={6}>
             <Box p={2} className={classes.statRoot}>
-                {simpleStat.map((stat, key) => <StatCard key={key} data={stat} />)}
+                {data.tasksByStatus.map((stat) => <StatCard key={stat._id} data={stat} />)}
             </Box>
         </Grid>
         <Grid item xs={6}>
@@ -109,7 +156,7 @@ const SectionDetail = ({ stats, data }) =>
                     </Box>
                     <Typography className={classes.semiBold}>Notes</Typography>
                 </div>
-                <NoteSender toTask={false} />
+                <NoteSender serviceId={data._id} />
             </Box>
         </Grid>
         <Grid item xs={12}>
@@ -118,11 +165,9 @@ const SectionDetail = ({ stats, data }) =>
                     <Box mr={1}>
                         <Timeline />
                     </Box>
-                    <Typography className={classes.semiBold}>Activities</Typography>
+                    <Typography className={classes.semiBold}>Notes</Typography>
                 </div>
-                {/* <NoteFeed text="Et cupidatat tempor exercitation do dolore duis ex officia nulla elit voluptate. Occaecat fugiat in Lorem elit exercitation anim velit est. Mollit ipsum anim minim labore ea amet non magna dolore dolor labore incididunt aute. Ut quis sint duis velit veniam dolor et quis ipsum voluptate dolor. Sint adipisicing occaecat Lorem reprehenderit nulla culpa reprehenderit magna reprehenderit fugiat." />
-                <NoteFeed text="Et cupidatat tempor exercitation do dolore duis ex officia nulla elit voluptate." />
-                <ActivityFeed text="Et cupidatat tempor exercitation do dolore duis ex officia nulla elit voluptate." /> */}
+                {notesArray.map((note) => <NoteFeed key={note._id} data={note} />)}
             </Box>
         </Grid>
     </Grid>

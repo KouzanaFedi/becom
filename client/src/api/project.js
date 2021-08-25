@@ -267,3 +267,19 @@ export const updateTaskDescription = gql`
         }
     }
 `;
+
+export const setServiceDueTime = gql`
+    mutation ($id: String!, $time: String) {
+        setServiceDueTime(id: $id, time: $time){
+            succes
+        }
+    }
+`;
+
+export const updateServiceDescription = gql`
+    mutation ($id: String!, $description: String!) {
+        updateServiceDescription(id: $id, description: $description){
+            succes
+        }
+    }
+`;

@@ -7,6 +7,7 @@ import SectionDetail from "./tasks/SectionDetail";
 import TaskGroup from "./tasks/TaskSection";
 import { useSelector } from "react-redux";
 import { clientActiveProjectService, projectSelectedTask, projectStatusOptions } from "../../redux/logic/projectManager/projectSlice";
+import ThemedBackDrop from "../themedComponents/ThemedBackDrop";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -25,13 +26,13 @@ const ProjectTasks = () =>
     const classes = useStyles();
     const [openTaskGroupDial, setOpenTaskGroupDial] = useState(false);
     const [openTaskDial, setOpenTaskDial] = useState(false);
+    const [backDropOpen, setBackDropOpen] = useState(false);
 
     const [projectData, setProjectData] = useState([]);
 
     const selectedTask = useSelector(projectSelectedTask);
     const [selectedTaskData, setSelectedTaskData] = useState({});
     const [selectedServiceData, setSelectedServiceData] = useState({});
-
 
     const services = useSelector(clientActiveProjectService);
     const statusOptions = useSelector(projectStatusOptions);
@@ -51,8 +52,8 @@ const ProjectTasks = () =>
         const servicesData = [];
         services.forEach(service =>
         {
-            const { _id, title, description, dueTime, createdAt, tasks } = service;
-            const serviceObj = { _id, title, description, dueTime, createdAt, tasksByStatus: [] };
+            const { _id, title, description, dueTime, createdAt, tasks, notes } = service;
+            const serviceObj = { _id, title, description, dueTime, createdAt, notes, tasksByStatus: [] };
 
             statusOptions.forEach((status) =>
             {
@@ -68,6 +69,7 @@ const ProjectTasks = () =>
                 delete tmp.status;
                 serviceObj.tasksByStatus[tasksByStatusIndex].tasks.push(tmp);
             });
+
             servicesData.push(serviceObj);
         });
 
@@ -85,9 +87,10 @@ const ProjectTasks = () =>
             taskData['serviceId'] = selectedTask.serviceId;
             setSelectedTaskData(taskData);
 
-            setSelectedServiceData(services.find((service) => service._id === selectedTask.serviceId));
+            setSelectedServiceData(projectData.find((service) => service._id === selectedTask.serviceId));
         }
-    }, [selectedTask, services])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedTask, services]);
 
     return <>
         <Grid item xs={10} className={classes.root}>
@@ -103,12 +106,29 @@ const ProjectTasks = () =>
                 </Container>
             </Box>
         </Grid>
-        <DetailDialog open={openTaskGroupDial} onClose={() => { setOpenTaskGroupDial(false) }}>
-            <SectionDetail stats={stats} data={selectedServiceData} />
+        <DetailDialog
+            open={openTaskGroupDial}
+            onClose={() =>
+            {
+                setOpenTaskGroupDial(false)
+            }}>
+            <SectionDetail
+                stats={stats}
+                data={selectedServiceData}
+                openBackDropOpen={() => setBackDropOpen(true)}
+                closeBackDropOpen={() => setBackDropOpen(false)}
+            />
         </DetailDialog>
-        {selectedTask !== null && <DetailDialog open={openTaskDial} onClose={() => { setOpenTaskDial(false) }}>
-            <TaskDetail data={selectedTaskData} />
-        </DetailDialog>}
+        {
+            selectedTask !== null && <DetailDialog open={openTaskDial} onClose={() => { setOpenTaskDial(false) }}>
+                <TaskDetail
+                    openBackDropOpen={() => setBackDropOpen(true)}
+                    closeBackDropOpen={() => setBackDropOpen(false)}
+                    data={selectedTaskData}
+                />
+            </DetailDialog>
+        }
+        <ThemedBackDrop backDropOpen={backDropOpen} />
     </>
 }
 
