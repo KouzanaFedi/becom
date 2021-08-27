@@ -1,7 +1,7 @@
 import { Grid, Typography, Box } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Comment, Event, Timeline } from "@material-ui/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import StatCard from "./sectionDetail/StatCard";
 import NoteFeed from "./taskDetail/NoteFeed";
 import NoteSender from "./taskDetail/NoteSender";
@@ -62,14 +62,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const SectionDetail = ({ stats, data, openBackDropOpen, closeBackDropOpen }) =>
+const SectionDetail = ({ data, openBackDropOpen, closeBackDropOpen }) =>
 {
     const classes = useStyles();
-    const [dougnhutData, setDougnhutData] = useState({});
-    const [sum, setSum] = useState(0);
-    const [notesArray, setNotesArray] = useState([]);
 
-    useEffect(() =>
+    const { tasksByStatus } = data;
+
+    const dougnhutData = useMemo(() =>
     {
         const donutData = {
             labels: [],
@@ -83,16 +82,19 @@ const SectionDetail = ({ stats, data, openBackDropOpen, closeBackDropOpen }) =>
             ],
         };
 
-        data.tasksByStatus.forEach((stat) =>
+        tasksByStatus.forEach((stat) =>
         {
             donutData.labels.push(stat.title);
             donutData.datasets[0].data.push(stat.tasks.length);
             donutData.datasets[0].backgroundColor.push(stat.color);
         });
-        setDougnhutData(donutData);
-        setSum(donutData.datasets[0].data.reduce((total, num) => total + num), 0);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data]);
+        return {
+            donutData,
+            sum: donutData.datasets[0].data.reduce((total, num) => total + num, 0)
+        };
+    }, [tasksByStatus]);
+
+    const [notesArray, setNotesArray] = useState([]);
 
     useEffect(() =>
     {
@@ -145,7 +147,7 @@ const SectionDetail = ({ stats, data, openBackDropOpen, closeBackDropOpen }) =>
         </Grid>
         <Grid item xs={6}>
             <Box p={2}>
-                <TaskDoughnuts data={dougnhutData} sum={sum} />
+                <TaskDoughnuts data={dougnhutData.donutData} sum={dougnhutData.sum} />
             </Box>
         </Grid>
         <Grid item xs={12}>
@@ -159,7 +161,7 @@ const SectionDetail = ({ stats, data, openBackDropOpen, closeBackDropOpen }) =>
                 <NoteSender serviceId={data._id} />
             </Box>
         </Grid>
-        <Grid item xs={12}>
+        {notesArray.length > 0 && <Grid item xs={12}>
             <Box p={2}>
                 <div className={classes.iconGroup + ' ' + classes.label}>
                     <Box mr={1}>
@@ -169,7 +171,7 @@ const SectionDetail = ({ stats, data, openBackDropOpen, closeBackDropOpen }) =>
                 </div>
                 {notesArray.map((note) => <NoteFeed key={note._id} data={note} />)}
             </Box>
-        </Grid>
+        </Grid>}
     </Grid>
 }
 

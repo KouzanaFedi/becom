@@ -56,6 +56,7 @@ const projectSlice = createSlice({
         ADD_NOTE_TO_PROJECT: (state, action) =>
         {
             const { serviceId, taskId, message, sender } = action.payload;
+            console.log(taskId);
             const timestamp = new Date().getTime();
             const noteObj = {
                 _id: timestamp,
@@ -177,6 +178,7 @@ const projectSlice = createSlice({
                 dueTime: null,
                 attachement: [],
                 coverImage: null,
+                description: null,
                 status: { ...statusData },
                 createdAt: new Date().getTime()
             }

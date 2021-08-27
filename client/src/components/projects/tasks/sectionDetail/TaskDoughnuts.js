@@ -31,7 +31,7 @@ const TaskDoughnuts = ({ data, sum }) =>
 {
     const ref = useRef(null);
     const [yOffset, setYOffset] = useState(0);
-
+     
     useLayoutEffect(() =>
     {
         setYOffset(ref.current.clientWidth * .5);

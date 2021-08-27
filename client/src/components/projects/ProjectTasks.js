@@ -82,13 +82,12 @@ const ProjectTasks = () =>
                 const taskData = { ...task };
                 taskData['serviceName'] = services[serviceId]?.title;
                 taskData['serviceId'] = selectedTask.serviceId;
-                console.log(taskData);
                 setSelectedTaskData(taskData);
                 setSelectedServiceData(projectData.find((service) => service._id === selectedTask.serviceId));
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedTask, services]);
+    }, [selectedTask, projectData]);
 
     return <>
         <Grid item xs={10} className={classes.root}>

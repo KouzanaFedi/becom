@@ -116,6 +116,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TaskDetail = ({ data, openBackDropOpen, closeBackDropOpen }) =>
 {
+    console.log(data);
     const classes = useStyles();
     const [notesArray, setNotesArray] = useState([]);
 
@@ -281,7 +282,7 @@ const TaskDetail = ({ data, openBackDropOpen, closeBackDropOpen }) =>
                 <NoteSender taskId={data._id} serviceId={data.serviceId} />
             </Box>
         </Grid>
-        <Grid item xs={12}>
+        {notesArray.length > 0 && <Grid item xs={12}>
             <Box p={2}>
                 <div className={classes.iconGroup + ' ' + classes.label}>
                     <Box mr={1}>
@@ -291,7 +292,7 @@ const TaskDetail = ({ data, openBackDropOpen, closeBackDropOpen }) =>
                 </div>
                 {notesArray.map((note) => <NoteFeed key={note._id} data={note} />)}
             </Box>
-        </Grid>
+        </Grid>}
     </Grid>
 }
 
