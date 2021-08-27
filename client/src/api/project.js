@@ -283,3 +283,19 @@ export const updateServiceDescription = gql`
         }
     }
 `;
+
+export const updateTaskStatus = gql`
+    mutation ($taskId: String!, $statusId: String!) {
+        updateTaskStatus(taskId: $taskId, statusId: $statusId) {
+            succes
+        }
+    }
+`;
+
+export const createTaskForService = gql`
+    mutation ($title: String!, $status: String!, $serviceId: String!) {
+        createTaskForService(title: $title, status: $status, serviceId: $serviceId) {
+            id
+        }
+    }
+`;

@@ -19,10 +19,6 @@ const useStyles = makeStyles(() => ({
 
 const ProjectTasks = () =>
 {
-    const stats = [{ name: 'TODOS', value: 24, color: 'blue', type: 'Tasks' },
-    { name: 'DOINGS', value: 24, color: 'red', type: 'Tasks' }, { name: 'DONE', value: 24, color: 'green', type: 'Tasks' },
-    { name: 'REVIEW', value: 24, color: 'orange', type: 'Tasks' }];
-
     const classes = useStyles();
     const [openTaskGroupDial, setOpenTaskGroupDial] = useState(false);
     const [openTaskDial, setOpenTaskDial] = useState(false);
@@ -81,13 +77,15 @@ const ProjectTasks = () =>
     {
         if (selectedTask) {
             const serviceId = services.findIndex((service) => service._id === selectedTask.serviceId);
-            const task = services[serviceId].tasks.find((task) => task._id === selectedTask.taskId);
-            const taskData = { ...task };
-            taskData['serviceName'] = services[serviceId].title;
-            taskData['serviceId'] = selectedTask.serviceId;
-            setSelectedTaskData(taskData);
-
-            setSelectedServiceData(projectData.find((service) => service._id === selectedTask.serviceId));
+            if (serviceId >= 0) {
+                const task = services[serviceId]?.tasks.find((task) => task._id === selectedTask.taskId);
+                const taskData = { ...task };
+                taskData['serviceName'] = services[serviceId]?.title;
+                taskData['serviceId'] = selectedTask.serviceId;
+                console.log(taskData);
+                setSelectedTaskData(taskData);
+                setSelectedServiceData(projectData.find((service) => service._id === selectedTask.serviceId));
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTask, services]);
@@ -113,7 +111,6 @@ const ProjectTasks = () =>
                 setOpenTaskGroupDial(false)
             }}>
             <SectionDetail
-                stats={stats}
                 data={selectedServiceData}
                 openBackDropOpen={() => setBackDropOpen(true)}
                 closeBackDropOpen={() => setBackDropOpen(false)}

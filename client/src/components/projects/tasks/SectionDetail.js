@@ -1,7 +1,7 @@
 import { Grid, Typography, Box } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Comment, Event, Timeline } from "@material-ui/icons";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import StatCard from "./sectionDetail/StatCard";
 import NoteFeed from "./taskDetail/NoteFeed";
 import NoteSender from "./taskDetail/NoteSender";

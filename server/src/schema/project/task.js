@@ -7,11 +7,12 @@ const TaskSchema = new Schema({
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     dueTime: {
         type: Date,
-        required: false
+        required: false,
+        default: null
     },
     tags: [{ type: Types.ObjectId, ref: 'tag' }],
     members: [{ type: Types.ObjectId, ref: 'users' }],

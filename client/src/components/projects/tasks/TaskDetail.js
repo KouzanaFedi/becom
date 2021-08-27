@@ -119,6 +119,7 @@ const TaskDetail = ({ data, openBackDropOpen, closeBackDropOpen }) =>
     const classes = useStyles();
     const [notesArray, setNotesArray] = useState([]);
 
+
     const dispatch = useDispatch();
 
     const acceptedFiles = ["image/*", " text/csv", " text/plain", " application/json", " application/pdf", " application/vnd.ms-powerpoint", " application/vnd.openxmlformats-officedocument.presentationml.presentation", " font/ttf", " application/vnd.ms-excel", " application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];

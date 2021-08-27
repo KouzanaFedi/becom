@@ -1,9 +1,15 @@
+import { useMutation } from "@apollo/client";
 import { Box, Container, Grid } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
+import { useEffect, useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
-// import { useEffect, useMemo, useState } from "react";
-import { IMAGE_ENDPOINT } from "../../config";
+import { useDispatch, useSelector } from "react-redux";
+import { updateTaskStatus } from "../../api/project";
+import { clientActiveProjectService, projectSelectedTask, projectStatusOptions, UPDATE_TASK_STATE } from "../../redux/logic/projectManager/projectSlice";
+import ThemedBackDrop from "../themedComponents/ThemedBackDrop";
 import BoardColumn from "./board/BoardColumn";
+import DetailDialog from "./tasks/DetailDialog";
+import TaskDetail from "./tasks/TaskDetail";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,186 +29,105 @@ const useStyles = makeStyles((theme) => ({
 
 const ProjectBoard = () =>
 {
-    const data = [{
-        id: "1",
-        state: 'doing',
-        color: "red",
-        tasks: [
-            {
-                id: "1",
-                section: "Site web",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "2",
-                section: "Site web",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "3",
-                section: "Compagne BNA",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "4",
-                section: "Compagne BNA",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            }
-        ]
-    },
+    const serviceData = useSelector(clientActiveProjectService);
+    const availableStatus = useSelector(projectStatusOptions);
+
+    const dispatch = useDispatch();
+
+    const [openTaskDial, setOpenTaskDial] = useState(false);
+    const [backDropOpen, setBackDropOpen] = useState(false);
+
+    const selectedTask = useSelector(projectSelectedTask);
+    const [updatedStatusData, setUpdatedStatusData] = useState({});
+    const [selectedTaskData, setSelectedTaskData] = useState({});
+
+    const [boardData, setBoardData] = useState([]);
+
+    useEffect(() =>
     {
-        id: "2",
-        state: 'done',
-        color: "blue",
-        tasks: [
-            {
-                id: "5",
-                section: "Site web",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "5",
-                section: "Site web",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "6",
-                section: "Site web",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "7",
-                section: "Compagne BNA",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "8",
-                section: "Compagne BNA",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "9",
-                section: "Compagne BNA",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "10",
-                section: "Compagne BNA",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }
-                ]
-            },
-            {
-                id: "11",
-                section: "Compagne BNA",
-                title: 'Velit laborum minim magna mollit adipisicing.',
-                attachedFiles: 5,
-                notes: 6,
-                dueDate: '24/01/1998',
-                assignedTo: [
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null },
-                    { name: 'Fedi kouzana', image: `${IMAGE_ENDPOINT}/1625134958507.gif` }, { name: 'Fedi kouzana', image: null },
-                ]
+        if (selectedTask) {
+            const serviceId = serviceData.findIndex((service) => service._id === selectedTask.serviceId);
+            if (serviceId >= 0) {
+                const task = serviceData[serviceId]?.tasks.find((task) => task._id === selectedTask.taskId);
+                const taskData = { ...task };
+                taskData['serviceName'] = serviceData[serviceId]?.title;
+                taskData['serviceId'] = selectedTask.serviceId;
+                setSelectedTaskData(taskData);
             }
-        ]
-    }];
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedTask, serviceData]);
 
-    // const [boardData, setBoardData] = useState([]);
+    useEffect(() =>
+    {
+        const tmp = [];
+        availableStatus.forEach((status) =>
+        {
+            const statusObj = { ...status, tasks: [] };
+            tmp.push(statusObj);
+        });
 
-    // useEffect(() =>
-    // {
-    //     const test = dataMemoized.reduce((result, item) =>
-    //     {
-    //         const section = item.name;
-    //         const obj = item.tasks.map((task) =>
-    //         ({
-    //             state: task.state,
-    //             color: task.color,
-    //             tasks: task.tasks.reduce((res, i) => [...res, { ...i, section }], [])
-    //         }), {});
+        serviceData.forEach((service) =>
+        {
+            const serviceObj = { service: service.title, serviceId: service._id };
+            service.tasks.forEach((task) =>
+            {
+                const statusIndex = tmp.findIndex((t) => t._id === task.status._id);
+                tmp[statusIndex].tasks.push({ ...task, ...serviceObj });
+            });
+        });
 
-    //     },[]);
-    // }, [dataMemoized]);
+        setBoardData(tmp);
+
+    }, [serviceData, availableStatus])
+
+    const [updateStatus] = useMutation(updateTaskStatus, {
+        onCompleted: () =>
+        {
+            dispatch(UPDATE_TASK_STATE({ ids: updatedStatusData.draggableObj, newStatusId: updatedStatusData.destinationId }));
+        }
+    });
 
     function handleDragEnd(result)
     {
         if (!result.destination) return;
-        console.log(result);
+        const sourceId = result.source.droppableId;
+        const destinationId = result.destination.droppableId;
+        const draggableObj = JSON.parse(result.draggableId);
+
+        setUpdatedStatusData({ draggableObj, destinationId });
+
+        if (sourceId !== destinationId) {
+            updateStatus({ variables: { taskId: draggableObj.taskId, statusId: destinationId } });
+        }
     }
+
+    function handleTaskOpen()
+    {
+        setOpenTaskDial(true);
+    }
+
 
     const classes = useStyles();
     return <Grid item xs={10} className={classes.root}>
         <Box mt={2}>
             <DragDropContext className={classes.overflow} onDragEnd={handleDragEnd}>
                 <Container className={classes.container}>
-                    {data.map((d, key) => <BoardColumn key={key} data={d} />)}
+                    {boardData.map((data) => <BoardColumn
+                        openTask={handleTaskOpen}
+                        key={data._id}
+                        data={data} />)}
                 </Container>
             </DragDropContext>
         </Box>
-    </Grid>
+        {selectedTask !== null && <DetailDialog open={openTaskDial} onClose={() => { setOpenTaskDial(false) }}>
+            <TaskDetail
+                openBackDropOpen={() => setBackDropOpen(true)}
+                closeBackDropOpen={() => setBackDropOpen(false)}
+                data={selectedTaskData}
+            />
+        </DetailDialog>}
+        <ThemedBackDrop backDropOpen={backDropOpen} />
+    </Grid >
 }
 export default ProjectBoard;

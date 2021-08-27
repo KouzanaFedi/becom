@@ -94,6 +94,7 @@ export const projectResolver = {
                         }]
                     }]
                 });
+
             const { _id, title, client, createdAt, statusOptions, services } = project;
             return {
                 _id,
@@ -184,12 +185,13 @@ export const projectResolver = {
         //services
         createServiceForProject: async (_, args) =>
         {
-            const { title, description, dueTime, projectId } = args;
-            const service = new Service({ title, description, dueTime });
+            const { title, description, projectId } = args;
+            const service = new Service({ title, description });
             service.save();
             const project = await Project.findById(projectId);
             project.services.push(service._id);
             project.save();
+
             return {
                 succes: true
             }
@@ -234,15 +236,16 @@ export const projectResolver = {
         //task
         createTaskForService: async (_, args) =>
         {
-            const { title, description, dueTime, status, serviceId } = args;
-            const task = new Task({ title, description, dueTime, status });
+            const { title, status, serviceId } = args;
+            const task = new Task({ title, status })
             task.save();
+
             const service = await Service.findById(serviceId);
             service.tasks.push(task._id);
             service.save();
 
             return {
-                succes: true
+                id: task._id
             }
         },
         deleteTaskFromService: async (_, args) =>
@@ -253,6 +256,17 @@ export const projectResolver = {
             service.tasks.splice(taskIndexInArray, 1);
             service.save();
             await Task.findByIdAndDelete(taskId);
+
+            return {
+                succes: true
+            }
+        },
+        updateTaskStatus: async (_, args) =>
+        {
+            const { taskId, statusId } = args;
+            const task = await Task.findById(taskId);
+            task.status = statusId;
+            task.save();
 
             return {
                 succes: true

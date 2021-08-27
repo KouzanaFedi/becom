@@ -51,7 +51,7 @@ export const projectType = gql`
   type Task {
     _id: ID!
     title: String!
-    description: String!
+    description: String
     dueTime: String
     createdAt: String!
     coverImage: String
@@ -65,7 +65,7 @@ export const projectType = gql`
   type Service {
     _id: String!
     title: String!
-    description: String!
+    description: String
     dueTime: String!
     createdAt: String!
     tasks: [Task!]!

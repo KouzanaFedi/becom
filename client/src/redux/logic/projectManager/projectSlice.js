@@ -84,6 +84,9 @@ const projectSlice = createSlice({
             const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
             const taskIndex = state.services[serviceIndex].tasks.findIndex((task) => task._id === taskId);
             const attachIndex = state.services[serviceIndex].tasks[taskIndex].attachement.findIndex((attach) => attach._id === id);
+            if (state.services[serviceIndex].tasks[taskIndex].coverImage === state.services[serviceIndex].tasks[taskIndex].attachement[attachIndex].src) {
+                state.services[serviceIndex].tasks[taskIndex].coverImage = null;
+            }
             state.services[serviceIndex].tasks[taskIndex].attachement.splice(attachIndex, 1);
         },
         ADD_ATTACHEMENT_TO_TASK: (state, action) =>
@@ -151,10 +154,51 @@ const projectSlice = createSlice({
             const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
             state.services[serviceIndex].description = description;
         },
+        UPDATE_TASK_STATE: (state, action) =>
+        {
+            const { ids, newStatusId } = action.payload;
+            const { taskId, serviceId } = ids;
+            const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
+            const taskIndex = state.services[serviceIndex].tasks.findIndex((task) => task._id === taskId);
+            const statusObj = state.statusOptions.find((stat) => stat._id === newStatusId);
+
+            state.services[serviceIndex].tasks[taskIndex].status = { ...statusObj };
+        },
+        CREATE_TASK_FOR_SERVICE: (state, action) =>
+        {
+            const { id, title, status, serviceId } = action.payload;
+            const statusData = state.statusOptions.find((stat) => stat._id === status);
+            const taskObj = {
+                _id: id,
+                title,
+                tags: [],
+                notes: [],
+                members: [],
+                dueTime: null,
+                attachement: [],
+                coverImage: null,
+                status: { ...statusData },
+                createdAt: new Date().getTime()
+            }
+            const serviceIndex = state.services.findIndex((service) => service._id === serviceId);
+            state.services[serviceIndex].tasks.push(taskObj);
+            state.selectedTask = { serviceId, taskId: id };
+        }
     }
 });
 
-export const { INIT_CLIENTS_PROJECT, SET_ACTIVE_PROJECT, SET_PROJECT_DATA, SET_SELECTED_TASK, ADD_NOTE_TO_PROJECT, SET_TASK_COVER_IMAGE, DELETE_ATTACHEMENT_FROM_TASK, ADD_ATTACHEMENT_TO_TASK, INIT_PROJECT_TAGS_AND_MEMBERS, ADD_TAG_TO_TASK, DELETE_TAG_FROM_TASK, ASSIGN_MEMBER_TO_TASK, UNASSIGN_MEMBER_FROM_TASK, SET_TASK_DUE_TIME, UPDATE_TASK_DESCRIPTION, SET_SERVICE_DUE_TIME, UPDATE_SERVICE_DESCRIPTION } = projectSlice.actions;
+//   dueTime: null,
+//   createdAt:""
+//   tags: [],
+//   members: [],
+//   attachement: [],
+//   notes: [],
+//   coverImage: null,
+//   status: 61150c5ffe138b0dd12ba1be,
+//   _id: 61282bdeb70a31058ad48e50,
+//   title: 'Task not so last last or ?'
+
+export const { INIT_CLIENTS_PROJECT, SET_ACTIVE_PROJECT, SET_PROJECT_DATA, SET_SELECTED_TASK, ADD_NOTE_TO_PROJECT, SET_TASK_COVER_IMAGE, DELETE_ATTACHEMENT_FROM_TASK, ADD_ATTACHEMENT_TO_TASK, INIT_PROJECT_TAGS_AND_MEMBERS, ADD_TAG_TO_TASK, DELETE_TAG_FROM_TASK, ASSIGN_MEMBER_TO_TASK, UNASSIGN_MEMBER_FROM_TASK, SET_TASK_DUE_TIME, UPDATE_TASK_DESCRIPTION, SET_SERVICE_DUE_TIME, UPDATE_SERVICE_DESCRIPTION, UPDATE_TASK_STATE, CREATE_TASK_FOR_SERVICE } = projectSlice.actions;
 
 export const clientsProject = (state) => state.project.clientsProjects;
 export const availableProjectTags = (state) => state.project.tags;

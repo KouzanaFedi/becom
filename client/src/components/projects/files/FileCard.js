@@ -1,7 +1,8 @@
-import { Box, Typography, Paper, Grid, Button } from '@material-ui/core';
+import { Box, Typography, Paper, Grid, IconButton } from '@material-ui/core';
 import makeStyles from '@material-ui/styles/makeStyles';
 import { useEffect, useState } from 'react';
 import { GetApp } from '@material-ui/icons';
+import { saveAs } from "file-saver";
 
 import Default from '../../../assets/fileicons/default.png';
 import Img from '../../../assets/fileicons/img.png';
@@ -10,6 +11,7 @@ import Ppt from '../../../assets/fileicons/ppt.png';
 import Txt from '../../../assets/fileicons/txt.png';
 import Xls from '../../../assets/fileicons/xls.png';
 import { unifySize } from '../../../utils/fileHelper';
+import { parseTime } from '../../../utils/timeParser';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -17,7 +19,8 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         fontSize: '14px',
-        marginBottom: '5px'
+        marginBottom: '5px',
+        backgroundColor: '#EFE'
     },
     icon: {
         height: '25px',
@@ -36,11 +39,15 @@ const useStyles = makeStyles(() => ({
         fontSize: '14px'
     },
     fixLineHeight: {
-        lineHeight: '36px'
+        lineHeight: '36px',
+        fontSize:'14px'
+    },
+    name: {
+        textTransform: 'capitalize'
     }
 }));
 
-const FileCard = ({ name, size }) =>
+const FileCard = ({ name, size, addedBy, addDate, fileLink }) =>
 {
     const classes = useStyles();
     const [icon, setIcon] = useState(Default);
@@ -97,15 +104,20 @@ const FileCard = ({ name, size }) =>
                     <Typography className={classes.fixLineHeight}>{type}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Typography className={classes.fixLineHeight}>fedi</Typography>
+                    <Typography className={classes.fixLineHeight + ' ' + classes.name}>{addedBy}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Typography className={classes.fixLineHeight}>24/01/1995</Typography>
+                    <Typography className={classes.fixLineHeight}>{parseTime(addDate)}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Button >
+                    <IconButton
+                        color="primary"
+                        onClick={() =>
+                        {
+                            saveAs(fileLink, name)
+                        }} >
                         <GetApp />
-                    </Button>
+                    </IconButton>
                 </Grid>
             </Grid>
         </Box>

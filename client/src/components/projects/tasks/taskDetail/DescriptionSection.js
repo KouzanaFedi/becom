@@ -65,7 +65,7 @@ const useStyles = makeStyles(() => ({
 
 const DescriptionSection = ({ description, serviceId, openBackDropOpen, closeBackDropOpen, taskId }) =>
 {
-    const [editing, setEditing] = useState(false);
+    const [editing, setEditing] = useState(!(description !== null));
     const classes = useStyles({ editing });
     const [descriptionStored, setDescriptionStored] = useState(description);
     const dispatch = useDispatch();

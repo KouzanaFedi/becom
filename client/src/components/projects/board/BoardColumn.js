@@ -1,8 +1,10 @@
-import { Box, Typography } from "@material-ui/core";
+import { Box, ClickAwayListener, Collapse, IconButton, Typography } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import BoardCard from "./BoardCard";
 import { Add } from '@material-ui/icons';
 import { Droppable } from "react-beautiful-dnd";
+import AddTaskDial from "./AddTaskDial";
+import { useRef, useState } from "react";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -38,25 +40,61 @@ const useStyles = makeStyles(() => ({
         color: '#999',
         borderRadius: '100%',
         '&:hover': {
-            color: '#EEE',
-            cursor: 'pointer',
-            backgroundColor: '#DDD'
+            color: '#000',
+        },
+    },
+    iconButton: {
+        height: "30px",
+        width: "30px",
+        "&:hover": {
+            backgroundColor: 'unset'
         }
-    }
+    },
+    transition: ({ addingTask }) => ({
+        transitionDelay: addingTask !== null ? '100ms' : '0ms'
+    }),
 }));
 
-const BoardColumn = ({ data: { state, color, tasks, id } }) =>
+const BoardColumn = ({ data: { title, color, tasks, _id }, openTask }) =>
 {
-    const classes = useStyles({ color });
+    const [addingTask, setAddingTask] = useState(false);
+    const classes = useStyles({ color, addingTask });
 
     return <Box className={classes.root}>
         <Box px={1} pb={1} className={classes.header} >
-            <Typography className={classes.title}>{state}</Typography>
-            <Add className={classes.icon} />
+            <Typography className={classes.title}>{title}</Typography>
+            <IconButton
+                onClick={() =>
+                {
+                    setAddingTask(!addingTask);
+                }}
+                className={classes.iconButton}>
+                <Add className={classes.icon} />
+            </IconButton>
         </Box>
-        <Droppable droppableId={id}>
-            {(provided) => (<Box  {...provided.droppableProps} ref={provided.innerRef} className={classes.container} >
-                {tasks.map((d, key) => <BoardCard key={key} index={key} data={d} />)}
+        {addingTask && <Collapse
+            className={classes.transition}
+            in={addingTask}>
+            <ClickAwayListener onClickAway={(event) =>
+            {
+                setAddingTask(false);
+            }} >
+                <AddTaskDial status={_id}
+                    close={() => setAddingTask(false)}
+                    openTask={openTask}
+                />
+            </ClickAwayListener>
+        </Collapse>
+        }
+        <Droppable droppableId={_id}>
+            {(provided) => (<Box  {...provided.droppableProps}
+                ref={provided.innerRef}
+                className={classes.container} >
+                {tasks.map((task) => <BoardCard
+                    openTask={openTask}
+                    key={task._id}
+                    index={task._id}
+                    data={task} />)}
                 {provided.placeholder}
             </Box>)}
         </Droppable>

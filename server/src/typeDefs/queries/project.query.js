@@ -13,14 +13,15 @@ export const project = gql`
     createProject(title: String!, client: String!): BasicResponse
     deleteProject(id: String!): BasicResponse
     addStatusesToProject(projectId: String!, status: [String!]): BasicResponse
-    createServiceForProject(title: String!, description: String!, dueTime: String, projectId: String!): BasicResponse
+    createServiceForProject(title: String!, description: String!,  projectId: String!): BasicResponse
     deleteServiceFromProject(serviceId: String!, projectId: String!): BasicResponse
     updateServiceDescription(id: String!, description: String!): BasicResponse
     setServiceDueTime(id: String!, time: String): BasicResponse
-    createTaskForService(title: String!, description: String!, dueTime: String, status: String!, serviceId: String!): BasicResponse
+    createTaskForService(title: String!, status: String!, serviceId: String!): IdResponse
     deleteTaskFromService(serviceId: String!, taskId: String!): BasicResponse
     addTagToTask(id: String!, tag: String!): BasicResponse
     deleteTagFromTask(id: String!, tag: String!): BasicResponse
+    updateTaskStatus(taskId: String!, statusId: String!): BasicResponse
     updateTaskDescription(id : String!, description: String!): BasicResponse
     assignMemberToTask(id: String!, member: String!): BasicResponse
     unassignMemberFromTask(id: String!, member: String!): BasicResponse
