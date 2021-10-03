@@ -73,6 +73,10 @@ export const getProjectListsByClient = gql`
             title
             createdAt
         }
+    }
+`;
+export const getTagsAndMembers = gql`
+    query GetProjectsByClient($client: String!) {
         getTags {
             _id
             title

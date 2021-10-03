@@ -3,9 +3,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, useHistory } from "react-router";
 import { TOKEN_VERIFY } from "../api/auth";
-import { INIT_USER_DATA, userDataInit } from "../redux/logic/userSlice";
+import { INIT_USER_DATA, userDataInit, userID } from "../redux/logic/userSlice";
 import { AUTH_TOKEN } from "../utils/constants";
 import SplashScreen from "../pages/SplashScreen"
+import { getProjectListsByClient } from "../api/project";
+import { INIT_CLIENTS_PROJECT } from "../redux/logic/projectManager/projectSlice";
 
 const AuthProtectedRoute = ({ component, path }) =>
 {
@@ -13,13 +15,25 @@ const AuthProtectedRoute = ({ component, path }) =>
     const history = useHistory();
     const isAuth = localStorage.getItem(AUTH_TOKEN);
     const userInit = useSelector(userDataInit);
+    const userId = useSelector(userID);
 
+    const [projectsInit] = useLazyQuery(getProjectListsByClient, {
+        onCompleted: ({ getProjectsByClient}) =>
+        {
+            if (getProjectsByClient.length > 0) {
+                dispatch(INIT_CLIENTS_PROJECT({ active: getProjectsByClient[0], list: getProjectsByClient }))
+            }
+        }
+    });
 
     const [userDataInitQuery] = useLazyQuery(TOKEN_VERIFY, {
         variables: { token: isAuth },
         onCompleted: ({ verifyToken }) =>
         {
             dispatch(INIT_USER_DATA(verifyToken));
+            projectsInit({
+                variables: { client: verifyToken.id }
+            });
         },
         onError: (_) =>
         {
@@ -33,10 +47,17 @@ const AuthProtectedRoute = ({ component, path }) =>
             if (!userInit) {
                 userDataInitQuery();
             }
+            else {
+                console.log("init proj");
+                projectsInit({
+                    variables: { client: userId }
+                });
+            }
         } else {
             history.replace("/login");
         }
-    }, [isAuth, userInit, userDataInitQuery, history]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuth, userInit]);
 
     return (isAuth ?
         (userInit ? <Route exact path={path} component={component} /> : <SplashScreen />) :

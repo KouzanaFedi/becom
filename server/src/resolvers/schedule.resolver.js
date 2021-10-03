@@ -5,6 +5,8 @@ import { fullCalendarDateFormat, fullCalendarTimeFormat, getScheduleSharingPaylo
 import { AuthenticationError } from "apollo-server-errors";
 import { INVALIDE_SHARE_TOKEN_ERROR, SCHEDULE_INVALIDE_ERROR, EVENT_INVALIDE_ERROR, INVALIDE_INPUT_ERROR } from "../utils/errors/EventError";
 import { PubSub, withFilter } from "graphql-subscriptions";
+import { getFileUploadedSize, processUpload } from "../utils/fileUpload";
+import { Attachement } from "../schema/project/attachement";
 
 const pubsub = new PubSub();
 
@@ -188,12 +190,32 @@ export const scheduleResolver = {
     Mutation: {
         addEvent: async (_, args) =>
         {
+            const file = await args.file;
+            const { addedBy, title, start, end, description, projectId, projectTitle } = args;
+
+            let image = null;
+
+            if (file) {
+                const fileLoaded = await processUpload(file, `/${projectTitle}/events`);
+                const fileSize = getFileUploadedSize(fileLoaded.src);
+
+                const attachement = new Attachement({ src: fileLoaded.src, addedBy, size: fileSize });
+                attachement.save();
+                image = attachement._id;
+            }
+
             const event = new Event({
-                title: args.title,
-                start: args.start,
-                projectId: args.projectId
+                title,
+                start,
+                end,
+                description,
+                projectId,
+                image
             });
             event.save();
+
+            console.log(event);
+
             const response = {
                 id: event._id,
                 title: event.title,

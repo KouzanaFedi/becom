@@ -6,13 +6,7 @@ const scheduleSlice = createSlice({
         holidays: [],
         events: [],
         eventToCreate: {
-            day: null,
-            time: null,
-            title: {
-                value: "",
-                error: null,
-                ready: false
-            }
+            date: null
         },
         selectedEvent: {
             original: {
@@ -99,35 +93,31 @@ const scheduleSlice = createSlice({
         },
         SET_CREATED_DATE: (state, action) =>
         {
-            const { day, time } = action.payload;
-            if (day !== undefined) {
-                state.eventToCreate.day = day;
-            }
-            if (time !== undefined) {
-                state.eventToCreate.time = time;
-            }
+            const { date } = action.payload;
+            state.eventToCreate.date = date;
         },
-        SET_EVENT_TITLE: (state, action) =>
-        {
-            const { title } = action.payload;
-            state.eventToCreate.title.value = title.toString();
-            if (state.eventToCreate.title.value.length < 4) {
-                if (state.eventToCreate.title.value.length === 0)
-                    state.eventToCreate.title.error = "Obligatory field";
-                else state.eventToCreate.title.error = "Minimum 4 characters";
-            } else state.eventToCreate.title.error = null;
-            state.eventToCreate.title.ready =
-                state.eventToCreate.title.value.length > 0 && state.eventToCreate.title.error === null;
-        },
+        // SET_EVENT_TITLE: (state, action) =>
+        // {
+        //     const { title } = action.payload;
+        //     state.eventToCreate.title.value = title.toString();
+        //     if (state.eventToCreate.title.value.length < 4) {
+        //         if (state.eventToCreate.title.value.length === 0)
+        //             state.eventToCreate.title.error = "Obligatory field";
+        //         else state.eventToCreate.title.error = "Minimum 4 characters";
+        //     } else state.eventToCreate.title.error = null;
+        //     state.eventToCreate.title.ready =
+        //         state.eventToCreate.title.value.length > 0 && state.eventToCreate.title.error === null;
+        // },
         RESET_CREATED_EVENT: (state, _) =>
         {
-            state.eventToCreate.day = null;
-            state.eventToCreate.time = null;
-            state.eventToCreate.title = {
-                value: "",
-                error: null,
-                ready: false
-            }
+            state.eventToCreate.date = null;
+            // state.eventToCreate.day = null;
+            // state.eventToCreate.time = null;
+            // state.eventToCreate.title = {
+            //     value: "",
+            //     error: null,
+            //     ready: false
+            // }
         },
         INIT_SELECTED_EVENT: (state, action) =>
         {

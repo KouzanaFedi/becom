@@ -17,10 +17,10 @@ export const EVENTS = gql`
     }
   }
 `;
-
+// addEvent(title: String!, start: String!, end: String, description: String!, projectId: String!, file: Upload, addedBy: String!): Event
 export const ADD_EVENT = gql`
-  mutation AddEvent($title: String!, $start: String!, $projectId: String!) {
-    addEvent (title: $title, start: $start, projectId: $projectId) {
+  mutation AddEvent($title: String!, $start: String!, $end: String, $description: String!, $projectId: String!, $file: Upload, $addedBy: String!, $projectTitle: String!) {
+    addEvent (title: $title, start: $start, projectId: $projectId, end: $end, description: $description, file: $file, addedBy: $addedBy, projectTitle: $projectTitle) {
       id
       startTime
       title

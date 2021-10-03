@@ -11,7 +11,7 @@ export const schedule = gql`
   }
 
     type Mutation {
-    addEvent(title: String!, start: String!, end: String, projectId: String!): Event
+    addEvent(title: String!, start: String!, end: String, description: String!, projectId: String!, file: Upload, addedBy: String!, projectTitle: String!): Event
     updateEvent(id: String!, title:String!, start: String!): Event
     deleteEvent(id: String!): IdResponse
     updateEventState(id: String!, state: String!): Event

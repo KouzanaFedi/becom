@@ -116,7 +116,6 @@ const useStyles = makeStyles((theme) => ({
 
 const TaskDetail = ({ data, openBackDropOpen, closeBackDropOpen }) =>
 {
-    console.log(data);
     const classes = useStyles();
     const [notesArray, setNotesArray] = useState([]);
 

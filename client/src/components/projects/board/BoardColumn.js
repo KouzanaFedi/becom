@@ -4,7 +4,7 @@ import BoardCard from "./BoardCard";
 import { Add } from '@material-ui/icons';
 import { Droppable } from "react-beautiful-dnd";
 import AddTaskDial from "./AddTaskDial";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const useStyles = makeStyles(() => ({
     root: {

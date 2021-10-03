@@ -3,7 +3,7 @@ import { CssBaseline, Grid } from "@material-ui/core";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import { getProjectById, getProjectListsByClient } from "../../api/project";
+import { getProjectById, getProjectListsByClient, getTagsAndMembers } from "../../api/project";
 import { clientsProject, INIT_CLIENTS_PROJECT, SET_PROJECT_DATA, INIT_PROJECT_TAGS_AND_MEMBERS } from "../../redux/logic/projectManager/projectSlice";
 import { userID } from "../../redux/logic/userSlice";
 import { PROJECT_SECTIONS } from "../../routers/ProjectSection";
@@ -27,17 +27,12 @@ const Projects = () =>
 
     const ProjectSection = getSectionComponent(subsection);
 
-    const userId = useSelector(userID);
     const { activeProject, projectList } = useSelector(clientsProject);
     const dispatch = useDispatch();
 
-    useQuery(getProjectListsByClient, {
-        variables: { client: userId },
-        onCompleted: ({ getProjectsByClient, getTags, getMembers }) =>
+    useQuery(getTagsAndMembers, {
+        onCompleted: ({ getTags, getMembers }) =>
         {
-            if (getProjectsByClient.length > 0) {
-                dispatch(INIT_CLIENTS_PROJECT({ active: getProjectsByClient[0], list: getProjectsByClient }))
-            }
             dispatch(INIT_PROJECT_TAGS_AND_MEMBERS({ tags: getTags, members: getMembers }));
         }
     });

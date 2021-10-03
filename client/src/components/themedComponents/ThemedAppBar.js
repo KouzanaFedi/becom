@@ -76,7 +76,8 @@ const useStyles = makeStyles((theme) => ({
     },
     popper: {
         top: '45px !important',
-        left: '5px !important'
+        left: '5px !important',
+        zIndex: '99999'
     }
 }));
 

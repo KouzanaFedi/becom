@@ -309,12 +309,8 @@ export const projectResolver = {
         assignMemberToTask: async (_, args) =>
         {
             const { id, member } = args;
-            console.log("id: ", id);
-            console.log("member: ", member);
             const task = await Task.findById(id);
-            console.log("task: ", task);
             task.members.push(member);
-            console.log("task members: ", task.members);
             task.save();
 
             return {

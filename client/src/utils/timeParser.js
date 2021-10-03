@@ -7,5 +7,6 @@ export function parseTime(timestamp)
 
 export function parseTimeTimePicker(timestamp)
 {
+    console.log(timestamp);
     return moment(new Date(parseInt(timestamp))).format("MM/DD/yyyy hh:mm");
 }

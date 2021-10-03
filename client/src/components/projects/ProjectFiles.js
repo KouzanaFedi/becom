@@ -46,8 +46,6 @@ const ProjectFiles = () =>
         });
 
         setFilesArray(tmp);
-        console.log(tmp);
-
     }, [services]);
 
     return <Grid item xs={10} className={classes.root}>

@@ -19,7 +19,7 @@ const NotesSchema = new Schema({
         type: String,
         enum: ['client', 'agence'],
         required: true
-    },    
+    },
     reciever: {
         type: String,
         required: true
@@ -41,6 +41,10 @@ const EventSchema = new Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     projectId: {
         type: Types.ObjectId,
         required: true
@@ -49,6 +53,11 @@ const EventSchema = new Schema({
         type: String,
         enum: ['pending', 'confirmed', 'denied'],
         default: 'pending'
+    },
+    image: {
+        type: Types.ObjectId,
+        ref: 'attachement',
+        default: null
     },
     notes: [NotesSchema]
 });
