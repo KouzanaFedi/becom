@@ -3,12 +3,17 @@ import { gql } from "@apollo/client";
 export const EVENTS = gql`
   query Events($projectId: String!) {
     eventsByProjectId (projectId: $projectId) {
-      id
+      _id
       title
+      description
       start
-      startTime
       end
-      projectId
+      image {
+        _id
+        src
+        createdAt
+        size
+      },
       state
     }
     holidaysEvent {
@@ -17,27 +22,53 @@ export const EVENTS = gql`
     }
   }
 `;
-// addEvent(title: String!, start: String!, end: String, description: String!, projectId: String!, file: Upload, addedBy: String!): Event
+
 export const ADD_EVENT = gql`
   mutation AddEvent($title: String!, $start: String!, $end: String, $description: String!, $projectId: String!, $file: Upload, $addedBy: String!, $projectTitle: String!) {
     addEvent (title: $title, start: $start, projectId: $projectId, end: $end, description: $description, file: $file, addedBy: $addedBy, projectTitle: $projectTitle) {
-      id
-      startTime
+      _id
       title
+      description
       start
-      projectId
+      end
+      image {
+        _id
+        src
+        createdAt
+        size
+      },
+      state
+    }
+  }
+`;
+
+export const DELETE_IMAGE_FROM_EVENT = gql`
+  mutation deleteImageFromEvent($id: String!) {
+    deleteImageFromEvent(id: $id) {
+      succes
+    }
+  }
+`;
+
+export const ADD_IMAGE_TO_EVENT = gql`
+  mutation addImageToEvent($id: String!, $addedBy: String!, $projectTitle: String! $file: Upload!) {
+    addImageToEvent(id: $id, addedBy: $addedBy, projectTitle: $projectTitle, file: $file) {
+      _id
+      src
+      createdAt
+      size
     }
   }
 `;
 
 export const UPDATE_EVENT = gql`
-  mutation UpdateEvent($id: String!, $title: String!, $start: String!) {
-    updateEvent (id: $id, title: $title, start: $start) {
-      id
-      startTime
+  mutation UpdateEvent($id: String!, $title: String!, $start: String!, $description: String!, $end: String!) {
+    updateEvent (id: $id, title: $title, start: $start, description: $description, end: $end) {
+      _id
+      description
       title
       start
-      projectId
+      end
     }
   }
 `;

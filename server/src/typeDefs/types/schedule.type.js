@@ -8,12 +8,12 @@ export const scheduleType = gql`
   }
 
   type Event {
-    id: ID!
+    _id: ID!
     title: String!
+    description: String!
     start: String!
-    startTime: String!
-    end: String
-    projectId: ID!
+    end: String!
+    image: Attachement
     state: String!
   }
 

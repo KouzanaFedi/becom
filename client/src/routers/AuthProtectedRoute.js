@@ -17,23 +17,12 @@ const AuthProtectedRoute = ({ component, path }) =>
     const userInit = useSelector(userDataInit);
     const userId = useSelector(userID);
 
-    const [projectsInit] = useLazyQuery(getProjectListsByClient, {
-        onCompleted: ({ getProjectsByClient}) =>
-        {
-            if (getProjectsByClient.length > 0) {
-                dispatch(INIT_CLIENTS_PROJECT({ active: getProjectsByClient[0], list: getProjectsByClient }))
-            }
-        }
-    });
-
-    const [userDataInitQuery] = useLazyQuery(TOKEN_VERIFY, {
+    const [userDataInitQuery, { loading }] = useLazyQuery(TOKEN_VERIFY, {
         variables: { token: isAuth },
         onCompleted: ({ verifyToken }) =>
         {
             dispatch(INIT_USER_DATA(verifyToken));
-            projectsInit({
-                variables: { client: verifyToken.id }
-            });
+
         },
         onError: (_) =>
         {
@@ -41,18 +30,26 @@ const AuthProtectedRoute = ({ component, path }) =>
             history.replace("/login");
         }
     });
+
+    const [projectsInit] = useLazyQuery(getProjectListsByClient, {
+        onCompleted: ({ getProjectsByClient }) =>
+        {
+            if (getProjectsByClient.length > 0) {
+                dispatch(INIT_CLIENTS_PROJECT({ active: getProjectsByClient[0], list: getProjectsByClient }))
+            }
+        }
+    });
+
     useEffect(() =>
     {
         if (isAuth !== null) {
             if (!userInit) {
                 userDataInitQuery();
             }
-            else {
-                console.log("init proj");
+            else if (!loading)
                 projectsInit({
                     variables: { client: userId }
                 });
-            }
         } else {
             history.replace("/login");
         }

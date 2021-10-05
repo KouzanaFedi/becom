@@ -8,6 +8,7 @@ const useStyles = makeStyles({
         lineHeight: '20px',
         '& fieldset': {
             borderRadius: props.borderRadius ? `${props.borderRadius}` : '5px',
+            borderColor: props.disabled ? 'transparent !important' : 'inherit !important'
         },
         '& legend': {
             width: props.label !== undefined ? 'auto' : 'unset'

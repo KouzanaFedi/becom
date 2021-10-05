@@ -7,6 +7,8 @@ import { INVALIDE_SHARE_TOKEN_ERROR, SCHEDULE_INVALIDE_ERROR, EVENT_INVALIDE_ERR
 import { PubSub, withFilter } from "graphql-subscriptions";
 import { getFileUploadedSize, processUpload } from "../utils/fileUpload";
 import { Attachement } from "../schema/project/attachement";
+import { resolve } from "path";
+import { unlinkSync } from 'fs';
 
 const pubsub = new PubSub();
 
@@ -33,28 +35,40 @@ export const scheduleResolver = {
         eventsByProjectId: async (_, args) =>
         {
             const projectId = args.projectId;
-            const events = [];
-            await Event.find({ projectId }, (_, eventsData) =>
-            {
-                if (eventsData != undefined) {
-                    eventsData.forEach((event) =>
-                    {
-                        const data = {
-                            id: event._id,
-                            title: event.title,
-                            start: fullCalendarDateFormat(event.start),
-                            startTime: fullCalendarTimeFormat(event.start),
-                            projectId: event.projectId,
-                            state: event.state
-                        }
-                        if (event.end != undefined) {
-                            data['end'] = fullCalendarDateFormat(event.end);
-                        }
-                        events.push(data);
-                    });
-                }
-            });
-            return events;
+            // const events = [];
+            // await Event.find({ projectId }, (_, eventsData) =>
+            // {
+            //     if (eventsData != undefined) {
+            //         eventsData.forEach((event) =>
+            //         {
+            //             const data = {
+            //                 id: event._id,
+            //                 title: event.title,
+            //                 start: fullCalendarDateFormat(event.start),
+            //                 startTime: fullCalendarTimeFormat(event.start),
+            //                 projectId: event.projectId,
+            //                 state: event.state
+            //             }
+            //             if (event.end != undefined) {
+            //                 data['end'] = fullCalendarDateFormat(event.end);
+            //             }
+            //             events.push(data);
+            //         });
+            //     }
+            // });
+            // return events;
+
+            return await Event.find({ projectId })
+                .select({ "__v": 0, "notes": 0, "projectId": 0 })
+                .populate({
+                    path: 'image',
+                    select: { 'updatedAt': 0, '__v': 0 },
+                    populate: {
+                        path: 'addedBy',
+                        model: 'users',
+                        select: { 'updated_at': 0, '__v': 0, 'password': 0, 'created_at': 0 },
+                    }
+                });
         },
         eventNotes: async (_, args) =>
         {
@@ -194,6 +208,7 @@ export const scheduleResolver = {
             const { addedBy, title, start, end, description, projectId, projectTitle } = args;
 
             let image = null;
+            let imageRes = null;
 
             if (file) {
                 const fileLoaded = await processUpload(file, `/${projectTitle}/events`);
@@ -202,6 +217,13 @@ export const scheduleResolver = {
                 const attachement = new Attachement({ src: fileLoaded.src, addedBy, size: fileSize });
                 attachement.save();
                 image = attachement._id;
+                imageRes = {
+                    _id: attachement._id,
+                    src: fileLoaded.src,
+                    addedBy,
+                    createdAt: new Date().getTime(),
+                    size: fileSize
+                }
             }
 
             const event = new Event({
@@ -214,33 +236,73 @@ export const scheduleResolver = {
             });
             event.save();
 
-            console.log(event);
 
-            const response = {
-                id: event._id,
+            return {
+                _id: event._id,
                 title: event.title,
+                description: event.description,
                 start: fullCalendarDateFormat(event.start),
-                startTime: fullCalendarTimeFormat(event.start),
-                projectId: event.projectId,
-                state: event.state
+                end: fullCalendarDateFormat(event.end),
+                state: event.state,
+                image: imageRes
             }
-            if (event.end != undefined) {
-                response['end'] = event.end;
-            }
-            return response
         },
         updateEvent: async (_, args) =>
         {
-            const { id, title, start } = args;
-            const event = await Event.findByIdAndUpdate(id, { $set: { title, start } }, { new: true });
+            const { id, title, description, start, end } = args;
+            const event = await Event.findByIdAndUpdate(id, { $set: { title, start, description, end, state: "pending" } }, { new: true });
+
             return {
-                id: event._id,
+                _id: event._id,
                 title: event.title,
+                description: event.description,
                 start: fullCalendarDateFormat(event.start),
-                startTime: fullCalendarTimeFormat(event.start),
+                end: fullCalendarDateFormat(event.end),
+                image: event.image,
                 state: event.state,
-                projectId: event.projectId
             }
+        },
+        addImageToEvent: async (_, args) =>
+        {
+            const file = await args.file;
+            const { addedBy, id, projectTitle } = args;
+
+            const fileLoaded = await processUpload(file, `/${projectTitle}/events`);
+            const fileSize = getFileUploadedSize(fileLoaded.src);
+
+            const attachement = new Attachement({ src: fileLoaded.src, addedBy, size: fileSize });
+            attachement.save();
+
+            const event = await Event.findById(id);
+            event.image = attachement._id;
+            event.save();
+
+            return {
+                _id: attachement._id,
+                src: fileLoaded.src,
+                addedBy,
+                createdAt: new Date().getTime(),
+                size: fileSize
+            }
+        },
+        deleteImageFromEvent: async (_, args) =>
+        {
+            const { id } = args;
+            const event = await Event.findById(id);
+
+            const imageId = event.image;
+            event.image = null;
+            event.save();
+
+            const image = await Attachement.findByIdAndDelete(imageId);
+
+            const BASE_DIR = resolve(__dirname, '..', '..', 'public');
+            unlinkSync(BASE_DIR + image.src);
+
+            return {
+                succes: true
+            }
+
         },
         updateEventState: async (_, args) =>
         {

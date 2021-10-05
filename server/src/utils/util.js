@@ -71,7 +71,10 @@ export const fullCalendarDateFormat = (date) =>
   const year = formattedDate.getFullYear();
   const month = `${formattedDate.getMonth() + 1}`.padStart(2, '0');
   const day = `${formattedDate.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const hh = `${formattedDate.getHours()}`.padStart(2, '0');
+  const mm = `${formattedDate.getMinutes()}`.padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hh}:${mm}`;
 }
 
 export const fullCalendarTimeFormat = (date) =>

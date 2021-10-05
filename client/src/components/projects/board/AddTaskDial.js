@@ -99,7 +99,6 @@ const AddTaskDial = forwardRef(({ status, close, openTask }, ref) =>
                 >
                     Cancel
                 </ThemedButton>
-
                 <ThemedButton
                     variant="outlined"
                     buttonStyle={{ type: 'primary' }}

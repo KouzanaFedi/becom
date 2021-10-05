@@ -1,34 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { fullCalendarDateFormat } from "../../../utils/timeParser";
 
 const scheduleSlice = createSlice({
     name: 'schedule',
     initialState: {
         holidays: [],
         events: [],
-        eventToCreate: {
-            date: null
-        },
-        selectedEvent: {
-            original: {
-                id: null,
-                title: "",
-                day: null,
-                time: null
-            },
-            updated: {
-                id: null,
-                title: {
-                    value: "",
-                    error: null,
-                    ready: false
-                },
-                day: null,
-                time: null,
-                didUpdate: false,
-                state: ''
-            },
-            notes: []
-        },
         sharedLinks: [],
         displayCalendarForm: null,
         calendarForm: {}
@@ -58,16 +35,17 @@ const scheduleSlice = createSlice({
             const events = action.payload.events;
             const colorPalette = { pending: '#8c8c8c', confirmed: 'green', denied: 'red' };
             for (const event in events) {
-                const { title, start, id, projectId, startTime, state: eventState } = events[event];
+                const { title, start, end, _id, description, image, state: eventState } = events[event];
                 state.events.push({
                     title,
-                    start,
+                    start: fullCalendarDateFormat(start),
                     backgroundColor: colorPalette[eventState],
                     borderColor: colorPalette[eventState],
                     extendedProps: {
-                        id,
-                        projectId,
-                        startTime,
+                        end: fullCalendarDateFormat(end),
+                        id: _id,
+                        description,
+                        image,
                         eventState,
                         notes: []
                     }
@@ -76,145 +54,48 @@ const scheduleSlice = createSlice({
         },
         ADD_EVENT_TO_LIST: (state, action) =>
         {
-            const { title, start, id, projectId, startTime, state: eventState } = action.payload.event;
+            const { title, start, _id, projectId, end, state: eventState, image, description } = action.payload.event;
             state.events.push({
                 title,
                 start,
                 backgroundColor: '#8c8c8c',
                 borderColor: '#8c8c8c',
                 extendedProps: {
-                    id,
+                    id: _id,
                     projectId,
-                    startTime,
+                    end,
+                    description,
                     eventState,
+                    image,
                     notes: []
                 }
             })
         },
-        SET_CREATED_DATE: (state, action) =>
+        DELETE_IMAGE_FROM_EVENT_UPDATE: (state, action) =>
         {
-            const { date } = action.payload;
-            state.eventToCreate.date = date;
-        },
-        // SET_EVENT_TITLE: (state, action) =>
-        // {
-        //     const { title } = action.payload;
-        //     state.eventToCreate.title.value = title.toString();
-        //     if (state.eventToCreate.title.value.length < 4) {
-        //         if (state.eventToCreate.title.value.length === 0)
-        //             state.eventToCreate.title.error = "Obligatory field";
-        //         else state.eventToCreate.title.error = "Minimum 4 characters";
-        //     } else state.eventToCreate.title.error = null;
-        //     state.eventToCreate.title.ready =
-        //         state.eventToCreate.title.value.length > 0 && state.eventToCreate.title.error === null;
-        // },
-        RESET_CREATED_EVENT: (state, _) =>
-        {
-            state.eventToCreate.date = null;
-            // state.eventToCreate.day = null;
-            // state.eventToCreate.time = null;
-            // state.eventToCreate.title = {
-            //     value: "",
-            //     error: null,
-            //     ready: false
-            // }
-        },
-        INIT_SELECTED_EVENT: (state, action) =>
-        {
-            const { id, title, day, time } = action.payload;
-            state.selectedEvent.original = {
-                id,
-                title,
-                day,
-                time
-            };
-            state.selectedEvent.updated = {
-                id,
-                day,
-                time,
-                title: {
-                    value: title,
-                    error: null,
-                    ready: true,
-                }
-            }
-
+            const { id } = action.payload;
             const index = state.events.findIndex((event) => event.extendedProps.id === id);
-            state.selectedEvent.updated.state = state.events[index].extendedProps.eventState;
+            state.events[index].extendedProps.image = null;
         },
-        RESET_SELECTED_EVENT: (state, _) =>
+        ADD_IMAGE_FROM_EVENT_UPDATE: (state, action) =>
         {
-            state.selectedEvent.updated = {
-                id: null,
-                title: {
-                    value: "",
-                    error: null,
-                    ready: false
-                },
-                day: null,
-                time: null,
-            };
-            state.selectedEvent.original = {
-                id: null,
-                title: "",
-                day: null,
-                time: null
-            }
-        },
-        UPDATE_SELECTED_DATE: (state, action) =>
-        {
-            const { day, time } = action.payload;
-            if (day !== undefined) {
-                state.selectedEvent.updated.day = day;
-            }
-            if (time !== undefined) {
-                state.selectedEvent.updated.time = time;
-            }
-            state.selectedEvent.updated.didUpdate =
-                (state.selectedEvent.updated.title.value !== state.selectedEvent.original.title) ||
-                (state.selectedEvent.updated.day !== state.selectedEvent.original.day) ||
-                (state.selectedEvent.updated.time !== state.selectedEvent.original.time)
-        },
-        UPDATE_SELECTED_TITLE: (state, action) =>
-        {
-            const { title } = action.payload;
-            state.selectedEvent.updated.title.value = title.toString();
-            if (state.selectedEvent.updated.title.value.length < 4) {
-                if (state.selectedEvent.updated.title.value.length === 0)
-                    state.selectedEvent.updated.title.error = "Obligatory field";
-                else state.selectedEvent.updated.title.error = "Minimum 4 characters";
-            } else state.selectedEvent.updated.title.error = null;
-            state.selectedEvent.updated.title.ready =
-                state.selectedEvent.updated.title.value.length > 0 && state.selectedEvent.updated.title.error === null;
-
-            state.selectedEvent.updated.didUpdate =
-                (state.selectedEvent.updated.title.value !== state.selectedEvent.original.title) ||
-                (state.selectedEvent.updated.day !== state.selectedEvent.original.day) ||
-                (state.selectedEvent.updated.time !== state.selectedEvent.original.time)
-        },
-        RESET_UPDATED_EVENT: (state, _) =>
-        {
-            const { id, title, day, time } = state.selectedEvent.original;
-            state.selectedEvent.updated.didUpdate = false;
-            state.selectedEvent.updated = {
-                id,
-                day,
-                time,
-                title: {
-                    value: title,
-                    error: null,
-                    ready: false,
-                }
-            }
+            const { id, image } = action.payload;
+            const index = state.events.findIndex((event) => event.extendedProps.id === id);
+            state.events[index].extendedProps.image = image;
         },
         UPDATE_EVENT_STATE: (state, action) =>
         {
-            const { id, title, start, startTime } = action.payload;
-            const eventIndex = state.events.findIndex(({ extendedProps }) => extendedProps.id === id);
-            const event = state.events[eventIndex];
+            const { event: { _id, title, start, description, end } } = action.payload;
+            const index = state.events.findIndex(({ extendedProps }) => extendedProps.id === _id);
+            const event = { ...state.events[index], extendedProps: { ...state.events[index].extendedProps } };
             event.title = title;
             event.start = start;
-            event.extendedProps.startTime = startTime;
+            event.backgroundColor = "#8c8c8c";
+            event.borderColor = "#8c8c8c";
+            event.extendedProps.eventState = "pending";
+            event.extendedProps.end = end;
+            event.extendedProps.description = description;
+            state.events[index] = event;
         },
         DELETE_EVENT_STATE: (state, action) =>
         {
@@ -248,14 +129,15 @@ const scheduleSlice = createSlice({
         },
         INIT_SELECTED_EVENT_NOTES: (state, action) =>
         {
-            state.selectedEvent.notes = [];
-            const { notes } = action.payload;
-            state.selectedEvent.notes = notes;
+            const { notes, id } = action.payload;
+            const index = state.events.findIndex((event) => event.extendedProps.id === id);
+            state.events[index].extendedProps.notes = notes;
         },
         PUSH_NEW_NOTE_SELECTED_EVENT: (state, action) =>
         {
-            const { note } = action.payload;
-            state.selectedEvent.notes.push(note);
+            const { note, id } = action.payload;
+            const index = state.events.findIndex((event) => event.extendedProps.id === id);
+            state.events[index].extendedProps.notes.push(note);
         },
         UPDATE_EVENT_STATUS: (state, action) =>
         {
@@ -292,13 +174,10 @@ const scheduleSlice = createSlice({
     }
 });
 
-export const { SET_HOLIDAYS, SET_EVENTS, SET_CREATED_DATE, SET_EVENT_TITLE, RESET_CREATED_EVENT, INIT_SELECTED_EVENT, RESET_SELECTED_EVENT, UPDATE_SELECTED_TITLE, UPDATE_SELECTED_DATE, RESET_UPDATED_EVENT, CHECK_IF_DID_UPDATE, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, SET_DISPLAY_CALENDAR_FORM, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS, DELETE_SHARED_LINK_CIBLE, DELETE_SCHEDULE_LINK, ADD_EVENT_TO_LIST } = scheduleSlice.actions;
+export const { SET_HOLIDAYS, SET_EVENTS, INIT_SELECTED_EVENT, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, SET_DISPLAY_CALENDAR_FORM, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS, DELETE_SHARED_LINK_CIBLE, ADD_IMAGE_FROM_EVENT_UPDATE, DELETE_SCHEDULE_LINK, ADD_EVENT_TO_LIST, DELETE_IMAGE_FROM_EVENT_UPDATE } = scheduleSlice.actions;
 
 export const scheduleHolidays = (state) => state.schedule.holidays;
 export const scheduleEvents = (state) => state.schedule.events;
-export const scheduleEventToCreate = (state) => state.schedule.eventToCreate;
-export const scheduleSelectedEvent = (state) => state.schedule.selectedEvent.updated;
-export const scheduleSelectedEventNotes = (state) => state.schedule.selectedEvent.notes;
 export const scheduleSharedLinks = (state) => state.schedule.sharedLinks;
 export const scheduleDisplayCalendarForm = (state) => state.schedule.displayCalendarForm;
 export const scheduleCalendarForm = (state) => state.schedule.calendarForm;

@@ -12,7 +12,9 @@ export const schedule = gql`
 
     type Mutation {
     addEvent(title: String!, start: String!, end: String, description: String!, projectId: String!, file: Upload, addedBy: String!, projectTitle: String!): Event
-    updateEvent(id: String!, title:String!, start: String!): Event
+    updateEvent(id: String!, title:String!, start: String!, description: String!, end: String!): Event
+    deleteImageFromEvent(id: String!): BasicResponse
+    addImageToEvent(id: String!, addedBy: String!, projectTitle: String!, file: Upload!): Attachement
     deleteEvent(id: String!): IdResponse
     updateEventState(id: String!, state: String!): Event
     generateScheduleLink(projectId: String!, name: String!, start: String!, end: String!, cible: [CibleInput!]!): ScheduleShare

@@ -32,7 +32,8 @@ const DetailDialog = ({ open, onClose, children }) =>
 
     return <Dialog
         classes={{ scrollPaper: classes.fixPosition, paperFullScreen: classes.fixSize }}
-        fullScreen open={open}
+        fullScreen 
+        open={open}
         onClose={onClose}
         TransitionComponent={Transition}>
         {children}

@@ -76,7 +76,7 @@ export const getProjectListsByClient = gql`
     }
 `;
 export const getTagsAndMembers = gql`
-    query GetProjectsByClient($client: String!) {
+    query getTagsAndMembers{
         getTags {
             _id
             title

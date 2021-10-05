@@ -60,14 +60,12 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const [addEvent, { loading }] = useMutation(ADD_EVENT, {
-        // variables: {
-        //     start: parseTimeTimePicker(time),
-        //     title: eventToCreate.title.value,
-        //     projectId: "607d496a031c940568bab463"
-        // },
         onCompleted: ({ addEvent }) =>
         {
             dispatch(ADD_EVENT_TO_LIST({ event: addEvent }));
+            onClose();
+            reset();
+            setImage(null);
         }
     });
 
@@ -89,7 +87,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
     }
 
     return (
-        <Dialog maxWidth='md' open={open} >
+        <Dialog maxWidth='md' onClose={onClose} open={open} >
             <Box p={2} >
                 <DialogTitle style={{ paddingTop: 0 }} > Add event</DialogTitle>
                 <DialogContent dividers>
@@ -217,6 +215,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
                         {
                             onClose();
                             reset();
+                            setImage(null);
                         }}
                         fullWidth={false}
                     >
@@ -228,16 +227,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
                         form="addEventForm"
                         onClick={() =>
                         {
-                            // console.log(getValues());
                         }}
-                        // onClick={(event) =>
-                        // {
-                        //     // event.preventDefault();
-                        //     // addEvent();
-                        //     // if (!loading) {
-                        //     //     onClose();
-                        //     // }
-                        // }}
                         variant="outlined"
                         buttonStyle={{ type: 'primary' }}
                     >
