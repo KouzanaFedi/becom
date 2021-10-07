@@ -77,6 +77,10 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: 'inherit',
         width: 'auto',
         margin: "0 auto"
+    },
+    content: {
+        height: "calc(100vh - 144px)",
+        overflowY: "auto",
     }
 }));
 
@@ -199,7 +203,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                         </ThemedButton>}
                 </Box>
             </Grid>
-            <Box style={{ maxHeight: "calc(100vh - 144px)", overflowY: "auto", height: 'auto' }}>
+            <Box className={classes.content}>
                 <Grid item conatiner xs={12} display="flex">
                     <Grid item xs={5}>
                         <form id="updateEventForm" onSubmit={handleSubmit(submit)}>
@@ -236,7 +240,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                                 </Grid>
                                 <Grid item xs={9}>
                                     <DateTimePicker
-                                        inputFormat="MM/DD/yyyy hh:mm"
+                                        inputFormat="MM/DD/yyyy HH:mm"
                                         id="date"
                                         ampm={false}
                                         disabled={!isEditMode}
@@ -256,7 +260,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                                 </Grid>
                                 <Grid item xs={9}>
                                     <DateTimePicker
-                                        inputFormat="MM/DD/yyyy hh:mm"
+                                        inputFormat="MM/DD/yyyy HH:mm"
                                         id="date"
                                         disabled={!isEditMode}
                                         ampm={false}

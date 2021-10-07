@@ -25,11 +25,11 @@ const ScheduleShareSchema = new Schema({
                 type: String,
                 required: true
             },
-            firstName: {
+            name: {
                 type: String,
                 required: true
             },
-            lastName: {
+            token: {
                 type: String,
                 required: true
             }

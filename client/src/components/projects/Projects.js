@@ -3,9 +3,8 @@ import { CssBaseline, Grid } from "@material-ui/core";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import { getProjectById, getProjectListsByClient, getTagsAndMembers } from "../../api/project";
-import { clientsProject, INIT_CLIENTS_PROJECT, SET_PROJECT_DATA, INIT_PROJECT_TAGS_AND_MEMBERS } from "../../redux/logic/projectManager/projectSlice";
-import { userID } from "../../redux/logic/userSlice";
+import { getProjectById, getTagsAndMembers } from "../../api/project";
+import { clientsProject, SET_PROJECT_DATA, INIT_PROJECT_TAGS_AND_MEMBERS } from "../../redux/logic/projectManager/projectSlice";
 import { PROJECT_SECTIONS } from "../../routers/ProjectSection";
 import ProjectsMenu from "./ProjectsMenu";
 

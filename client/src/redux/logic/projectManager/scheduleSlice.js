@@ -7,19 +7,9 @@ const scheduleSlice = createSlice({
         holidays: [],
         events: [],
         sharedLinks: [],
-        displayCalendarForm: null,
         calendarForm: {}
     },
     reducers: {
-        INIT_SHARED_LINKS: (state, action) =>
-        {
-            const links = action.payload.sharedLink;
-            state.sharedLinks = [];
-            for (const link in links) {
-                const { id, projectId, start, end, cible, name, token } = links[link];
-                state.sharedLinks.push({ id, projectId, start, end, cible, name, token });
-            }
-        },
         SET_HOLIDAYS: (state, action) =>
         {
             const holidays = action.payload.holidays;
@@ -103,30 +93,6 @@ const scheduleSlice = createSlice({
             const eventIndex = state.events.findIndex(({ extendedProps }) => extendedProps.id === id);
             state.events.splice(eventIndex, 1);
         },
-        SET_DISPLAY_CALENDAR_FORM: (state, action) =>
-        {
-            const { type, data } = action.payload;
-
-            state.displayCalendarForm = type;
-
-            if (type != null) {
-                if (type === 'edit') {
-                    state.calendarForm.original = data;
-                    state.calendarForm.edited = data;
-                } else {
-                    state.calendarForm.edited = {
-                        id: "",
-                        projectId: "",
-                        start: "",
-                        end: "",
-                        cible: [],
-                        name: ""
-                    }
-                }
-            } else {
-                state.calendarForm = {}
-            }
-        },
         INIT_SELECTED_EVENT_NOTES: (state, action) =>
         {
             const { notes, id } = action.payload;
@@ -149,37 +115,37 @@ const scheduleSlice = createSlice({
             state.events[index].backgroundColor = '#8c8c8c';
             state.events[index].borderColor = '#8c8c8c';
         },
+        INIT_SHARED_LINKS: (state, action) =>
+        {
+            const links = action.payload.sharedLink;
+            state.sharedLinks = links;
+        },
+        ADD_SHARED_LINK: (state, action) =>
+        {
+            const { shared } = action.payload;
+            state.sharedLinks.push(shared);
+        },
         DELETE_SHARED_LINK_CIBLE: (state, action) =>
         {
             const { cibleId, sharedLinkId } = action.payload;
-            const sIndex = state.sharedLinks.é((shared) => shared.id === sharedLinkId);
-            const cIndex = state.sharedLinks[sIndex].cible.findIndex((cible) => cible.id === cibleId);
+            const sIndex = state.sharedLinks.findIndex((shared) => shared._id === sharedLinkId);
+            const cIndex = state.sharedLinks[sIndex].cible.findIndex((cible) => cible._id === cibleId);
 
-            const newList = [
-                ...state.sharedLinks[sIndex].cible.slice(0, cIndex),
-                ...state.sharedLinks[sIndex].cible.slice(cIndex + 1),
-            ];
-            const tmp = state.sharedLinks[sIndex];
-            const final = { ...tmp, cible: newList };
-            state.sharedLinks[sIndex] = final;
-            state.calendarForm.edited = final;
+            state.sharedLinks[sIndex].cible.splice(cIndex, 1);
         },
         DELETE_SCHEDULE_LINK: (state, action) =>
         {
             const { id } = action.payload;
-            const index = state.sharedLinks.findIndex((shared) => shared.id === id);
+            const index = state.sharedLinks.findIndex((shared) => shared._id === id);
             state.sharedLinks.splice(index, 1);
-            state.displayCalendarForm = null;
         }
     }
 });
 
-export const { SET_HOLIDAYS, SET_EVENTS, INIT_SELECTED_EVENT, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, SET_DISPLAY_CALENDAR_FORM, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS, DELETE_SHARED_LINK_CIBLE, ADD_IMAGE_FROM_EVENT_UPDATE, DELETE_SCHEDULE_LINK, ADD_EVENT_TO_LIST, DELETE_IMAGE_FROM_EVENT_UPDATE } = scheduleSlice.actions;
+export const { SET_HOLIDAYS, SET_EVENTS, INIT_SELECTED_EVENT, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS, DELETE_SHARED_LINK_CIBLE, ADD_IMAGE_FROM_EVENT_UPDATE, DELETE_SCHEDULE_LINK, ADD_EVENT_TO_LIST, DELETE_IMAGE_FROM_EVENT_UPDATE, ADD_SHARED_LINK } = scheduleSlice.actions;
 
 export const scheduleHolidays = (state) => state.schedule.holidays;
 export const scheduleEvents = (state) => state.schedule.events;
 export const scheduleSharedLinks = (state) => state.schedule.sharedLinks;
-export const scheduleDisplayCalendarForm = (state) => state.schedule.displayCalendarForm;
-export const scheduleCalendarForm = (state) => state.schedule.calendarForm;
 
 export default scheduleSlice.reducer;

@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
         border: variant === "contained" ? 'none' : `1px solid ${buttonStyle.backgroundColor}`,
         textTransform: 'unset',
         height: 40,
-        padding: '10px 22px',
+        padding: '10px 18px',
         fontSize: "14px",
         fontWeight: variant === "contained" ? 'regular' : 'bold',
         width: fullWidth ? '100%' : 'auto',

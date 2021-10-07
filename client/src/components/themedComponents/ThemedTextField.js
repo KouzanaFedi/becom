@@ -8,7 +8,7 @@ const useStyles = makeStyles({
         lineHeight: '20px',
         '& fieldset': {
             borderRadius: props.borderRadius ? `${props.borderRadius}` : '5px',
-            borderColor: props.disabled ? 'transparent !important' : 'inherit !important'
+            borderColor: props.disabled && !props.disabledWithBorder ? 'transparent !important' : 'inherit !important',
         },
         '& legend': {
             width: props.label !== undefined ? 'auto' : 'unset'
@@ -17,8 +17,15 @@ const useStyles = makeStyles({
         fontSize: '14px',
         '& .MuiSelect-root': {
             textAlign: 'start'
+        },
+        '& .MuiInputLabel-outlined': {
+            fontSize: props.disbaled ? '16px' : 'inherit',
+            color: props.disbaled ? "#0000008A" : "inherit"
         }
-    })
+    }),
+    disabled: {
+        color: "black"
+    }
 });
 
 const ThemedTextField = (props) =>
@@ -27,9 +34,15 @@ const ThemedTextField = (props) =>
     const fieldProps = { ...props };
     delete fieldProps.borderRadius;
     delete fieldProps.backgroundColor;
+    delete fieldProps.disabledWithBorder;
 
     return < TextField
         inputProps={props.inputProps}
+        InputProps={{
+            classes: {
+                disabled: classes.disbaled
+            }
+        }}
         size="small"
         classes={{ root: classes.root }}
         {...fieldProps}

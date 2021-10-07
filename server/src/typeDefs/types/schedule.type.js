@@ -22,7 +22,7 @@ export const scheduleType = gql`
   }
 
   type ScheduleShare {
-    id: ID!
+    _id: ID!
     projectId: ID!
     name: String!
     start: String!
@@ -32,16 +32,10 @@ export const scheduleType = gql`
   }
 
   type Cible {
-    id: ID!
+    _id: ID!
     email: String!
-    firstName: String!
-    lastName: String!
-  }
-
-  input CibleInput {
-    email: String!
-    firstName: String!
-    lastName: String!
+    name: String!
+    token: String!
   }
 
   type Note {

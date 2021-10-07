@@ -6,11 +6,11 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import { useLazyQuery } from "@apollo/client";
 import { EVENTS } from "../../../api/events";
 import { useDispatch, useSelector } from "react-redux";
-import { INIT_SELECTED_EVENT, RESET_CREATED_EVENT, scheduleEvents, scheduleHolidays, SET_EVENTS, SET_HOLIDAYS } from "../../../redux/logic/projectManager/scheduleSlice";
+import { scheduleEvents, scheduleHolidays, SET_EVENTS, SET_HOLIDAYS } from "../../../redux/logic/projectManager/scheduleSlice";
 import AddEventDialog from "./AddEventDialog";
 import { useEffect, useRef, useState } from "react";
 import DisplayEvent from "./DisplayEvent";
-import ShareScheduleDialog from "./ShareScheduleDialog";
+import ShareSchedule from "./ShareSchedule";
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 import { clientsActiveProject } from '../../../redux/logic/projectManager/projectSlice';
 import DetailDialog from "../../projects/tasks/DetailDialog";
@@ -193,12 +193,19 @@ const EventScheduler = () =>
                         />
                     </DetailDialog>
 
-                    <ShareScheduleDialog
+                    <DetailDialog
                         open={openShareDial}
                         onClose={() =>
                         {
+                            setDateClicked(null);
                             setOpenShareDial(false);
-                        }} />
+                        }} >
+                        <ShareSchedule
+                            project={project}
+                            openBackDropOpen={() => setBackDropOpen(true)}
+                            closeBackDropOpen={() => setBackDropOpen(false)}
+                        />
+                    </DetailDialog>
                 </Paper>
                 <ThemedBackDrop backDropOpen={backDropOpen} />
             </Grid>

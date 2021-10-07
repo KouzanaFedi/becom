@@ -1,12 +1,13 @@
 import { useQuery } from "@apollo/client";
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, IconButton, Typography } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Add, Edit } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { SHARED_LINKS_BY_PROJECTID } from "../../../../api/events";
-import { INIT_SHARED_LINKS, scheduleSharedLinks, SET_DISPLAY_CALENDAR_FORM } from "../../../../redux/logic/projectManager/scheduleSlice";
+import { INIT_SHARED_LINKS, scheduleSharedLinks } from "../../../../redux/logic/projectManager/scheduleSlice";
+import ThemedButton from "../../../themedComponents/ThemedButton";
 
-const useStyles = makeStyles((theme) => (
+const useStyles = makeStyles(() => (
     {
         addButtonDisplay: {
             display: 'flex',
@@ -24,7 +25,7 @@ const useStyles = makeStyles((theme) => (
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '8px'
+            width: "100%"
         },
         title: {
             fontWeight: 'bold'
@@ -34,8 +35,6 @@ const useStyles = makeStyles((theme) => (
         },
         editBtn: {
             minWidth: '24px',
-            border: '0.5px solid rgba(0, 0, 0, 0.12)',
-            borderRadius: '4px',
             color: 'rgba(123, 33, 125, 1)'
         },
         editBtnClicked: {
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme) => (
         }
     }));
 
-const SharedLinks = () =>
+const SharedLinks = ({ project, setEdit, setCreate, setScheduleShareData }) =>
 {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -58,45 +57,49 @@ const SharedLinks = () =>
     const sharedLinksData = useSelector(scheduleSharedLinks);
 
     useQuery(SHARED_LINKS_BY_PROJECTID, {
-        variables: { projectId: "607d496a031c940568bab463" },
+        variables: { projectId: project.id },
         onCompleted: ({ getSharedSchedulesByProjecId }) =>
         {
             dispatch(INIT_SHARED_LINKS({ sharedLink: getSharedSchedulesByProjecId }));
         }
     });
 
-    return <Box >
-        <Box mx={2}>
-            <Typography className={classes.title}>Shared calendars</Typography>
-            <Button
-                className={classes.addButton}
-                startIcon={<Add />}
-                onClick={() =>
-                {
-                    dispatch(SET_DISPLAY_CALENDAR_FORM({ type: 'create' }));
-                }}>
-                Add a shared Calendar
-        </Button>
-        </Box>
-        <Box p={2} className={classes.topDivider}>
-            {sharedLinksData.map((item) =>
+    return <Box display="flex" flexDirection="column" alignItems="center" rowGap="15px">
+        <ThemedButton
+            variant="outlined"
+            buttonStyle={{ type: 'primary' }}
+            fullWidth={false}
+            startIcon={<Add />}
+            onClick={() =>
             {
-                return <Box key={item.id} className={classes.sharedLinksDataButton}>
-                    <Typography>
-                        {item.name}
-                    </Typography>
-                    <Button
-                        size='small'
-                        className={classes.editBtn}
-                        onClick={() =>
+                setCreate();
+                setScheduleShareData({ _id: "", name: "", start: `${new Date().getTime()}`, end: `${new Date().getTime()}`, projectId: project.id, cible: [] });
+            }}>
+            Create sharing link
+        </ThemedButton>
+        {sharedLinksData.map((item) =>
+        {
+            return <Box key={item._id} px={1} className={classes.sharedLinksDataButton}>
+                <Typography>
+                    {item.name}
+                </Typography>
+                <IconButton
+                    size='small'
+                    className={classes.editBtn}
+                    onClick={() =>
+                    {
+                        setEdit("edit");
+                        const cibleEditMode = { ...item, cible: [] };
+                        item.cible.forEach((it) =>
                         {
-                            dispatch(SET_DISPLAY_CALENDAR_FORM({ type: 'edit', data: item }));
-                        }}>
-                        <Edit />
-                    </Button>
-                </Box>
-            })}
-        </Box>
+                            cibleEditMode.cible.push({ ...it, edit: true });
+                        });
+                        setScheduleShareData(cibleEditMode);
+                    }}>
+                    <Edit />
+                </IconButton>
+            </Box>
+        })}
     </Box>
 }
 

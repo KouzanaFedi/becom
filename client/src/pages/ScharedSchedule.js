@@ -8,6 +8,7 @@ import { INIT_SHARED_EVENTS, SET_TOKEN_VALUE, sharedScheduleSharedEvents } from 
 
 const SharedSchedule = () =>
 {
+    console.log("tadaaa");
     const dispatch = useDispatch();
 
     const { token } = useParams();

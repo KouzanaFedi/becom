@@ -87,7 +87,7 @@ const DueDateOption = ({ taskId, serviceId, openBackDropOpen, closeBackDropOpen,
             in={time !== null}>
             <Box mt={2}>
                 <DateTimePicker
-                    inputFormat="MM/DD/yyyy hh:mm"
+                    inputFormat="MM/DD/yyyy HH:mm"
                     id="date"
                     value={parseTimeTimePicker(time)}
                     renderInput={(props) => <ThemedTextField {...props} />}

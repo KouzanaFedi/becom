@@ -17,9 +17,9 @@ export const schedule = gql`
     addImageToEvent(id: String!, addedBy: String!, projectTitle: String!, file: Upload!): Attachement
     deleteEvent(id: String!): IdResponse
     updateEventState(id: String!, state: String!): Event
-    generateScheduleLink(projectId: String!, name: String!, start: String!, end: String!, cible: [CibleInput!]!): ScheduleShare
+    generateScheduleLink(projectId: String!, name: String!, start: String!, end: String!): ScheduleShare
     sendNotes(id: String!, note: NoteInput): Note
-    addUserToScheduleLink(sharedLinkId: String!, user: CibleInput!): ScheduleShare
+    addUserToScheduleLink(sharedLinkId: String!, email: String!, name: String!): Cible
     deleteUserFromScheduleLink(sharedLinkId: String!, cibleId: String!): BasicResponse
     deleteScheduleLink(id: String!) : BasicResponse
     updateScheduleLinkUser(sharedLinkId: String!, userId: String!, email: String, firstName: String, lastName: String) : ScheduleShare

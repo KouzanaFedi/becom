@@ -125,7 +125,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
                                     </Grid>
                                     <Grid item xs={9}>
                                         <DateTimePicker
-                                            inputFormat="MM/DD/yyyy hh:mm"
+                                            inputFormat="MM/DD/yyyy HH:mm"
                                             id="date"
                                             ampm={false}
                                             value={parseTimeTimePicker(time?.start)}
@@ -135,7 +135,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
                                                 {...props} />}
                                             onChange={(value) =>
                                             {
-                                                setTime(...time, { start: new Date(value).getTime() });
+                                                setTime({ ...time, start: new Date(value).getTime() });
                                             }}
                                         />
                                     </Grid>
@@ -146,7 +146,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
                                     </Grid>
                                     <Grid item xs={9}>
                                         <DateTimePicker
-                                            inputFormat="MM/DD/yyyy hh:mm"
+                                            inputFormat="MM/DD/yyyy HH:mm"
                                             id="date"
                                             ampm={false}
                                             value={parseTimeTimePicker(time?.end)}
@@ -157,7 +157,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
                                                 {...props} />}
                                             onChange={(value) =>
                                             {
-                                                setTime(...time, { end: new Date(value).getTime() });
+                                                setTime({ ...time, end: new Date(value).getTime() });
                                             }}
                                         />
                                     </Grid>

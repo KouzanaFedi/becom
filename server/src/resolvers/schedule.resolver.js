@@ -97,40 +97,9 @@ export const scheduleResolver = {
         getSharedSchedulesByProjecId: async (_, args) =>
         {
             const { projectId } = args;
-            const sharedSchedules = [];
-
-            await ScheduleShare.find({ projectId }, (err, shared) =>
-            {
-                if (err) {
-                    throw new AuthenticationError(INVALIDE_INPUT_ERROR.toString());
-                }
-                if (shared != undefined) {
-                    shared.forEach((share) =>
-                    {
-                        const response = {
-                            id: share._id,
-                            projectId: share.projectId,
-                            start: share.start,
-                            end: share.end,
-                            token: share.token,
-                            name: share.name,
-                            cible: []
-                        }
-                        share.cible.forEach((cible) =>
-                        {
-                            const { _id, email, firstName, lastName } = cible;
-                            response.cible.push({
-                                id: _id,
-                                email,
-                                firstName,
-                                lastName
-                            });
-                        });
-                        sharedSchedules.push(response);
-                    });
-                }
-            });
-            return sharedSchedules;
+            const schedule = await ScheduleShare.find({ projectId })
+                .select({ "__v": 0 });
+            return schedule;
         },
         verifySharedScheduleToken: async (_, args) =>
         {
@@ -370,77 +339,43 @@ export const scheduleResolver = {
         },
         generateScheduleLink: async (_, args) =>
         {
-            const { projectId, start, end, cible, name } = args;
+            const { projectId, start, end, name } = args;
             const scheduleLink = { name, projectId, start, end, cible: [] };
-            cible.forEach((val) =>
-            {
-                const { email, firstName, lastName } = val;
-                scheduleLink.cible.push({ email, firstName, lastName });
-            });
+
             const scheduleShare = new ScheduleShare(scheduleLink);
-            const token = getScheduleSharingToken({ shareId: scheduleShare._id });
+            const token = getScheduleSharingToken({ shareId: scheduleShare._id, user: null });
             scheduleShare.token = token;
             scheduleShare.save();
 
-            const response = {
-                id: scheduleShare._id,
-                name: scheduleShare.name,
-                token: scheduleShare.token,
-                projectId: scheduleShare.projectId,
-                start: scheduleShare.start,
-                end: scheduleShare.end,
-                cible: []
-            }
-            if (scheduleShare.cible != undefined) {
-                scheduleShare.cible.forEach((cible) =>
-                {
-                    const { _id, email, firstName, lastName } = cible;
-                    response.cible.push({
-                        id: _id,
-                        email,
-                        firstName,
-                        lastName
-                    });
-                })
-            }
-            return response;
+            return scheduleShare;
         },
         addUserToScheduleLink: async (_, args) =>
         {
-            const { sharedLinkId, user } = args;
-            const { email, firstName, lastName } = user;
+            const { sharedLinkId, email, name } = args;
+            const token = getScheduleSharingToken({ shareId: sharedLinkId._id, user: addedUser });
             const schedule = await ScheduleShare.findByIdAndUpdate(sharedLinkId,
                 {
                     $push: {
                         cible: {
                             email,
-                            firstName,
-                            lastName
+                            name
                         }
                     }
                 }, { new: true }
             );
-            if (schedule == null) throw new AuthenticationError(SCHEDULE_INVALIDE_ERROR.toString());
-            const response = {
-                id: schedule._id,
-                name: schedule.name,
-                projectId: schedule.projectId,
-                start: schedule.start,
-                end: schedule.end,
-                token: schedule.token,
-                cible: []
-            };
-            schedule.cible.forEach((cible) =>
-            {
-                const { _id, email, firstName, lastName } = cible;
-                response.cible.push({
-                    id: _id,
-                    email,
-                    firstName,
-                    lastName
-                });
-            });
-            return response
+            const addedUser = schedule.cible.pop();
+            await ScheduleShare.updateOne({ _id: sharedLinkId, 'cible._id': addedUser._id },
+                {
+                    $set: {
+                        'cible.$.token': token
+                    }
+                }, { new: true }
+            );
+
+            return {
+                ...addedUser._doc,
+                token
+            };;
         },
         deleteUserFromScheduleLink: async (_, args) =>
         {
@@ -453,26 +388,6 @@ export const scheduleResolver = {
                     }
                 },
                 { new: true });
-            if (schedule == null) throw new AuthenticationError(SCHEDULE_INVALIDE_ERROR.toString());
-            // const response = {
-            //     id: schedule._id,
-            //     name: schedule.name,
-            //     projectId: schedule.projectId,
-            //     start: schedule.start,
-            //     end: schedule.end,
-            //     token: schedule.token,
-            //     cible: []
-            // };
-            // schedule.cible.forEach((cible) =>
-            // {
-            //     const { _id, email, firstName, lastName } = cible;
-            //     response.cible.push({
-            //         id: _id,
-            //         email,
-            //         firstName,
-            //         lastName
-            //     });
-            // });
             return { succes: true };
         },
         deleteScheduleLink: async (_, args) =>

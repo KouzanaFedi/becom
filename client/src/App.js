@@ -29,7 +29,7 @@ function App()
             <Route exact path="/register" component={Register} />
             <Route exact path="/recup" component={RecupPassword} />
             <AuthProtectedRoute path="/dashboard/:section?/:subsection?/:subsubsection?" component={Dashboard} />
-            <Route path="/shared_schedule/:token" component={SharedSchedule} />
+            <Route exact path="/shared_schedule/:token" component={SharedSchedule} />
             <Route exact path="/404" component={Screen404} />
             <Route exact path="/splash" component={SplashScreen} />
             <InvalideRoute />

@@ -84,18 +84,44 @@ export const DELETE_EVENT = gql`
 export const SHARED_LINKS_BY_PROJECTID = gql`
   query GetSharedSchedulesByProjecId($projectId: String!) {
     getSharedSchedulesByProjecId (projectId: $projectId) {
-      id
+      _id
       projectId
       start
       name
       end
       token
       cible {
-        id
+        _id
         email
-        firstName
-        lastName
+        name
       }
+    }
+  }
+`;
+
+export const CREATE_SHARED_CALENDAR = gql`
+  mutation generateScheduleLink($projectId: String!, $name: String!, $start: String!, $end: String!) {
+    generateScheduleLink (projectId: $projectId, name: $name, start: $start, end: $end) {
+      _id
+      projectId
+      name
+      start
+      end
+      token
+      cible {
+        _id
+        email
+      }
+    }
+  }
+`;
+
+export const ADD_USER_TO_SHARED_LINK = gql`
+  mutation addUserToScheduleLink($sharedLinkId: String!, $email: String!, $name: String!) {
+    addUserToScheduleLink (sharedLinkId: $sharedLinkId, email: $email, name: $name ) {
+      _id
+      name
+      email
     }
   }
 `;
