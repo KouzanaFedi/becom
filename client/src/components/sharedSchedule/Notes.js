@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useSubscription } from "@apollo/client";
+import { useLazyQuery, useMutation, useSubscription } from "@apollo/client";
 import { Box, CircularProgress, IconButton } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { GET_NOTES_BY_EVENT_ID, NEW_NOTES_SUBSCRIPTION, SEND_NOTE } from "../../api/events";
@@ -6,19 +6,22 @@ import { Send } from '@material-ui/icons'
 import { useState, useRef, useEffect } from "react";
 import ThemedTextField from "../themedComponents/ThemedTextField";
 import { useForm } from "react-hook-form";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',
         width: '100%',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         flexDirection: 'column',
-        padding: '5px'
+        padding: '5px',
+        paddingBottom: '10px'
     },
     noNotes: {
         display: 'block',
+        fontSize: "0.75em",
         width: '75%',
         padding: '5px'
     },
@@ -32,21 +35,22 @@ const useStyles = makeStyles((theme) => ({
         alignSelf: 'flex-end',
         maxWidth: '75%',
         backgroundColor: '#d6d6d6',
-        padding: '4px 10px',
-        borderRadius: '20px',
+        padding: '4px 6px',
+        borderRadius: '5px',
         margin: '4px',
-        fontSize: '12px',
+        color: 'black',
+        fontSize: '0.75em',
         textAlign: 'start'
     },
     reciever: {
         alignSelf: 'flex-start',
         maxWidth: '75%',
-        backgroundColor: 'rgba(123, 33, 125, 1)',
-        padding: '4px 10px',
-        borderRadius: '20px',
+        backgroundColor: 'rgba(123, 33, 125, 0.8)',
+        padding: '4px 6px',
+        borderRadius: '5px',
         margin: '4px',
         color: 'white',
-        fontSize: '12px',
+        fontSize: '0.75em',
         textAlign: 'start'
     },
     notesOutput: {
@@ -54,6 +58,18 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: '300px',
         height: 'auto',
         overflowY: 'auto',
+    },
+    senderInfo: {
+        alignSelf: 'flex-end',
+        marginRight: '4px',
+        fontSize: '0.65em',
+        textAlign: 'start'
+    },
+    receiverInfo: {
+        alignSelf: 'flex-start',
+        marginLeft: '4px',
+        fontSize: '0.65em',
+        textAlign: 'start'
     },
     notesInput: {
         height: '20%',
@@ -66,21 +82,21 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Notes = ({ id, senderType, initEventNotes, pushNewNote }) =>
+const Notes = ({ id, senderType, initEventNotes, pushNewNote, senderName }) =>
 {
     const classes = useStyles();
     const [notes, setNotes] = useState([]);
+
     const { register, handleSubmit, reset } = useForm();
     const messegesDiv = useRef(null);
 
     useEffect(() =>
     {
-        console.log(notes);
         messegesDiv.current.scrollTop = messegesDiv.current.scrollHeight - messegesDiv.current.clientHeight;
     }, [notes]);
 
 
-    useQuery(GET_NOTES_BY_EVENT_ID, {
+    const [getNotesQuery] = useLazyQuery(GET_NOTES_BY_EVENT_ID, {
         variables: { id },
         onCompleted: ({ eventNotes }) =>
         {
@@ -88,6 +104,16 @@ const Notes = ({ id, senderType, initEventNotes, pushNewNote }) =>
             setNotes(eventNotes);
         }
     });
+
+    useEffect(() =>
+    {
+        if (typeof initEventNotes === 'function') {
+            getNotesQuery();
+        } else {
+            setNotes(initEventNotes);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initEventNotes])
 
     function submitMsg({ msg })
     {
@@ -97,9 +123,9 @@ const Notes = ({ id, senderType, initEventNotes, pushNewNote }) =>
                 note: {
                     message: msg,
                     senderType: senderType,
-                    sender: "sender",
+                    sender: senderName,
                     recieverType: (senderType === 'agence') ? 'client' : 'agence',
-                    reciever: "reciever",
+                    reciever: (senderType === 'agence') ? 'client' : 'agence',
                 },
             },
         });
@@ -136,19 +162,29 @@ const Notes = ({ id, senderType, initEventNotes, pushNewNote }) =>
                 </Box> :
                 < Box className={classes.notes}>
                     {notes.map((note) =>
-                    {
-                        if (note.senderType === senderType) return <Box className={classes.sender} key={note.id}>
-                            {note.message}
-                        </Box>
-                        else return <Box className={classes.reciever} key={note.id}>
-                            {note.message}
-                        </Box>
-                    })}
+                        (note.senderType === senderType) ?
+                            <Box display="flex" flexDirection="column" key={note._id}>
+                                <div className={classes.sender}>
+                                    {note.message}
+                                </div>
+                                <div className={classes.senderInfo}>
+                                    {new moment(new Date(parseInt(note.createdAt))).format('MMM D, LT')}
+                                </div>
+                            </Box>
+                            : <Box display="flex" flexDirection="column" key={note._id}>
+                                <div className={classes.reciever}>
+                                    {note.message}
+                                </div>
+                                <div className={classes.receiverInfo}>
+                                    send by {note.sender} {new moment(new Date(parseInt(note.createdAt))).format('MMM D, LT')}
+                                </div>
+                            </Box>
+                    )}
                 </Box>
             }
         </Box>
         <form
-            id="messageInput"
+            id={"messageInput" + id}
             onSubmit={handleSubmit(submitMsg)}
             className={classes.notesInput}>
             <ThemedTextField
@@ -160,7 +196,7 @@ const Notes = ({ id, senderType, initEventNotes, pushNewNote }) =>
             {!loading ?
                 <IconButton size="small"
                     type="submit"
-                    form="messageInput"
+                    form={"messageInput" + id}
                 >
                     <Send htmlColor="#0080FF" />
                 </IconButton > :

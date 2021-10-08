@@ -35,29 +35,6 @@ export const scheduleResolver = {
         eventsByProjectId: async (_, args) =>
         {
             const projectId = args.projectId;
-            // const events = [];
-            // await Event.find({ projectId }, (_, eventsData) =>
-            // {
-            //     if (eventsData != undefined) {
-            //         eventsData.forEach((event) =>
-            //         {
-            //             const data = {
-            //                 id: event._id,
-            //                 title: event.title,
-            //                 start: fullCalendarDateFormat(event.start),
-            //                 startTime: fullCalendarTimeFormat(event.start),
-            //                 projectId: event.projectId,
-            //                 state: event.state
-            //             }
-            //             if (event.end != undefined) {
-            //                 data['end'] = fullCalendarDateFormat(event.end);
-            //             }
-            //             events.push(data);
-            //         });
-            //     }
-            // });
-            // return events;
-
             return await Event.find({ projectId })
                 .select({ "__v": 0, "notes": 0, "projectId": 0 })
                 .populate({
@@ -82,7 +59,7 @@ export const scheduleResolver = {
             {
                 const { _id, message, senderType, sender, recieverType, reciever, createdAt } = note;
                 notes.push({
-                    id: _id,
+                    _id,
                     message,
                     senderType,
                     sender,
@@ -118,56 +95,41 @@ export const scheduleResolver = {
         {
             const { token } = args
             const { payload } = getScheduleSharingPayload(token);
-            const { shareId } = payload;
 
-            const share = await ScheduleShare.findById(shareId);
+            const share = await ScheduleShare.findById(payload.shareId).select({ "__v": 0 });
 
-            if (share == null) {
-                throw new AuthenticationError(INVALIDE_SHARE_TOKEN_ERROR.toString());
-            }
+            const events = await Event.find({ projectId: share.projectId }).select({ "__v": 0, "projectId": 0 })
+                .populate({
+                    path: 'image',
+                    select: { 'updatedAt': 0, '__v': 0 },
+                    populate: {
+                        path: 'addedBy',
+                        model: 'users',
+                        select: { 'updated_at': 0, '__v': 0, 'password': 0, 'created_at': 0 },
+                    }
+                });;
 
-            const { projectId, start, end } = share;
-            const events = [];
-            await Event.find({ projectId }, (_, eventsData) =>
+            const pendingEvents = events.filter(event => event.state === "pending");
+            const eventsOfIntervalAndSorted = pendingEvents.filter(event =>
             {
-                if (eventsData != undefined) {
-                    eventsData.forEach((event) =>
-                    {
-                        if (event.state === "pending") {
-                            const data = {
-                                id: event._id,
-                                name: event.name,
-                                title: event.title,
-                                token: event.token,
-                                start: fullCalendarDateFormat(event.start),
-                                startTime: fullCalendarTimeFormat(event.start),
-                                projectId: event.projectId,
-                                state: event.state
-                            }
-                            if (event.end != undefined) {
-                                data['end'] = fullCalendarDateFormat(event.end);
-                            }
-                            events.push(data);
-                        }
-                    });
-                }
-            });
-            const finalEvent = events.filter((event) =>
-            {
-                const startDate = new Date(start).getTime();
-                const endDate = new Date(end).getTime();
-                const eventDate = new Date(`${event.start} ${event.startTime}`).getTime();
+                const startDate = new Date(share.start).getTime();
+                const endDate = new Date(share.end).getTime();
+                const eventDate = new Date(event.start).getTime();
                 return (eventDate >= startDate) && (endDate >= eventDate);
             });
 
-            finalEvent.sort((a, b) =>
-            {
-                const aDate = new Date(`${a.start} ${a.startTime}`);
-                const bDate = new Date(`${b.start} ${b.startTime}`);
+            eventsOfIntervalAndSorted.sort((a, b) => new Date(a.start).getTime() - new Date(b.start));
 
-                return aDate - bDate;
-            });
-            return finalEvent;
+
+            console.log(eventsOfIntervalAndSorted);
+
+            return {
+                ...share._doc,
+                selectedCible: payload.user != null ? {
+                    ...payload.user, token
+                } : null,
+                events: eventsOfIntervalAndSorted
+            }
         }
     },
     Mutation: {
@@ -244,6 +206,8 @@ export const scheduleResolver = {
 
             const event = await Event.findById(id);
             event.image = attachement._id;
+            event.annotation = [];
+            event.state = "pending";
             event.save();
 
             return {
@@ -261,6 +225,8 @@ export const scheduleResolver = {
 
             const imageId = event.image;
             event.image = null;
+            event.annotation = [];
+            event.state = "pending";
             event.save();
 
             const image = await Attachement.findByIdAndDelete(imageId);
@@ -287,12 +253,12 @@ export const scheduleResolver = {
                 throw new AuthenticationError(EVENT_INVALIDE_ERROR.toString());
             }
             return {
-                id: event._id,
+                _id: event._id,
                 title: event.title,
+                description: event.description,
                 start: fullCalendarDateFormat(event.start),
-                startTime: fullCalendarTimeFormat(event.start),
+                end: fullCalendarDateFormat(event.end),
                 state: event.state,
-                projectId: event.projectId
             }
         },
         deleteEvent: async (_, args) =>
@@ -323,7 +289,7 @@ export const scheduleResolver = {
             event.save();
 
             const res = {
-                id: noteObj._id,
+                _id: noteObj._id,
                 message: noteObj.message,
                 senderType: noteObj.senderType,
                 sender: noteObj.sender,
@@ -352,7 +318,6 @@ export const scheduleResolver = {
         addUserToScheduleLink: async (_, args) =>
         {
             const { sharedLinkId, email, name } = args;
-            const token = getScheduleSharingToken({ shareId: sharedLinkId._id, user: addedUser });
             const schedule = await ScheduleShare.findByIdAndUpdate(sharedLinkId,
                 {
                     $push: {
@@ -364,6 +329,7 @@ export const scheduleResolver = {
                 }, { new: true }
             );
             const addedUser = schedule.cible.pop();
+            const token = getScheduleSharingToken({ shareId: sharedLinkId, user: addedUser });
             await ScheduleShare.updateOne({ _id: sharedLinkId, 'cible._id': addedUser._id },
                 {
                     $set: {
@@ -380,7 +346,7 @@ export const scheduleResolver = {
         deleteUserFromScheduleLink: async (_, args) =>
         {
             const { sharedLinkId, cibleId } = args;
-            const schedule = await ScheduleShare.findByIdAndUpdate(sharedLinkId,
+            await ScheduleShare.findByIdAndUpdate(sharedLinkId,
                 {
                     $pull:
                     {
@@ -388,7 +354,10 @@ export const scheduleResolver = {
                     }
                 },
                 { new: true });
-            return { succes: true };
+
+            return {
+                succes: true
+            };
         },
         deleteScheduleLink: async (_, args) =>
         {
@@ -397,6 +366,40 @@ export const scheduleResolver = {
             return {
                 succes: true
             }
+        },
+        addAnnotationToEvent: async (_, args) =>
+        {
+            const { id, text, height, type, width, x, y } = args;
+            const event = await Event.findByIdAndUpdate(id, {
+                $push: {
+                    annotations: {
+                        text,
+                        height,
+                        type,
+                        width,
+                        x,
+                        y
+                    }
+                }
+            }, { new: true });
+
+            return event.annotations.pop()._doc;
+
+        },
+        deleteAnnotationFromEvent: async (_, args) =>
+        {
+            const { idEvent, id } = args;
+            await Event.findByIdAndUpdate(idEvent, {
+                $pull:
+                {
+                    annotations: { _id: id }
+                }
+            }, { new: true });
+
+            return {
+                succes: true
+            }
+
         },
         updateScheduleLinkUser: async (_, args) =>
         {

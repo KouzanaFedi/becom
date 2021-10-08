@@ -238,7 +238,7 @@ const DisplaySharedLink = ({ data, mode, setScheduleShareData, setMode, openBack
                     deleteFromData={(id) => setCibleData(cibleData.filter(cib => cib._id !== id))}
                 />)}
 
-                {!(cibleData.length < 4 && cibleData.some(c => c.edit === false)) && <Box ml={1} mt={1}>
+                {(cibleData.length < 4 && cibleData.every(c => c.edit === true)) && <Box ml={1} mt={1}>
                     <IconButton
                         onClick={() =>
                         {

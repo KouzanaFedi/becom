@@ -13,7 +13,6 @@ import { createUploadLink } from 'apollo-upload-client';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import DateAdapter from '@material-ui/lab/AdapterMoment';
 
-
 import "./index.css";
 import "dotenv/config";
 
@@ -21,8 +20,19 @@ const token = localStorage.getItem(AUTH_TOKEN);
 
 const wsLink = new WebSocketLink({
   uri: `ws://${SUBSCRIPTION}`,
-  options: { reconnect: true, connectionParams: { authToken: token ? token : '' }, },
+  options: {
+    reconnect: true,
+    inactivityTimeout: 30000,
+    connectionParams: { authToken: token ? token : '' },
+  }, onConnected: () =>
+  {
+    console.log("connected on sockets");
+  }
 });
+
+wsLink.subscriptionClient.maxConnectTimeGenerator.duration = () => wsLink.subscriptionClient.maxConnectTimeGenerator.max
+
+
 
 const httpLink = new createUploadLink({
   uri: `http://${API}`,

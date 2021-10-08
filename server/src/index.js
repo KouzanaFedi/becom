@@ -26,6 +26,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   subscriptions: {
+    keepAlive: 1000,
     path: '/subscription',
     onConnect: async (_, __, ___) =>
     {

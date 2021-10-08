@@ -4,7 +4,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import { Delete, EmailOutlined, Done } from "@material-ui/icons";
 import { useDispatch } from "react-redux";
 import { ADD_USER_TO_SHARED_LINK, DELETE_CIBLE } from "../../../../api/events";
-import { DELETE_SHARED_LINK_CIBLE } from "../../../../redux/logic/projectManager/scheduleSlice";
+import { ADD_SHARED_LINK_CIBLE, DELETE_SHARED_LINK_CIBLE } from "../../../../redux/logic/projectManager/scheduleSlice";
 import ThemedTextField from "../../../themedComponents/ThemedTextField";
 import { useForm } from "react-hook-form";
 
@@ -61,6 +61,8 @@ const CibleForm = ({ data, edit, sharedId, deleteFromData, updateDate, openBackD
         onCompleted: ({ addUserToScheduleLink }) =>
         {
             updateDate(data._id, addUserToScheduleLink._id, addUserToScheduleLink.email, addUserToScheduleLink.name);
+            dispatch(ADD_SHARED_LINK_CIBLE({ cible: addUserToScheduleLink, sharedLinkId: sharedId }));
+
             closeBackDropOpen();
         }
     });

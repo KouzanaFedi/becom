@@ -4,12 +4,11 @@ export const schedule = gql`
     type Query {
     holidaysEvent: [HolidaysEvent!]!
     eventsByProjectId(projectId:String!): [Event!]!
-    getSharedSchedule(token: String!): [Event!]!
+    getSharedSchedule(token: String!): ScheduleShare
     eventNotes(id: String!): [Note!]!
     verifySharedScheduleToken(token: String!): BasicResponse
     getSharedSchedulesByProjecId(projectId: String!): [ScheduleShare!]!
   }
-
     type Mutation {
     addEvent(title: String!, start: String!, end: String, description: String!, projectId: String!, file: Upload, addedBy: String!, projectTitle: String!): Event
     updateEvent(id: String!, title:String!, start: String!, description: String!, end: String!): Event
@@ -18,13 +17,14 @@ export const schedule = gql`
     deleteEvent(id: String!): IdResponse
     updateEventState(id: String!, state: String!): Event
     generateScheduleLink(projectId: String!, name: String!, start: String!, end: String!): ScheduleShare
+    addAnnotationToEvent(id: String!, text: String!, height: String!, type: String!, width:String!, x: String!, y: String!): Annotation
+    deleteAnnotationFromEvent(id: String!, idEvent: String!): BasicResponse
     sendNotes(id: String!, note: NoteInput): Note
     addUserToScheduleLink(sharedLinkId: String!, email: String!, name: String!): Cible
     deleteUserFromScheduleLink(sharedLinkId: String!, cibleId: String!): BasicResponse
     deleteScheduleLink(id: String!) : BasicResponse
     updateScheduleLinkUser(sharedLinkId: String!, userId: String!, email: String, firstName: String, lastName: String) : ScheduleShare
   }
-
     type Subscription {
     noteSend(eventId: String!, listenerType: String!): Note
   }

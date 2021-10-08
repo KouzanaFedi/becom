@@ -59,7 +59,33 @@ const EventSchema = new Schema({
         ref: 'attachement',
         default: null
     },
-    notes: [NotesSchema]
+    notes: [NotesSchema],
+    annotations: [{
+        text: {
+            required: true,
+            type: String
+        },
+        height: {
+            type: String,
+            required: true,
+        },
+        type: {
+            type: String,
+            required: true,
+        },
+        width: {
+            type: String,
+            required: true,
+        },
+        x: {
+            type: String,
+            required: true,
+        },
+        y: {
+            type: String,
+            required: true,
+        }
+    }]
 });
 
 export const Event = model('event', EventSchema);

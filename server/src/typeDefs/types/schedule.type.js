@@ -15,6 +15,18 @@ export const scheduleType = gql`
     end: String!
     image: Attachement
     state: String!
+    notes: [Note!]
+    annotations: [Annotation!]
+  }
+
+  type Annotation {
+    _id: ID!
+    text: String!
+    height: String!
+    type: String!
+    width: String!
+    x: String!
+    y: String!
   }
 
   type IdResponse{
@@ -29,6 +41,8 @@ export const scheduleType = gql`
     end: String!
     token: String!
     cible: [Cible!]!
+    selectedCible: Cible
+    events:[Event!]!
   }
 
   type Cible {
@@ -39,7 +53,7 @@ export const scheduleType = gql`
   }
 
   type Note {
-    id: ID!
+    _id: ID!
     message: String!
     senderType: String!
     sender: String!

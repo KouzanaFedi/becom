@@ -25,7 +25,7 @@ const scheduleSlice = createSlice({
             const events = action.payload.events;
             const colorPalette = { pending: '#8c8c8c', confirmed: 'green', denied: 'red' };
             for (const event in events) {
-                const { title, start, end, _id, description, image, state: eventState } = events[event];
+                const { title, start, end, _id, description, image, state: eventState, annotations } = events[event];
                 state.events.push({
                     title,
                     start: fullCalendarDateFormat(start),
@@ -35,6 +35,7 @@ const scheduleSlice = createSlice({
                         end: fullCalendarDateFormat(end),
                         id: _id,
                         description,
+                        annotations,
                         image,
                         eventState,
                         notes: []
@@ -125,6 +126,12 @@ const scheduleSlice = createSlice({
             const { shared } = action.payload;
             state.sharedLinks.push(shared);
         },
+        ADD_SHARED_LINK_CIBLE: (state, action) =>
+        {
+            const { cible, sharedLinkId } = action.payload;
+            const sIndex = state.sharedLinks.findIndex((shared) => shared._id === sharedLinkId);
+            state.sharedLinks[sIndex].cible.push(cible)
+        },
         DELETE_SHARED_LINK_CIBLE: (state, action) =>
         {
             const { cibleId, sharedLinkId } = action.payload;
@@ -142,7 +149,7 @@ const scheduleSlice = createSlice({
     }
 });
 
-export const { SET_HOLIDAYS, SET_EVENTS, INIT_SELECTED_EVENT, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS, DELETE_SHARED_LINK_CIBLE, ADD_IMAGE_FROM_EVENT_UPDATE, DELETE_SCHEDULE_LINK, ADD_EVENT_TO_LIST, DELETE_IMAGE_FROM_EVENT_UPDATE, ADD_SHARED_LINK } = scheduleSlice.actions;
+export const { SET_HOLIDAYS, SET_EVENTS, INIT_SELECTED_EVENT, UPDATE_EVENT_STATE, DELETE_EVENT_STATE, INIT_SHARED_LINKS, INIT_SELECTED_EVENT_NOTES, PUSH_NEW_NOTE_SELECTED_EVENT, UPDATE_EVENT_STATUS, DELETE_SHARED_LINK_CIBLE, ADD_IMAGE_FROM_EVENT_UPDATE, DELETE_SCHEDULE_LINK, ADD_EVENT_TO_LIST, DELETE_IMAGE_FROM_EVENT_UPDATE, ADD_SHARED_LINK, ADD_SHARED_LINK_CIBLE } = scheduleSlice.actions;
 
 export const scheduleHolidays = (state) => state.schedule.holidays;
 export const scheduleEvents = (state) => state.schedule.events;

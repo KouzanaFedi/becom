@@ -62,6 +62,7 @@ const AddEventDialog = ({ open, onClose, dateClicked }) =>
     const [addEvent, { loading }] = useMutation(ADD_EVENT, {
         onCompleted: ({ addEvent }) =>
         {
+            console.log(addEvent);
             dispatch(ADD_EVENT_TO_LIST({ event: addEvent }));
             onClose();
             reset();

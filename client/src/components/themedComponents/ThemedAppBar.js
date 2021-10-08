@@ -69,7 +69,8 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: '5px',
         fontSize: "20px",
         fontFamily: 'Dancing Script',
-        fontWeight: '600'
+        fontWeight: '600',
+        textTransform: "capitalize"
     },
     logo: {
         padding: '3px 0px'
@@ -172,7 +173,12 @@ const ThemedAppBar = (props) =>
                                 <img className={classes.logo} alt="logo" src={Logo} height="36px" />
                                 {props.name && <Typography className={classes.sectionName}>{getSectionName(props.name)}</Typography>}
                                 <ArrowDropDown />
-                            </Button> : <img className={classes.logo} alt="logo" src={Logo} height="36px" />}
+                            </Button> : props.type === 'notmenu' ?
+                                <>
+                                    <img className={classes.logo} alt="logo" src={Logo} height="36px" />
+                                    {props.name && <Typography className={classes.sectionName}>{props.name}</Typography>}
+                                </> :
+                                <img className={classes.logo} alt="logo" src={Logo} height="36px" />}
                         </Box>
                     </Box>
                 </AppBar>

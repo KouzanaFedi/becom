@@ -13,8 +13,17 @@ export const EVENTS = gql`
         src
         createdAt
         size
-      },
+      }
       state
+      annotations {
+        _id
+        text
+        height
+        type
+        width
+        x
+        y
+      }
     }
     holidaysEvent {
       title
@@ -136,24 +145,60 @@ export const VERIFY_SHARED_SCHEDULE_TOKEN = gql`
 
 export const GET_SHARED_SCHEDULE_BY_TOKEN = gql`
   query GetSharedSchedule($token: String!){
-    getSharedSchedule(token: $token){
-      id
-      title
+    getSharedSchedule(token: $token) { 
+      _id
+      name
       start
-      startTime
-      end
       projectId
-      state
+      end
+      cible {
+        _id
+        email
+        name
+      }
+      selectedCible {
+        _id
+        email
+        name
+      }
+      events {
+        _id
+        title
+        description
+        start
+        end
+        state
+        notes{
+          _id
+          message
+          senderType
+          recieverType
+          sender
+          reciever
+          createdAt
+        }
+        image {
+          _id
+          src
+        }
+        annotations {
+          _id
+          text
+          height
+          type
+          width
+          x
+          y
+        }
+      }
     }
-  }
-
-`;
+}`;
 
 
 export const GET_NOTES_BY_EVENT_ID = gql`
   query EventNotes($id: String!){
     eventNotes(id: $id){
-      id
+      _id
       message
       senderType
       sender
@@ -168,7 +213,7 @@ export const GET_NOTES_BY_EVENT_ID = gql`
 export const SEND_NOTE = gql`
   mutation SendNotes($id: String!, $note: NoteInput){
     sendNotes(id: $id, note: $note){
-      id
+      _id
       message
       senderType
       sender
@@ -183,7 +228,7 @@ export const SEND_NOTE = gql`
 export const NEW_NOTES_SUBSCRIPTION = gql`
   subscription NoteSend($eventId: String!, $listenerType: String!){
     noteSend(eventId: $eventId, listenerType: $listenerType){
-      id
+      _id
       message
       senderType
       sender
@@ -198,13 +243,11 @@ export const NEW_NOTES_SUBSCRIPTION = gql`
 export const UPDATE_EVENT_STATE_STATUS = gql`
   mutation UpdateEventState($id: String!, $state: String!){
     updateEventState(id: $id, state: $state){
-    id 
-    title 
-    start 
-    startTime 
-    end    
-    projectId 
-    state 
+      _id
+      start
+      end
+      title
+      description
     }
   }
 `;
@@ -223,5 +266,35 @@ export const DELETE_SHARED_LINK = gql`
     deleteScheduleLink(id: $id){
       succes
     }
+  }
+`;
+
+export const DELETE_ANNOTATION = gql`
+  mutation deleteAnnotationFromEvent($id: String!, $idEvent: String!){
+    deleteAnnotationFromEvent(id: $id, idEvent: $idEvent){
+      succes
+    }
+  }
+`;
+
+export const ADD_ANNOTATION = gql`
+  mutation addAnnotationToEvent($id: String!, $text: String!, $height: String!,$type: String!, $width: String!, $x: String!, $y: String!) {
+    addAnnotationToEvent(
+    id: $id
+    text: $text
+    height: $height
+    type: $type
+    width: $width
+    x: $x
+    y: $y
+  ) {
+    _id
+    text
+    height
+    type
+    width
+    x
+    y
+  }
   }
 `;

@@ -1,6 +1,6 @@
 import { Box, Breadcrumbs, Grid, Typography, IconButton, } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import
 {
@@ -17,7 +17,8 @@ import { useForm } from "react-hook-form";
 import { DateTimePicker } from "@material-ui/lab";
 import { parseTimeTimePicker } from "../../../utils/timeParser";
 import { IMAGE_ENDPOINT } from "../../../config";
-import { userID } from "../../../redux/logic/userSlice";
+import { userData } from "../../../redux/logic/userSlice";
+import Annotation from 'react-image-annotation';
 
 const useStyles = makeStyles((theme) => ({
     actions: {
@@ -74,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: '350px',
         height: 'auto',
         display: 'flex',
-        maxWidth: 'inherit',
+        maxWidth: 'calc((60vw / 2) - 32px)',
         width: 'auto',
         margin: "0 auto"
     },
@@ -94,6 +95,33 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
 {
     const classes = useStyles({ statusColor: statusColor(selectedEventData.extendedProps.eventState) });
     const dispatch = useDispatch();
+
+    const [annotations, setAnnotations] = useState([]);
+    const [activeAnnotations, setActiveAnnotations] = useState([]);
+
+    useEffect(() =>
+    {
+        console.log(selectedEventData.extendedProps.annotations);
+        setAnnotations(selectedEventData.extendedProps.annotations.reduce((accum, occu) =>
+        {
+            const tmp = [...accum];
+            tmp.push({
+                data: {
+                    id: occu._id,
+                    text: occu.text,
+                },
+                geometry: {
+                    type: occu.type,
+                    x: parseFloat(occu.x),
+                    y: parseFloat(occu.y),
+                    width: parseFloat(occu.width),
+                    height: parseFloat(occu.height)
+                }
+            });
+            return tmp;
+        }, []));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedEventData]);
 
     const { register, formState: { errors }, reset, handleSubmit } = useForm({
         defaultValues: {
@@ -130,7 +158,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
     const [time, setTime] = useState({ start: selectedEventData.start, end: selectedEventData.extendedProps.end });
 
     const [isEditMode, setIsEditMode] = useState(false);
-    const userId = useSelector(userID);
+    const user = useSelector(userData);
 
     const initEventNotes = (id, eventNotes) =>
     {
@@ -171,7 +199,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
     });
 
     return (
-        <Grid conatiner >
+        <Grid container >
             <Grid item xs={12} >
                 <Box p={2} className={classes.header} display="flex" justifyContent="space-between" alignItems="center">
                     <Breadcrumbs separator="›" aria-label="breadcrumb">
@@ -204,7 +232,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                 </Box>
             </Grid>
             <Box className={classes.content}>
-                <Grid item conatiner xs={12} display="flex">
+                <Grid item container xs={12} display="flex">
                     <Grid item xs={5}>
                         <form id="updateEventForm" onSubmit={handleSubmit(submit)}>
                             <Box p={2}>
@@ -291,7 +319,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                                                 addImageQuery({
                                                     variables: {
                                                         id: selectedEventData.extendedProps.id,
-                                                        addedBy: userId,
+                                                        addedBy: user.id,
                                                         file: event.target.files[0],
                                                         projectTitle: project.title
                                                     }
@@ -333,9 +361,20 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                                 <Typography className={classes.status}>{selectedEventData.extendedProps.eventState}</Typography>
                             </Box>
                         </Grid>
-                        {selectedEventData.extendedProps.image && <Grid item xs={12} className={classes.imageHeight}>
-                            <img className={classes.image} src={`${IMAGE_ENDPOINT}${selectedEventData.extendedProps.image?.src}`} alt="pic" />
-                        </Grid>}
+                        {selectedEventData.extendedProps.image &&
+                            <Grid item xs={12} className={classes.imageHeight}>
+                                <Annotation
+                                    src={`${IMAGE_ENDPOINT}${selectedEventData.extendedProps.image?.src}`}
+                                    className={classes.image}
+                                    alt='Image to annote'
+                                    annotations={annotations}
+                                    disableAnnotation={true}
+                                    disableEditor={true}
+                                    disableSelector={true}
+                                    activeAnnotations={activeAnnotations}
+                                />
+                                {/* <img className={classes.image} src={`${IMAGE_ENDPOINT}${selectedEventData.extendedProps.image?.src}`} alt="pic" /> */}
+                            </Grid>}
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
@@ -343,6 +382,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                         <Notes
                             id={selectedEventData.extendedProps.id}
                             senderType={'agence'}
+                            senderName={user.name}
                             initEventNotes={initEventNotes}
                             pushNewNote={pushNewNote} />
                     </Box>
