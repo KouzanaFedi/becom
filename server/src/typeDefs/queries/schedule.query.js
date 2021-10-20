@@ -17,6 +17,7 @@ export const schedule = gql`
     deleteEvent(id: String!): IdResponse
     updateEventState(id: String!, state: String!): Event
     generateScheduleLink(projectId: String!, name: String!, start: String!, end: String!): ScheduleShare
+    sendCustomLinkEmail(baseLink: String!, id: String!, planningName: String!, sharedId: String!): BasicResponse
     addAnnotationToEvent(id: String!, text: String!, height: String!, type: String!, width:String!, x: String!, y: String!): Annotation
     deleteAnnotationFromEvent(id: String!, idEvent: String!): BasicResponse
     sendNotes(id: String!, note: NoteInput): Note

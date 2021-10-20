@@ -200,7 +200,7 @@ const InvoiceView = ({ invoice, invoiceUI }) =>
 {
     const [image, setImage] = useState(imagePlaceholder);
     const ref = useRef(null);
-
+    console.log(invoice);
     useEffect(() =>
     {
         if (invoice?.image !== null) {
@@ -256,9 +256,11 @@ const InvoiceView = ({ invoice, invoiceUI }) =>
                 <Text style={styles.qte}>Qté</Text>
                 <Text style={styles.total}>Total HT</Text>
             </View>
-            {invoice?.items !== undefined && invoice.items.map((item, key) => <InvoiceTableItem data={item} key={key} lastItem={key === invoice.items.length - 1 || invoiceUI.breakIndexes.includes(key + 1)} doBreak={invoiceUI.breakIndexes.includes(key) ? true : false} />
+            {invoice?.items !== undefined && invoice.items.map((item, key) => <InvoiceTableItem data={item} key={key} lastItem={key === invoice.items.length - 1}
+            //|| invoiceUI.breakIndexes.includes(key + 1)} doBreak={invoiceUI.breakIndexes.includes(key) ? true : false}
+            />
             )}
-            <InvoiceTotal />
+            <InvoiceTotal data={invoice?.items} />
             <View style={styles.cachet} wrap={false}>
                 <View style={styles.cachetContainer}>
                     <Text style={styles.cachetText}>Cachet, Date, Signature et mention "Bon pour Accord"</Text>

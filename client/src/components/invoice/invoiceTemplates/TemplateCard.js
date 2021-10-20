@@ -8,7 +8,7 @@ import { DELETE_INVOICE_TEMPLATE_EDIT_DATA, INTI_INVOICE_TEMPLATE_EDIT_DATA } fr
 import { SET_INVOICE_ADDITIONAL_TAB } from "../../../redux/ui/invoiceUiSlice";
 import ThemedButton from "../../themedComponents/ThemedButton";
 
-const TemplateCard = ({ classes, setOpen, data }) =>
+const TemplateCard = ({ classes, data }) =>
 {
     const dispatch = useDispatch();
     const [deleteDial, setDeleteDial] = useState(false);
@@ -23,9 +23,8 @@ const TemplateCard = ({ classes, setOpen, data }) =>
     return <><Card className={classes.cardRoot}>
         <CardActionArea >
             <CardMedia
-                onClick={() => { setOpen(); }}
                 component="img"
-                src={`${IMAGE_ENDPOINT}${data.image}`}
+                src={`${IMAGE_ENDPOINT}/${data.image}`}
                 height="100px"
                 className={classes.cardMedia}
             />

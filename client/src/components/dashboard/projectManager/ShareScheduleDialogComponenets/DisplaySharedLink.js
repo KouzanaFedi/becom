@@ -133,8 +133,9 @@ const DisplaySharedLink = ({ data, mode, setScheduleShareData, setMode, openBack
                 <Typography className={classes.labels}>Shareabl schedule name</Typography>
                 <form id="createForm" onSubmit={handleSubmit(submitCreate)}>
                     <ThemedTextField
+                        disabled={mode === "edit"}
                         inputProps={register('name', { minLength: { value: 3, message: "At least 3 characters." }, required: true })}
-                        backgroundColor='#EfE'
+                        backgroundColor={mode !== "edit" && '#EfE'}
                         error={errors?.name !== undefined}
                         helperText={errors?.name !== undefined && errors.name.message}
                         fullWidth
@@ -183,11 +184,11 @@ const DisplaySharedLink = ({ data, mode, setScheduleShareData, setMode, openBack
                         inputFormat="MM/DD/yyyy HH:mm"
                         id="date"
                         ampm={false}
-                        disabled={false}
+                        disabled={mode === "edit"}
                         value={parseTimeTimePicker(time?.start)}
                         renderInput={(props) => <ThemedTextField
                             label="start"
-                            backgroundColor='#EfE'
+                            backgroundColor={mode !== "edit" && '#EfE'}
                             {...props} />}
                         onChange={(value) =>
                         {
@@ -205,11 +206,11 @@ const DisplaySharedLink = ({ data, mode, setScheduleShareData, setMode, openBack
                         inputFormat="MM/DD/yyyy HH:mm"
                         id="date"
                         ampm={false}
-                        disabled={false}
+                        disabled={mode === "edit"}
                         value={parseTimeTimePicker(time?.end)}
                         renderInput={(props) => <ThemedTextField
                             label="start"
-                            backgroundColor='#EfE'
+                            backgroundColor={mode !== "edit" && '#EfE'}
                             {...props} />}
                         onChange={(value) =>
                         {
@@ -225,6 +226,7 @@ const DisplaySharedLink = ({ data, mode, setScheduleShareData, setMode, openBack
                     key={c._id}
                     data={c}
                     edit={c.edit}
+                    sharedName={data.name}
                     openBackDropOpen={openBackDropOpen}
                     closeBackDropOpen={closeBackDropOpen}
                     sharedId={data._id}

@@ -14,3 +14,8 @@ export const fullCalendarDateFormat = (date) =>
 {
     return moment(new Date(parseInt(date))).format("yyyy-MM-DD hh:mm");
 }
+
+export function parseDateTimePicker(timestamp)
+{
+    return moment(new Date(parseInt(timestamp))).format("MM/DD/yyyy");
+}

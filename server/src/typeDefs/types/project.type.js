@@ -66,7 +66,7 @@ export const projectType = gql`
     _id: String!
     title: String!
     description: String
-    dueTime: String!
+    dueTime: String
     createdAt: String!
     tasks: [Task!]!
     notes: [ProjectNote!]!

@@ -35,10 +35,11 @@ const InvoicePreviewDial = ({ open, onClose, page, invoice, setPage }) =>
     return <Dialog open={open} onClose={onClose} maxWidth='md'>
         <DialogContent>
             <InvoicePageNavigation
+                instance={instance}
                 page={page}
                 setPage={setPage} />
             <Paper className={classes.emptyPDF}>
-                <ItemsMock update={update} invoice={invoice} />
+                {/* <ItemsMock update={update} invoice={invoice} /> */}
                 {instance.url === null ? <CircularProgress /> : <PDFViewer file={instance} page={page} />}
             </Paper>
         </DialogContent>

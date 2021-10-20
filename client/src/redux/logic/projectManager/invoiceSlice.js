@@ -60,124 +60,124 @@ const invoiceSlice = createSlice({
             },
             items: [
                 {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                    designtion: '4 Journées de Tournage :\n5 capsules vidéos (livraison véhicule) de 30 secondes chacune. \n5 capsules vidéos (témoignage) \n Déplacement cadreur + Ingénieur son',
                     tva: 19,
                     pu: 1700,
-                    quantity: 40,
+                    quantity: 4,
                     total: 6800
                 },
                 {
-                    designtion: ' de Tournage ',
+                    designtion: 'Post -Prod / vidéo',
                     tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
+                    pu: 200,
+                    quantity: 10,
+                    total: 2000
                 },
-                {
-                    designtion: ' Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage\n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: ' de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: ' Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: ' de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: ' de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                },
-                {
-                    designtion: ' de Tournage ',
-                    tva: 19,
-                    pu: 1700,
-                    quantity: 40,
-                    total: 6800
-                }
+                // {
+                //     designtion: ' Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage\n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: '4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: ' de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: ' Journées de Tournage \n 4 Journées de Tournage4 Journées de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: ' de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: ' de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // },
+                // {
+                //     designtion: ' de Tournage ',
+                //     tva: 19,
+                //     pu: 1700,
+                //     quantity: 40,
+                //     total: 6800
+                // }
             ],
         },
         invoiceTemplates: [],
@@ -289,7 +289,7 @@ const invoiceSlice = createSlice({
 
 export default invoiceSlice.reducer;
 
-export const { SET_PDF_PAGES, SET_INVOICE_ENTREPRISE, INIT_INVOICE_TEMPLATE, INTI_INVOICE_TEMPLATE_EDIT_DATA, UPDATE_INVOICE_TEMPLATE_EDIT_DATA, RESET_INVOICE_TEMPLATE_EDIT_DATA,DELETE_INVOICE_TEMPLATE_EDIT_DATA } = invoiceSlice.actions;
+export const { SET_PDF_PAGES, SET_INVOICE_ENTREPRISE, INIT_INVOICE_TEMPLATE, INTI_INVOICE_TEMPLATE_EDIT_DATA, UPDATE_INVOICE_TEMPLATE_EDIT_DATA, RESET_INVOICE_TEMPLATE_EDIT_DATA, DELETE_INVOICE_TEMPLATE_EDIT_DATA } = invoiceSlice.actions;
 
 export const invoiceData = (state) => state.invoice.data;
 export const invoicePages = (state) => state.invoice.pages;

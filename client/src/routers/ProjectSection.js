@@ -30,10 +30,11 @@ export const PROJECT_SECTIONS = [{
     component: ProjectFiles,
     icon: files,
 },
-{
-    name: 'collaborators',
-    url: '/dashboard/projects/collaborators',
-    title: 'Collaborators',
-    component: ProjectCollaborators,
-    icon: collaborators,
-}];
+// {
+//     name: 'collaborators',
+//     url: '/dashboard/projects/collaborators',
+//     title: 'Collaborators',
+//     component: ProjectCollaborators,
+//     icon: collaborators,
+// }
+];

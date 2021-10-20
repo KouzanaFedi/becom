@@ -3,10 +3,11 @@ import { Box, Button, Grid, IconButton } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Delete, EmailOutlined, Done } from "@material-ui/icons";
 import { useDispatch } from "react-redux";
-import { ADD_USER_TO_SHARED_LINK, DELETE_CIBLE } from "../../../../api/events";
+import { ADD_USER_TO_SHARED_LINK, DELETE_CIBLE, SEND_LINK } from "../../../../api/events";
 import { ADD_SHARED_LINK_CIBLE, DELETE_SHARED_LINK_CIBLE } from "../../../../redux/logic/projectManager/scheduleSlice";
 import ThemedTextField from "../../../themedComponents/ThemedTextField";
 import { useForm } from "react-hook-form";
+import { CLIENT_ADDRESS } from "../../../../config";
 
 const useStyles = makeStyles((theme) =>
 ({
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) =>
     }
 }));
 
-const CibleForm = ({ data, edit, sharedId, deleteFromData, updateDate, openBackDropOpen, closeBackDropOpen }) =>
+const CibleForm = ({ data, edit, sharedId, deleteFromData, updateDate, openBackDropOpen, closeBackDropOpen, sharedName }) =>
 {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -66,6 +67,19 @@ const CibleForm = ({ data, edit, sharedId, deleteFromData, updateDate, openBackD
             closeBackDropOpen();
         }
     });
+
+    const [sendLinkToUser] = useMutation(SEND_LINK, {
+        variables: {
+            baseLink: `http://${CLIENT_ADDRESS}/shared_schedule/`,
+            id: data._id,
+            sharedId,
+            planningName: sharedName
+        },
+        onCompleted: () =>
+        {
+            closeBackDropOpen();
+        }
+    })
 
     function submit({ email, name })
     {
@@ -147,6 +161,11 @@ const CibleForm = ({ data, edit, sharedId, deleteFromData, updateDate, openBackD
                 {edit ? <Button
                     size="small"
                     startIcon={<EmailOutlined />}
+                    onClick={() =>
+                    {
+                        openBackDropOpen();
+                        sendLinkToUser();
+                    }}
                     className={classes.sendEmail}>
                     Send link
                 </Button> : <Button

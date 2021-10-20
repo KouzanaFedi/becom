@@ -4,6 +4,7 @@ import { RecupCode } from '../schema/user/recupCode';
 import { User } from '../schema/user/user';
 import { INVALIDE_EMAIL_ERROR, USER_EXISTS_ERROR, PASSWORD_INVALIDE_ERROR, USER_NOT_EXISTS_ERROR, RECUP_CODE_INVALIDE_ERROR, RECUP_CODE_EXPIRED_ERROR, INVALIDE_TOKEN } from '../utils/errors/UserError';
 import { processUpload } from '../utils/fileUpload';
+import { sendRecupCode } from '../utils/mailer';
 
 export const accountResolver = {
   Query: {
@@ -123,6 +124,8 @@ export const accountResolver = {
         });
 
         rc.save();
+
+        await sendRecupCode(code, email);
 
         return {
           succes: true

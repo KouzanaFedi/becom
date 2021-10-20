@@ -58,7 +58,8 @@ const scheduleSlice = createSlice({
                     description,
                     eventState,
                     image,
-                    notes: []
+                    notes: [],
+                    annotations: []
                 }
             })
         },

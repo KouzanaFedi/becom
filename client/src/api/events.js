@@ -276,6 +276,13 @@ export const DELETE_ANNOTATION = gql`
     }
   }
 `;
+export const SEND_LINK = gql`
+  mutation sendCustomLinkEmail($baseLink: String!, $id: String!, $planningName: String!, $sharedId: String!){
+    sendCustomLinkEmail(id: $id, baseLink: $baseLink, sharedId: $sharedId, planningName: $planningName){
+      succes
+    }
+  }
+`;
 
 export const ADD_ANNOTATION = gql`
   mutation addAnnotationToEvent($id: String!, $text: String!, $height: String!,$type: String!, $width: String!, $x: String!, $y: String!) {

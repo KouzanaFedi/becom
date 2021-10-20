@@ -9,6 +9,8 @@ import { getFileUploadedSize, processUpload } from "../utils/fileUpload";
 import { Attachement } from "../schema/project/attachement";
 import { resolve } from "path";
 import { unlinkSync } from 'fs';
+import { sendPlanningLink } from "../utils/mailer";
+import { Types } from "mongoose";
 
 const pubsub = new PubSub();
 
@@ -342,6 +344,16 @@ export const scheduleResolver = {
                 ...addedUser._doc,
                 token
             };;
+        },
+        sendCustomLinkEmail: async (_, args) =>
+        {
+            const { id, baseLink, sharedId } = args;
+            const shared = await ScheduleShare.findById(sharedId);
+            const cible = shared.cible.find((c) => c._id == id);
+            await sendPlanningLink(baseLink + cible.token, cible.email, shared.name);
+            return {
+                succes: true
+            }
         },
         deleteUserFromScheduleLink: async (_, args) =>
         {

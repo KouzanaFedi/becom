@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         maxHeight: 'calc(100vh - 40px)',
         height: 'auto',
+        overflowX: "auto",
     },
     container: {
         display: 'flex',

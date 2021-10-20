@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { invoicePages } from "../../redux/logic/projectManager/invoiceSlice";
 import { SET_INVOICE_SCALE } from "../../redux/ui/invoiceUiSlice";
+import ThemedButton from "../themedComponents/ThemedButton";
 
 const useStyles = makeStyles(() => ({
     blankSpace: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const InvoicePageNavigation = ({ page, setPage }) =>
+const InvoicePageNavigation = ({ page, setPage, instance }) =>
 {
     const classes = useStyles();
     const pdfPages = useSelector(invoicePages);
@@ -74,7 +75,21 @@ const InvoicePageNavigation = ({ page, setPage }) =>
                         }}
                         size="large">
                         <ArrowRight />
-                    </IconButton> : <div className={classes.blankSpace} />}
+                    </IconButton> :
+                        <a href={instance.url} download="invoice.pdf">
+                            download
+                        </a>
+                        // <ThemedButton
+                        //     buttonStyle={{ type: 'secondary' }}
+                        //     variant="outlined"
+                        //     fullWidth={false}
+                        //     onClick={() =>
+                        //     {
+
+                        //     }}>
+                        //     Download
+                        // </ThemedButton>
+                    }
                 </div>}
             </Paper>
         </Box>

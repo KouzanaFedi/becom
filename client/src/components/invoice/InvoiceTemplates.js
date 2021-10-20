@@ -1,7 +1,7 @@
-import { Button, Dialog, DialogContent, Grid } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import { Box, Typography, Paper } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { invoiceTemplatesData, RESET_INVOICE_TEMPLATE_EDIT_DATA } from "../../redux/logic/projectManager/invoiceSlice";
 import { invoiceAdditionalTabData, SET_INVOICE_ADDITIONAL_TAB } from "../../redux/ui/invoiceUiSlice";
@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 const InvoiceTemplates = () =>
 {
     const classes = useStyles();
-    const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
 
     const additionalTab = useSelector(invoiceAdditionalTabData);
@@ -60,14 +59,14 @@ const InvoiceTemplates = () =>
     return <>
         <Grid item xs={5} className={classes.fixOverflow}>
             <Box my={0.5}>
-                <Paper>
+                <Paper elevation={4}>
                     <Box py={2} px={4}>
                         <Typography className={classes.title}>
                             Invoice templates
                         </Typography>
                         <Box className={classes.root}>
                             {
-                                invoiceTemplates.map((invoice, key) => <TemplateCard key={key} classes={classes} setOpen={() => { setOpen(true) }} data={invoice} />)
+                                invoiceTemplates.map((invoice, key) => <TemplateCard key={key} classes={classes} data={invoice} />)
                             }
                         </Box>
                         <Button
@@ -81,11 +80,6 @@ const InvoiceTemplates = () =>
                             New template
                         </Button>
                     </Box>
-                    <Dialog fullWidth open={open} onClose={() => { setOpen(false) }}>
-                        <DialogContent>
-                            BRERERER
-                        </DialogContent>
-                    </Dialog>
                 </Paper>
             </Box>
         </Grid>

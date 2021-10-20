@@ -1,96 +1,75 @@
-import { Box, Grid, Typography } from "@material-ui/core"
-import { Controller } from "react-hook-form";
+import { Grid, Typography } from "@material-ui/core"
 import ThemedTextField from "../../themedComponents/ThemedTextField"
+import { DateTimePicker } from '@material-ui/lab';
+import { useEffect, useState } from 'react';
+import { parseDateTimePicker } from "../../../utils/timeParser";
 
-const InvoiceParamGeneralInfo = ({ invoice, classes, control }) =>
+const InvoiceParamGeneralInfo = ({ classes, setDateInterval, register }) =>
 {
-    return <>
-        <Box mb={2}>
-            <Grid container alignItems="center">
-                <Grid item xs={6}>
-                    <img src={invoice.logo} alt='logo' />
-                </Grid>
-                <Grid item xs={6}>
-                    <input
-                        accept="image/*"
-                        id="icon-button-file"
-                        type="file"
-                        onChange={(event) =>
-                        {
-                            // setNewImage(event.target.files[0]);
-                        }} />
-                </Grid>
-            </Grid>
-        </Box>
-        <Grid container direction='column'>
-            <Grid item xs={12}>
-                <Typography className={classes.sectionTitle}>General information</Typography>
-                <Controller
-                    name="invoiceType"
-                    control={control}
-                    render={({ field }) => <ThemedTextField
-                        className={classes.bottomMargin}
-                        borderRadius="5px"
-                        id="invoice_type"
-                        placeholder="Invoice type"
-                        autoComplete="invoice_type"
-                        {...field}
-                        // value={invoice.generalInfo.invoiceType}
-                        // onChange={(event) => { }}
-                        backgroundColor='#EFE'
-                    />}
-                />
-                <ThemedTextField
-                    className={classes.bottomMargin}
-                    borderRadius="5px"
-                    required
-                    id="ref"
-                    placeholder="Reference"
-                    name="ref"
-                    autoComplete="ref"
-                    value={invoice.generalInfo.ref}
-                    onChange={(event) => { }}
-                    backgroundColor='#EFE'
-                />
-                <ThemedTextField
-                    className={classes.bottomMargin}
-                    borderRadius="5px"
-                    required
-                    id="date"
-                    placeholder="Date"
-                    name="date"
-                    autoComplete="date"
-                    value={invoice.generalInfo.date}
-                    onChange={(event) => { }}
-                    backgroundColor='#EFE'
-                />
-                <ThemedTextField
-                    className={classes.bottomMargin}
-                    borderRadius="5px"
-                    required
-                    id="deadline"
-                    placeholder="Deadline"
-                    name="deadline"
-                    autoComplete="deadline"
-                    value={invoice.generalInfo.deadline}
-                    onChange={(event) => { }}
-                    backgroundColor='#EFE'
-                />
-                <ThemedTextField
-                    className={classes.bottomMargin}
-                    borderRadius="5px"
-                    required
-                    id="client_code"
-                    placeholder="Client Code"
-                    name="clientCode"
-                    autoComplete="clientCode"
-                    value={invoice.generalInfo.clientCode}
-                    onChange={(event) => { }}
-                    backgroundColor='#EFE'
-                />
-            </Grid>
+    const [dates, setDates] = useState({
+        date: parseDateTimePicker(new Date().getTime()),
+        deadline: parseDateTimePicker(new Date().getTime())
+    });
+
+    useEffect(() =>
+    {
+        setDateInterval(dates);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dates]);
+
+    return <Grid container justifyContent="space-between">
+        <Grid item xs={12}>
+            <Typography className={classes.sectionTitle}>General information</Typography>
+            <ThemedTextField
+                className={classes.bottomMargin}
+                borderRadius="5px"
+                label="Reference"
+                inputProps={register('ref', { required: true })}
+                backgroundColor='#EFE'
+            />
         </Grid>
-    </>
+        <Grid item xs={6} className={classes.bottomMargin}>
+            <DateTimePicker
+                inputFormat="MM/DD/yyyy HH:mm"
+                id="date"
+                ampm={false}
+                value={new Date()}
+                renderInput={(props) => <ThemedTextField
+                    fullwidth
+                    label="created"
+                    backgroundColor="#EFE"
+                    {...props} />}
+                onChange={(value) =>
+                {
+                    setDates({ ...dates, date: new Date(value).getTime() });
+                }} />
+        </Grid>
+        <Grid item xs={6} className={classes.bottomMargin}>
+            <DateTimePicker
+                inputFormat="MM/DD/yyyy HH:mm"
+                id="date"
+                ampm={false}
+                value={new Date().getTime()}
+                renderInput={(props) => <ThemedTextField
+                    label="deadline"
+                    fullwidth
+                    backgroundColor="#EFE"
+                    {...props} />}
+                onChange={(value) =>
+                {
+                    setDates({ ...dates, deadline: new Date(value).getTime() });
+                }} />
+        </Grid>
+        <Grid item xs={12}>
+            <ThemedTextField
+                className={classes.bottomMargin}
+                borderRadius="5px"
+                inputProps={register('clientCode', { required: true })}
+                placeholder="Client Code"
+                backgroundColor='#EFE'
+            />
+        </Grid>
+    </Grid >
 }
 
 export default InvoiceParamGeneralInfo;

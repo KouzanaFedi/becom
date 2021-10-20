@@ -26,9 +26,8 @@ const useStyles = makeStyles(() => ({
         backgroundColor: '#999',
         color: '#fff',
         padding: '5px 15px',
-        display: 'flex',
         borderRadius: '24px',
-        lineHeight: '5px',
+        display: 'flex',
         alignItems: 'center',
         textTransform: 'uppercase'
     },
@@ -43,7 +42,8 @@ const useStyles = makeStyles(() => ({
     },
     dueDate: {
         fontSize: '10px',
-        display: 'inline-block',
+        display: 'flex',
+        alignItems: 'center',
         fontWeight: 700,
         color: '#999',
         backgroundColor: '#EFE',

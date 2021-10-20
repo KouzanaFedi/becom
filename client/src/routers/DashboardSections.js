@@ -6,7 +6,7 @@ import invoiceIcon from '../assets/icons/invoice.png';
 import projectsIcon from '../assets/icons/projects.png';
 import Invoice from "../components/invoice/Invoice";
 import Projects from "../components/projects/Projects";
-import ImageAnnotation from "../components/annotation/ImageAnnotation";
+// import ImageAnnotation from "../components/annotation/ImageAnnotation";
 
 export const DASHBOARD_SECTIONS = [{
     name: 'projects',
@@ -22,13 +22,13 @@ export const DASHBOARD_SECTIONS = [{
     component: EventScheduler,
     icon: calendarIcon,
 },
-{
-    name: 'annotation',
-    url: '/dashboard/annotation',
-    title: 'Annotation',
-    component: ImageAnnotation,
-    icon: calendarIcon,
-},
+// {
+//     name: 'annotation',
+//     url: '/dashboard/annotation',
+//     title: 'Annotation',
+//     component: ImageAnnotation,
+//     icon: calendarIcon,
+// },
 // {
 //     name: 'board',
 //     url: '/dashboard/board',

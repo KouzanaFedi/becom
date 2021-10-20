@@ -101,7 +101,8 @@ const MockedInvoiceTableItem = ({ data, index, esm }) =>
         <div className={classes.total}>
             {data.total}
         </div>
-    </div> : <></>
+    </div> : <>
+    </>
 }
 
 export default MockedInvoiceTableItem;

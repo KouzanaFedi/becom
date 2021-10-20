@@ -372,6 +372,7 @@ const DisplayEvent = ({ project, selectedEventData, openBackDropOpen, closeBackD
                                     disableEditor={true}
                                     disableSelector={true}
                                     activeAnnotations={activeAnnotations}
+                                    disableOverlay={true}
                                 />
                                 {/* <img className={classes.image} src={`${IMAGE_ENDPOINT}${selectedEventData.extendedProps.image?.src}`} alt="pic" /> */}
                             </Grid>}

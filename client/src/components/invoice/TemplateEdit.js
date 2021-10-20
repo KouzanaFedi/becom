@@ -1,16 +1,4 @@
-import {
-    Grid,
-    Switch,
-    MenuItem,
-    Box,
-    Paper,
-    Typography,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
-    Button,
-    CircularProgress,
-} from "@material-ui/core";
+import { Grid, Switch, MenuItem, Box, Paper, Typography, RadioGroup, FormControlLabel, Radio, Button, CircularProgress } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -114,7 +102,7 @@ const TemplateEdit = () =>
 
     const invoicTemplateData = useSelector(invoiceEditTabData);
     const [previewData, setPreviewData] = useState({});
-    const { handleSubmit, register, formState: { errors, isValid }, control, setValue, setError, getValues } = useForm({
+    const { handleSubmit, register, formState: { errors, isValid }, control, setValue, setError, getValues, reset } = useForm({
         defaultValues: useMemo(() =>
         {
             return invoicTemplateData;
@@ -183,15 +171,16 @@ const TemplateEdit = () =>
             else {
                 delete res.id;
                 createInvoiceTemplateQuery({ variables: { ...res } });
+                reset();
             }
         }
     }
 
     return (
-        <Paper>
+        <Paper elevation={4}>
             < form onSubmit={handleSubmit(submit)} >
                 <Box p={2} className={classes.root}>
-                    <Typography className={classes.title}>Invoice templates </Typography>
+                    <Typography className={classes.title}>Create invoice template </Typography>
                     <Typography className={classes.sectionTitle}>General</Typography>
                     <Grid container justifyContent='center'>
                         <Grid item xs={12} className={classes.root}>
@@ -258,7 +247,7 @@ const TemplateEdit = () =>
                                                 control={<Radio />}
                                                 label={
                                                     <Fragment>
-                                                        <img src={`${IMAGE_ENDPOINT}${image}`} alt="sup"
+                                                        <img src={`${IMAGE_ENDPOINT}/${image}`} alt="sup"
                                                             width="40px"
                                                             height="auto"
                                                             className={classes.marginRight}
@@ -334,7 +323,7 @@ const TemplateEdit = () =>
                                 type="submit"
                                 onClick={() => { }}>
                                 {loadingUpdate ? <CircularProgress color="primary"
-                                    size={24} /> : 'Update'}
+                                    size={24} /> : 'Download'}
                             </ThemedButton> :
                             <ThemedButton
                                 variant="outlined"
@@ -355,7 +344,7 @@ const TemplateEdit = () =>
                                 if (values.imageUpload !== null && useLocalImage) {
                                     values.image = URL.createObjectURL(values.imageUpload);
                                 } else if (values.image !== null) {
-                                    values.image = `${IMAGE_ENDPOINT}${values.image}`
+                                    values.image = `${IMAGE_ENDPOINT}/${values.image}`
                                 }
                                 setPreviewData(values);
                                 setDialOpen(true);
